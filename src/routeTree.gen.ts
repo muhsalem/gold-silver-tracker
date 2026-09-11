@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as TypesRouteImport } from './routes/types'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,49 @@ const CalculatorRoute = CalculatorRouteImport.update({
   path: '/calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TypesRoute = TypesRouteImport.update({
+  id: '/types',
+  path: '/types',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calculator': typeof CalculatorRoute
+  '/history': typeof HistoryRoute
+  '/types': typeof TypesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calculator': typeof CalculatorRoute
+  '/history': typeof HistoryRoute
+  '/types': typeof TypesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calculator': typeof CalculatorRoute
+  '/history': typeof HistoryRoute
+  '/types': typeof TypesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calculator'
+  fullPaths: '/' | '/calculator' | '/history' | '/types'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calculator'
-  id: '__root__' | '/' | '/calculator'
+  to: '/' | '/calculator' | '/history' | '/types'
+  id: '__root__' | '/' | '/calculator' | '/history' | '/types'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalculatorRoute: typeof CalculatorRoute
+  HistoryRoute: typeof HistoryRoute
+  TypesRoute: typeof TypesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/types': {
+      id: '/types'
+      path: '/types'
+      fullPath: '/types'
+      preLoaderRoute: typeof TypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalculatorRoute: CalculatorRoute,
+  HistoryRoute: HistoryRoute,
+  TypesRoute: TypesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
