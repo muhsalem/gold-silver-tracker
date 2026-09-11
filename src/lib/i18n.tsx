@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { DEFAULT_COUNTRY, findCountry } from "./countries";
+import { PAGE_STRINGS } from "./i18n-pages";
 
 export type Lang = "ar" | "en" | "fr" | "tr" | "id" | "ur";
 
@@ -442,7 +443,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         setLangState(l);
         localStorage.setItem(LS_LANG, l);
       },
-      t: (key) => DICTS[lang][key] ?? en[key] ?? key,
+      t: (key) =>
+        DICTS[lang][key] ??
+        PAGE_STRINGS[lang]?.[key] ??
+        en[key] ??
+        PAGE_STRINGS["en"]?.[key] ??
+        key,
       country,
       setCountry: (c) => {
         setCountryState(c);
