@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Save, RotateCcw, LineChart } from "lucide-react";
 import { Page, Field } from "@/components/site/Page";
 import { StateNote, useNisab } from "@/components/site/Prices";
+import { CountryPicker } from "@/components/site/Shell";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { clearOverrides, readOverrides, recordManualPrice, writeOverrides } from "@/lib/overrides";
@@ -49,6 +50,9 @@ function Admin() {
   const restore = () => { clearOverrides(); setSaved(false); refetch(); };
 
   return <Page eyebrow="إدارة القيَم" title={t("admin.title")} sub={t("admin.sub")}>
+    <div className="mb-6">
+      <CountryPicker />
+    </div>
     {(isLoading || isError) && <StateNote isLoading={isLoading} isError={isError} refetch={refetch} />}
     {data && <div className="grid gap-6 lg:grid-cols-[1.25fr_.75fr]">
       <section className="border border-border bg-card p-6 sm:p-8">

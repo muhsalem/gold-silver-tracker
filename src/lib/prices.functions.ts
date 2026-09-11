@@ -128,8 +128,10 @@ export const getHistory = createServerFn({ method: "GET" })
     let lastRate = data.currency === "USD" ? 1 : undefined;
     for (const [t, g] of gold) {
       const s = silver.get(t);
-      while (fxIndex < fxEntries.length && fxEntries[fxIndex]?.[0] <= t + 36 * 60 * 60 * 1000) {
-        lastRate = fxEntries[fxIndex]?.[1];
+      while (fxIndex < fxEntries.length) {
+        const fxEntry = fxEntries[fxIndex];
+        if (!fxEntry || fxEntry[0] > t + 36 * 60 * 60 * 1000) break;
+        lastRate = fxEntry[1];
         fxIndex += 1;
       }
       if (typeof s === "number" && typeof lastRate === "number") {
