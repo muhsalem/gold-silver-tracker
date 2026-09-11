@@ -20,7 +20,7 @@ export const Route = createFileRoute("/types")({
       },
     ],
   }),
-  component: Types;
+  component: Types,
 });
 
 const CARDS = ["cash", "gold", "trade", "crops", "livestock", "rikaz", "fitr"] as const;
