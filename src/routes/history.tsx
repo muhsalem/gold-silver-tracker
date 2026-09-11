@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -15,9 +15,11 @@ import {
 import { Page } from "@/components/site/Page";
 import { CountryPicker } from "@/components/site/Shell";
 import { useNisab } from "@/components/site/Prices";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
-import { getHistory, type HistoryPoint, type HistoryRange } from "@/lib/prices.functions";
+import { readManualHistory, type ManualPricePoint } from "@/lib/overrides";
+import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
@@ -32,23 +34,37 @@ export const Route = createFileRoute("/history")({
         property: "og:description",
         content: "رسوم بيانية لقيمة نصاب الذهب والفضّة عبر الزمن.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: History,
 });
 
-const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y"];
+const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "1448", "5y", "10y"];
 
 function History() {
-  const { t, lang } = useI18n();
-  const { money, rate } = useNisab();
+  const { t, lang, currency } = useI18n();
+  const { money } = useNisab();
   const [range, setRange] = useState<HistoryRange>("1y");
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
+  const [manualHistory, setManualHistory] = useState<ManualPricePoint[]>([]);
+
+  useEffect(() => {
+    const sync = () => setManualHistory(readManualHistory());
+    sync();
+    window.addEventListener("nisab-overrides", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("nisab-overrides", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
   const fetchHistory = useServerFn(getHistory);
-  const { data, isLoading, isError, refetch } = useQuery<HistoryPoint[]>({
-    queryKey: ["history", range],
-    queryFn: () => fetchHistory({ data: { range } }),
+  const { data, isLoading, isError, refetch } = useQuery<HistoryResponse>({
+    queryKey: ["history", range, currency],
+    queryFn: () => fetchHistory({ data: { range, currency } }),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -56,11 +72,26 @@ function History() {
 
   const series = useMemo(
     () =>
-      (data ?? []).map((p) => ({
-        t: p.t,
-        value: ((metal === "gold" ? p.gold : p.silver) / TROY_OUNCE_G) * rate * grams,
-      })),
-    [data, metal, rate, grams],
+      [
+        ...(data?.points ?? []).map((p) => ({
+          t: p.t,
+          value: ((metal === "gold" ? p.gold : p.silver) / TROY_OUNCE_G) * p.rate * grams,
+          manual: false,
+        })),
+        ...manualHistory
+          .filter((p) => p.currency === currency)
+          .map((p) => ({
+            t: p.t,
+            value:
+              ((metal === "gold" ? p.goldUsdOz : p.silverUsdOz) / TROY_OUNCE_G) *
+              p.rate *
+              grams,
+            manual: true,
+          })),
+      ]
+        .filter((p) => range !== "1448" || p.t >= new Date("2026-06-16T00:00:00Z").getTime())
+        .sort((a, b) => a.t - b.t),
+    [data, manualHistory, currency, metal, grams, range],
   );
 
   const stats = useMemo(() => {
@@ -97,21 +128,23 @@ function History() {
             <option value="silver">{t("silver")}</option>
           </select>
         </label>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1" aria-label={t("history.period") }>
           {RANGES.map((r) => (
-            <button
+            <Button
               key={r}
               onClick={() => setRange(r)}
-              className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-                r === range
-                  ? "bg-primary text-primary-foreground"
-                  : "border border-border text-muted-foreground hover:bg-secondary"
-              }`}
+              size="sm"
+              variant={r === range ? "default" : "outline"}
             >
               {t(`history.range.${r}`)}
-            </button>
+            </Button>
           ))}
         </div>
+      </div>
+
+      <div className="mb-4 border-s-2 border-accent bg-card px-4 py-3 text-sm text-muted-foreground">
+        <strong className="text-foreground">{currency}</strong> · {t("history.countrySeries")}
+        {range === "1448" && <span> · {t("history.from1448")}</span>}
       </div>
 
       {stats && (
@@ -137,15 +170,19 @@ function History() {
         {isError && (
           <div className="py-20 text-center">
             <p className="text-muted-foreground">{t("common.error")}</p>
-            <button
-              onClick={() => refetch()}
-              className="mt-3 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
-            >
-              {t("common.retry")}
-            </button>
+            <Button onClick={() => refetch()} className="mt-3">{t("common.retry")}</Button>
           </div>
         )}
-        {!isLoading && !isError && (
+        {!isLoading && !isError && data && !data.fxAvailable && (
+          <div className="py-20 text-center">
+            <p className="text-foreground">{t("history.fxUnavailable")}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{currency}</p>
+          </div>
+        )}
+        {!isLoading && !isError && data?.fxAvailable && series.length === 0 && (
+          <p className="py-20 text-center text-muted-foreground">{t("history.empty")}</p>
+        )}
+        {!isLoading && !isError && data?.fxAvailable && series.length > 0 && (
           <div dir="ltr" className="h-[380px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={series} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
@@ -173,7 +210,7 @@ function History() {
                 />
                 <Tooltip
                   labelFormatter={(v) => fmtTick(Number(v))}
-                  formatter={(v: number) => [money(v), t("history.sub")]}
+                   formatter={(v: number) => [money(v), t("history.sub")]}
                   contentStyle={{
                     background: "var(--color-card)",
                     border: "1px solid var(--color-border)",
@@ -192,7 +229,13 @@ function History() {
             </ResponsiveContainer>
           </div>
         )}
-        <p className="mt-3 text-xs text-muted-foreground">{t("history.note")}</p>
+        <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted-foreground sm:grid-cols-2">
+          <p>{t("history.note")}</p>
+          {data && <p>{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+          {manualHistory.some((p) => p.currency === currency) && (
+            <p className="sm:col-span-2">{t("history.manualPoint")}</p>
+          )}
+        </div>
       </div>
     </Page>
   );
