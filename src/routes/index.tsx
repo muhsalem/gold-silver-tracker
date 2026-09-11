@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Calculator, ChartNoAxesCombined } from "lucide-react";
 
 import { CountryPicker } from "@/components/site/Shell";
 import { NisabAlert, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
@@ -19,6 +20,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "نصاب الذهب ٨٥ جراماً والفضّة ٥٩٥ جراماً، محسوباً يومياً بعملة بلدك.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,
@@ -135,18 +138,20 @@ function Home() {
         </>
       )}
 
-      <section className="mt-8 flex flex-wrap gap-3">
+      <section className="mt-8 grid gap-3 sm:grid-cols-2">
         <Link
           to="/calculator"
-          className="rounded-xl bg-primary px-5 py-3 text-sm text-primary-foreground transition-opacity hover:opacity-90"
+          className="flex min-h-20 items-center gap-4 rounded-lg bg-primary px-5 py-4 text-primary-foreground transition-opacity hover:opacity-90"
         >
-          {t("home.cta.calc")}
+          <Calculator aria-hidden="true" />
+          <span><strong className="block font-medium">{t("home.cta.calc")}</strong><small className="mt-1 block opacity-75">{t("home.cta.calcSub")}</small></span>
         </Link>
         <Link
           to="/history"
-          className="rounded-xl border border-border px-5 py-3 text-sm text-foreground transition-colors hover:bg-secondary"
+          className="flex min-h-20 items-center gap-4 rounded-lg border border-border bg-card px-5 py-4 text-foreground transition-colors hover:bg-secondary"
         >
-          {t("home.cta.history")}
+          <ChartNoAxesCombined aria-hidden="true" />
+          <span><strong className="block font-medium">{t("home.cta.history")}</strong><small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small></span>
         </Link>
       </section>
 

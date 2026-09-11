@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { RotateCcw } from "lucide-react";
 
 import { Field, Page } from "@/components/site/Page";
 import { CountryPicker } from "@/components/site/Shell";
 import { StateNote, useNisab } from "@/components/site/Prices";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
 
@@ -20,6 +22,8 @@ export const Route = createFileRoute("/calculator")({
         property: "og:description",
         content: "أدخل ما تملك واعرف زكاتك المستحقّة فوراً مقارنةً بالنصاب.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Calculator,
@@ -121,12 +125,9 @@ function Calculator() {
             </label>
           </div>
 
-          <button
-            onClick={reset}
-            className="justify-self-start rounded-xl border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            {t("calc.reset")}
-          </button>
+          <Button onClick={reset} variant="outline" className="justify-self-start">
+            <RotateCcw aria-hidden="true" />{t("calc.reset")}
+          </Button>
         </div>
 
         <aside className="card-surface h-fit p-6 lg:sticky lg:top-24">
