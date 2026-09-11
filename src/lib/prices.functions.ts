@@ -52,16 +52,24 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export type HistoryRange = "1mo" | "6mo" | "1y" | "5y" | "10y";
-export type HistoryPoint = { t: number; gold: number; silver: number };
+export type HistoryRange = "1mo" | "6mo" | "1y" | "5y" | "10y" | "1448";
+export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
+export type HistoryResponse = {
+  points: HistoryPoint[];
+  currency: string;
+  fxAvailable: boolean;
+  metalsSource: string;
+  ratesSource: string;
+};
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
-    symbol,
-  )}?range=${range}&interval=${interval}`;
+  const timeQuery = range === "1448"
+    ? `period1=${Math.floor(new Date("2026-06-16T00:00:00Z").getTime() / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+    : `range=${range}`;
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
   const json = (await res.json()) as any;
@@ -77,26 +85,64 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 }
 
 export const getHistory = createServerFn({ method: "GET" })
-  .inputValidator((data: { range: HistoryRange }) => {
-    const allowed: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y"];
+  .inputValidator((data: { range: HistoryRange; currency: string }) => {
+    const allowed: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "1448"];
     const range = allowed.includes(data?.range) ? data.range : "1y";
-    return { range };
+    const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
+    return { range, currency };
   })
-  .handler(async ({ data }): Promise<HistoryPoint[]> => {
-    const hit = histCache.get(data.range);
-    if (hit && Date.now() - hit.at < TTL_MS) return hit.data;
+  .handler(async ({ data }): Promise<HistoryResponse> => {
+    const cacheKey = `${data.range}:${data.currency}`;
+    const hit = histCache.get(cacheKey);
+    if (hit && Date.now() - hit.at < TTL_MS) {
+      return {
+        points: hit.data,
+        currency: data.currency,
+        fxAvailable: true,
+        metalsSource: "Yahoo Finance (GC=F, SI=F)",
+        ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+      };
+    }
 
-    const [gold, silver] = await Promise.all([
+    const [gold, silver, fx] = await Promise.all([
       yahooSeries("GC=F", data.range),
       yahooSeries("SI=F", data.range),
+      data.currency === "USD"
+        ? Promise.resolve(new Map<number, number>())
+        : yahooSeries(`${data.currency}=X`, data.range).catch(() => new Map<number, number>()),
     ]);
 
+    if (data.currency !== "USD" && fx.size === 0) {
+      return {
+        points: [],
+        currency: data.currency,
+        fxAvailable: false,
+        metalsSource: "Yahoo Finance (GC=F, SI=F)",
+        ratesSource: `Historical exchange rate unavailable for ${data.currency}`,
+      };
+    }
+
     const points: HistoryPoint[] = [];
+    const fxEntries = [...fx.entries()].sort((a, b) => a[0] - b[0]);
+    let fxIndex = 0;
+    let lastRate = data.currency === "USD" ? 1 : undefined;
     for (const [t, g] of gold) {
       const s = silver.get(t);
-      if (typeof s === "number") points.push({ t, gold: g, silver: s });
+      while (fxIndex < fxEntries.length && fxEntries[fxIndex]?.[0] <= t + 36 * 60 * 60 * 1000) {
+        lastRate = fxEntries[fxIndex]?.[1];
+        fxIndex += 1;
+      }
+      if (typeof s === "number" && typeof lastRate === "number") {
+        points.push({ t, gold: g, silver: s, rate: lastRate });
+      }
     }
     points.sort((a, b) => a.t - b.t);
-    histCache.set(data.range, { data: points, at: Date.now() });
-    return points;
+    histCache.set(cacheKey, { data: points, at: Date.now() });
+    return {
+      points,
+      currency: data.currency,
+      fxAvailable: true,
+      metalsSource: "Yahoo Finance (GC=F, SI=F)",
+      ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+    };
   });
