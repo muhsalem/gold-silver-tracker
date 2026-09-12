@@ -37,7 +37,11 @@ const NAV_GROUPS = [
   },
 ] as const;
 
-const NAV = NAV_GROUPS.flatMap((g) => g.items);
+const NAV = [
+  ...NAV_GROUPS[0].items,
+  ...NAV_GROUPS[1].items,
+  ...NAV_GROUPS[2].items,
+];
 
 export function CountryPicker({ compact = false }: { compact?: boolean }) {
   const { t, lang, country, setCountry } = useI18n();
