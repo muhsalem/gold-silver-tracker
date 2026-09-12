@@ -93,7 +93,7 @@ export const CITIES: Record<string, City[]> = {
   ],
   MY: [
     { id: "kualalumpur", ar: "كوالالمبور", en: "Kuala Lumpur" },
-    { id: "johor", ar: "جohor", en: "Johor Bahru" },
+    { id: "johor", ar: "جوهور", en: "Johor Bahru" },
   ],
   NG: [
     { id: "lagos", ar: "لاغوس", en: "Lagos" },
