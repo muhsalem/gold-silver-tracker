@@ -3,8 +3,8 @@
 @import "tw-animate-css";
 
 /*
- * Design system — "Desert Luxe Minimal"
- * Ivory sand paper, deep forest green, assay gold.
+ * Design system — "Midnight Mihrab"
+ * Deep teal-ink night, parchment type, brass and jade accents.
  * All colors are oklch semantic tokens. Never hardcode colors in components.
  */
 
@@ -57,40 +57,40 @@
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 1rem;
 
-  --sand: oklch(0.9503 0.0184 86.15);
-  --cream: oklch(0.9823 0.0069 88.64);
-  --ink: oklch(0.2689 0.0242 164.16);
-  --forest: oklch(0.3102 0.0471 168.59);
-  --emerald: oklch(0.4744 0.0847 167.15);
-  --gold: oklch(0.706 0.1199 85.41);
-  --goldlight: oklch(0.8485 0.0867 89.06);
+  --sand: oklch(0.2349 0.0294 192);
+  --cream: oklch(0.9494 0.0141 85);
+  --ink: oklch(0.1731 0.0245 193);
+  --forest: oklch(0.2749 0.0322 190);
+  --emerald: oklch(0.6813 0.1075 167);
+  --gold: oklch(0.7842 0.1129 79);
+  --goldlight: oklch(0.8877 0.0741 86);
 
-  --background: var(--sand);
-  --foreground: var(--ink);
-  --card: var(--cream);
-  --card-foreground: var(--ink);
-  --popover: var(--cream);
-  --popover-foreground: var(--ink);
-  --primary: var(--forest);
-  --primary-foreground: var(--cream);
-  --secondary: oklch(0.9503 0.0184 86.15);
-  --secondary-foreground: var(--ink);
-  --muted: oklch(0.9503 0.0184 86.15);
-  --muted-foreground: oklch(0.52 0.02 164);
+  --background: var(--ink);
+  --foreground: var(--cream);
+  --card: oklch(0.2249 0.0283 192);
+  --card-foreground: var(--cream);
+  --popover: oklch(0.2249 0.0283 192);
+  --popover-foreground: var(--cream);
+  --primary: var(--emerald);
+  --primary-foreground: oklch(0.1731 0.0245 193);
+  --secondary: oklch(0.2749 0.0322 190);
+  --secondary-foreground: var(--cream);
+  --muted: oklch(0.2749 0.0322 190);
+  --muted-foreground: oklch(0.7461 0.0182 180);
   --accent: var(--gold);
-  --accent-foreground: var(--ink);
-  --destructive: oklch(0.55 0.19 27);
-  --destructive-foreground: var(--cream);
-  --border: oklch(0.2689 0.0242 164.16 / 12%);
-  --input: oklch(0.2689 0.0242 164.16 / 14%);
+  --accent-foreground: oklch(0.1731 0.0245 193);
+  --destructive: oklch(0.62 0.17 25);
+  --destructive-foreground: oklch(0.1731 0.0245 193);
+  --border: oklch(0.9494 0.0141 85 / 14%);
+  --input: oklch(0.9494 0.0141 85 / 18%);
   --ring: var(--gold);
 
-  --gradient-brand: linear-gradient(135deg, var(--forest) 0%, var(--emerald) 55%, var(--gold) 160%);
-  --gradient-paper: linear-gradient(180deg, var(--cream) 0%, var(--sand) 100%);
-  --gradient-gold: linear-gradient(100deg, var(--gold) 0%, var(--goldlight) 50%, var(--gold) 100%);
-  --shadow-soft: 0 1px 2px oklch(0.27 0.02 164 / 6%), 0 12px 32px -18px oklch(0.27 0.02 164 / 35%);
+  --gradient-brand: linear-gradient(140deg, oklch(0.3053 0.0512 178) 0%, oklch(0.2249 0.0283 192) 60%, oklch(0.3402 0.0621 120) 130%);
+  --gradient-paper: linear-gradient(180deg, oklch(0.2149 0.0272 192) 0%, oklch(0.1731 0.0245 193) 100%);
+  --gradient-gold: linear-gradient(100deg, var(--gold) 0%, var(--goldlight) 45%, var(--gold) 100%);
+  --shadow-soft: 0 1px 0 0 oklch(0.9494 0.0141 85 / 6%) inset, 0 20px 45px -28px oklch(0 0 0 / 85%);
 }
 
 @layer base {
@@ -105,8 +105,10 @@
   body {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(1200px 600px at 100% -10%, oklch(0.706 0.1199 85.41 / 10%), transparent 60%),
-      radial-gradient(900px 500px at 0% 0%, oklch(0.4744 0.0847 167.15 / 8%), transparent 55%);
+      radial-gradient(1100px 620px at 100% -12%, oklch(0.7842 0.1129 79 / 11%), transparent 62%),
+      radial-gradient(900px 520px at 0% 4%, oklch(0.6813 0.1075 167 / 10%), transparent 58%),
+      repeating-linear-gradient(45deg, oklch(0.9494 0.0141 85 / 2.5%) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, oklch(0.9494 0.0141 85 / 2.5%) 0 1px, transparent 1px 22px);
     background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-arabic);
@@ -136,7 +138,7 @@
 }
 
 @utility card-surface {
-  background-color: color-mix(in oklab, var(--color-card) 92%, transparent);
+  background-color: color-mix(in oklab, var(--color-card) 88%, transparent);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
@@ -149,11 +151,16 @@
   color: transparent;
 }
 
+@utility hairline-gold {
+  border: 1px solid color-mix(in oklab, var(--color-accent) 38%, transparent);
+}
+
 @utility brand-panel {
   background-image: var(--gradient-brand);
   color: var(--color-primary-foreground);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
+  border: 1px solid color-mix(in oklab, var(--color-accent) 22%, transparent);
 }
 
 @keyframes nisab-rise {
