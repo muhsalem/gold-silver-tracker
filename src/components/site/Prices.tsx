@@ -1,3 +1,4 @@
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useI18n } from "@/lib/i18n";
