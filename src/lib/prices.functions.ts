@@ -108,16 +108,57 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
-    const allowed: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "1448"];
+    const allowed: HistoryRange[] = [
+      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "100y",
+    ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
     return { range, currency };
   })
   .handler(async ({ data }): Promise<HistoryResponse> => {
+    const longYears = LONG_RANGES[data.range];
+    if (longYears) {
+      let rate = 1;
+      if (data.currency !== "USD") {
+        try {
+          const live = await getLivePrices();
+          rate = live.rates[data.currency] ?? 0;
+        } catch {
+          rate = 0;
+        }
+        if (!rate) {
+          return {
+            points: [],
+            currency: data.currency,
+            fxAvailable: false,
+            metalsSource: "متوسطات سنوية تاريخية (USD/oz)",
+            ratesSource: `سعر صرف غير متاح لـ ${data.currency}`,
+            approx: true,
+          };
+        }
+      }
+      const points: HistoryPoint[] = annualSince(longYears).map((p) => ({
+        t: Date.UTC(p.year, 6, 1),
+        gold: p.gold,
+        silver: p.silver,
+        rate,
+      }));
+      return {
+        points,
+        currency: data.currency,
+        fxAvailable: true,
+        metalsSource: "متوسطات سنوية تاريخية للذهب والفضة (USD/oz)",
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `سعر الصرف الحالي لـ ${data.currency}`,
+        approx: true,
+      };
+    }
+
     const cacheKey = `${data.range}:${data.currency}`;
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < TTL_MS) {
       return {
+
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,
