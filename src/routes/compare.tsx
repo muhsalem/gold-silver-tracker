@@ -210,10 +210,7 @@ function Compare() {
           </tbody>
         </table>
         <p className="mt-4 text-xs leading-6 text-muted-foreground">
-          {t("compare.note", {
-            gold: String(GOLD_NISAB_G),
-            silver: String(SILVER_NISAB_G),
-          })}
+          {t("compare.note")} · {GOLD_NISAB_G}g / {SILVER_NISAB_G}g
         </p>
       </section>
     </Page>

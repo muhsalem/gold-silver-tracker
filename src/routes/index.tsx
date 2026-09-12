@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calculator, ChartNoAxesCombined } from "lucide-react";
 
-import { CountryPicker } from "@/components/site/Shell";
+import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import { NisabAlert, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
@@ -43,8 +43,9 @@ function Home() {
           {t("hero.title")}
         </h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t("hero.sub")}</p>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <CountryPicker />
+          <CityPicker />
         </div>
       </section>
 

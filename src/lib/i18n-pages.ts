@@ -631,3 +631,34 @@ const EXTRA: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA2: Record<string, Record<string, string>> = {
+  ar: {
+    "nav.compare": "مقارنة الدول",
+    "compare.title": "مقارنة النصاب بين الدول",
+    "compare.sub": "قارن قيمة نصاب الذهب والفضّة بعملة كل دولة، مع نسبة الذهب إلى الفضّة اليوم.",
+    "compare.chart": "رسم بياني لقيمة النصاب",
+    "compare.country": "الدولة",
+    "compare.lower": "النصاب الأدنى (الأحوط للفقراء)",
+    "compare.localNote": "القيم بعملة كل دولة، محسوبة من سعر الأونصة وسعر الصرف الحالي.",
+    "compare.note": "نصاب الذهب والفضّة بالجرام ثابت، والفرق بين الدول ناتج عن سعر الصرف فقط.",
+  },
+  en: {
+    "nav.compare": "Compare countries",
+    "compare.title": "Compare the nisab across countries",
+    "compare.sub": "Compare gold and silver nisab in each country's currency, with today's gold-to-silver ratio.",
+    "compare.chart": "Nisab value chart",
+    "compare.country": "Country",
+    "compare.lower": "Lower nisab (safer for the poor)",
+    "compare.localNote": "Values in each country's currency, from the ounce price and today's exchange rate.",
+    "compare.note": "The nisab in grams is fixed; differences between countries come from exchange rates only.",
+  },
+  fr: { "nav.compare": "Comparer les pays", "compare.title": "Comparer le nisab entre pays" },
+  tr: { "nav.compare": "Ülke karşılaştırması", "compare.title": "Ülkeler arasında nisap karşılaştırması" },
+  id: { "nav.compare": "Bandingkan negara", "compare.title": "Perbandingan nisab antarnegara" },
+  ur: { "nav.compare": "ممالک کا موازنہ", "compare.title": "ممالک کے درمیان نصاب کا موازنہ" },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA2)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}
