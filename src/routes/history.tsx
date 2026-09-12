@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 import { Page } from "@/components/site/Page";
-import { CountryPicker } from "@/components/site/Shell";
+import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import { useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
@@ -41,10 +41,12 @@ export const Route = createFileRoute("/history")({
   component: History,
 });
 
-const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "1448", "5y", "10y"];
+const RANGES: HistoryRange[] = [
+  "1mo", "6mo", "1y", "1448", "5y", "10y", "20y", "30y", "40y", "50y", "100y",
+];
 
 function History() {
-  const { t, lang, currency } = useI18n();
+  const { t, lang, currency, city } = useI18n();
   const { money } = useNisab();
   const [range, setRange] = useState<HistoryRange>("1y");
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
@@ -79,7 +81,7 @@ function History() {
           manual: false,
         })),
         ...manualHistory
-          .filter((p) => p.currency === currency)
+          .filter((p) => p.currency === currency && (p.city ?? "") === city)
           .map((p) => ({
             t: p.t,
             value:
@@ -91,7 +93,7 @@ function History() {
       ]
         .filter((p) => range !== "1448" || p.t >= new Date("2026-06-16T00:00:00Z").getTime())
         .sort((a, b) => a.t - b.t),
-    [data, manualHistory, currency, metal, grams, range],
+    [data, manualHistory, currency, city, metal, grams, range],
   );
 
   const stats = useMemo(() => {
@@ -117,6 +119,7 @@ function History() {
     <Page eyebrow="HISTORY" title={t("history.title")} sub={t("history.sub")}>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <CountryPicker />
+        <CityPicker />
         <label className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">{t("history.pick")}</span>
           <select
@@ -145,6 +148,7 @@ function History() {
       <div className="mb-4 border-s-2 border-accent bg-card px-4 py-3 text-sm text-muted-foreground">
         <strong className="text-foreground">{currency}</strong> · {t("history.countrySeries")}
         {range === "1448" && <span> · {t("history.from1448")}</span>}
+        {data?.approx && <span> · {t("history.approx")}</span>}
       </div>
 
       {stats && (
@@ -232,7 +236,7 @@ function History() {
         <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted-foreground sm:grid-cols-2">
           <p>{t("history.note")}</p>
           {data && <p>{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
-          {manualHistory.some((p) => p.currency === currency) && (
+          {manualHistory.some((p) => p.currency === currency && (p.city ?? "") === city) && (
             <p className="sm:col-span-2">{t("history.manualPoint")}</p>
           )}
         </div>
