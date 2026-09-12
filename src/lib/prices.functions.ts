@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { annualSince } from "./long-history";
 
 export type LivePrices = {
   goldUsdOz: number;
@@ -121,8 +122,8 @@ export const getHistory = createServerFn({ method: "GET" })
       let rate = 1;
       if (data.currency !== "USD") {
         try {
-          const live = await getLivePrices();
-          rate = live.rates[data.currency] ?? 0;
+          const fx = await fetchJson("https://open.er-api.com/v6/latest/USD");
+          rate = Number(fx?.rates?.[data.currency]) || 0;
         } catch {
           rate = 0;
         }
