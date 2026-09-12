@@ -1,20 +1,43 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { Menu } from "lucide-react";
+import { useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { citiesOf, cityName } from "@/lib/cities";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-const NAV = [
-  { to: "/", key: "nav.home" },
-  { to: "/calculator", key: "nav.calculator" },
-  { to: "/history", key: "nav.history" },
-  { to: "/types", key: "nav.types" },
-  { to: "/fiqh", key: "nav.fiqh" },
-  { to: "/compare", key: "nav.compare" },
-  { to: "/faq", key: "nav.faq" },
-  { to: "/waqf", key: "nav.about" },
+const NAV_GROUPS = [
+  {
+    key: "nav.group.live",
+    items: [
+      { to: "/", key: "nav.home" },
+      { to: "/calculator", key: "nav.calculator" },
+      { to: "/history", key: "nav.history" },
+      { to: "/compare", key: "nav.compare" },
+    ],
+  },
+  {
+    key: "nav.group.reference",
+    items: [
+      { to: "/types", key: "nav.types" },
+      { to: "/fiqh", key: "nav.fiqh" },
+      { to: "/faq", key: "nav.faq" },
+    ],
+  },
+  {
+    key: "nav.group.about",
+    items: [{ to: "/waqf", key: "nav.about" }],
+  },
 ] as const;
+
+const NAV = NAV_GROUPS.flatMap((g) => g.items);
 
 export function CountryPicker({ compact = false }: { compact?: boolean }) {
   const { t, lang, country, setCountry } = useI18n();
@@ -29,14 +52,14 @@ export function CountryPicker({ compact = false }: { compact?: boolean }) {
         onChange={(e) => setCountry(e.target.value)}
         className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
       >
-        <optgroup label="—">
+        <optgroup label={t("country.group.muslim")}>
           {muslim.map((c) => (
             <option key={c.code} value={c.code}>
               {flagOf(c.code)} {countryName(c, lang)} · {c.currency}
             </option>
           ))}
         </optgroup>
-        <optgroup label="—">
+        <optgroup label={t("country.group.other")}>
           {rest.map((c) => (
             <option key={c.code} value={c.code}>
               {flagOf(c.code)} {countryName(c, lang)} · {c.currency}
@@ -90,14 +113,56 @@ function LangPicker() {
   );
 }
 
+function MobileNav() {
+  const { t } = useI18n();
+  const [open, setOpen] = useState(false);
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        aria-label={t("nav.menu")}
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground md:hidden"
+      >
+        <Menu aria-hidden="true" className="size-4" />
+        {t("nav.menu")}
+      </SheetTrigger>
+      <SheetContent side="right" className="w-[18rem] overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>{t("brand.name")}</SheetTitle>
+        </SheetHeader>
+        <nav aria-label={t("nav.menu")} className="mt-2 flex flex-col gap-5 px-4 pb-8">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.key}>
+              <p className="eyebrow text-muted-foreground">{t(group.key)}</p>
+              <div className="mt-2 flex flex-col">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    activeOptions={{ exact: item.to === "/" }}
+                    activeProps={{ className: "text-foreground font-medium" }}
+                    className="rounded-lg px-2 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  >
+                    {t(item.key)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 export function Shell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 shadow-[0_1px_0_0_var(--color-border)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-2xl bg-[image:var(--gradient-brand)] text-primary-foreground shadow-sm ring-1 ring-accent/30 font-[family-name:var(--font-display)] text-lg">
+            <span className="grid size-9 place-items-center rounded-xl bg-[image:var(--gradient-brand)] text-primary-foreground shadow-sm font-[family-name:var(--font-display)] text-lg">
               ن
             </span>
             <span className="leading-tight">
@@ -110,14 +175,17 @@ export function Shell({ children }: { children: ReactNode }) {
             </span>
           </Link>
 
-          <nav className="order-last flex w-full flex-wrap items-center gap-1 md:order-none md:w-auto md:flex-1 md:justify-center">
+          <nav
+            aria-label={t("nav.group.live")}
+            className="hidden flex-1 flex-wrap items-center justify-center gap-1 md:flex"
+          >
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "bg-secondary text-foreground ring-1 ring-accent/40" }}
-                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {t(item.key)}
               </Link>
@@ -126,6 +194,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <div className="ms-auto flex items-center gap-2">
             <LangPicker />
+            <MobileNav />
           </div>
         </div>
       </header>
@@ -138,24 +207,33 @@ export function Shell({ children }: { children: ReactNode }) {
             {t("footer.waqf")}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">{t("footer.meta")}</p>
-          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {t(item.key)}
-              </Link>
+          <nav
+            aria-label={t("nav.group.about")}
+            className="mt-6 grid gap-6 text-sm sm:grid-cols-3"
+          >
+            {NAV_GROUPS.map((group) => (
+              <div key={group.key}>
+                <p className="eyebrow text-muted-foreground">{t(group.key)}</p>
+                <div className="mt-2 flex flex-col gap-1">
+                  {group.items.map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className="text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {t(item.key)}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
-            <Link
-              to="/admin"
-              className="text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {t("nav.admin")}
-            </Link>
-          </div>
+          </nav>
           <p className="mt-6 text-xs text-muted-foreground">{t("footer.disclaimer")}</p>
+          <p className="mt-2 text-xs">
+            <Link to="/admin" className="text-muted-foreground underline underline-offset-4">
+              {t("nav.admin")} · {t("admin.deviceOnly")}
+            </Link>
+          </p>
         </div>
       </footer>
     </div>
