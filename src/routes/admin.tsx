@@ -186,7 +186,7 @@ function Admin() {
                 {t("admin.clear")}
               </Button>
               <Button onClick={resetAll} variant="ghost" size="lg">
-                {t("admin.clear")} — {t("fiqh.allMadhahib")}
+                {t("admin.clear")} ({t("city.all")} · {t("nav.home")})
               </Button>
             </div>
             {saved && (
