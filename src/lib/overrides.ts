@@ -1,9 +1,19 @@
 /** Manual (admin) price overrides, stored locally in the browser. */
 
+export type ScopeOverride = {
+  goldUsdOz?: number;
+  silverUsdOz?: number;
+  rate?: number;
+  currency?: string;
+  updatedAt?: string;
+};
+
 export type Overrides = {
   goldUsdOz?: number;
   silverUsdOz?: number;
   rates?: Record<string, number>;
+  /** Per country/city overrides, keyed by `${country}:${city|*}`. */
+  scopes?: Record<string, ScopeOverride>;
   updatedAt?: string;
 };
 
@@ -13,6 +23,9 @@ export type ManualPricePoint = {
   silverUsdOz: number;
   currency: string;
   rate: number;
+  /** Empty string = country-wide entry. */
+  city?: string;
+  country?: string;
 };
 
 const LS_OVERRIDES = "nisab.overrides";
@@ -34,6 +47,15 @@ export function writeOverrides(next: Overrides) {
     JSON.stringify({ ...next, updatedAt: new Date().toISOString() }),
   );
   window.dispatchEvent(new Event("nisab-overrides"));
+}
+
+/** Saves (or clears) the manual prices for one country/city scope. */
+export function writeScopeOverride(key: string, value: ScopeOverride | null) {
+  const current = readOverrides();
+  const scopes = { ...(current.scopes ?? {}) };
+  if (value) scopes[key] = { ...value, updatedAt: new Date().toISOString() };
+  else delete scopes[key];
+  writeOverrides({ ...current, scopes });
 }
 
 export function clearOverrides() {
@@ -62,18 +84,26 @@ export function readManualHistory(): ManualPricePoint[] {
   }
 }
 
-/** Keeps the latest manual snapshot for each local calendar day and currency. */
+/** Keeps the latest manual snapshot for each local calendar day, currency and city. */
 export function recordManualPrice(point: Omit<ManualPricePoint, "t">) {
   const history = readManualHistory();
   const now = new Date();
   const day = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const next = history.filter((item) => {
     const itemDate = new Date(item.t);
-    const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate()).getTime();
-    return !(item.currency === point.currency && itemDay === day);
+    const itemDay = new Date(
+      itemDate.getFullYear(),
+      itemDate.getMonth(),
+      itemDate.getDate(),
+    ).getTime();
+    return !(
+      item.currency === point.currency &&
+      (item.city ?? "") === (point.city ?? "") &&
+      itemDay === day
+    );
   });
   next.push({ ...point, t: Date.now() });
-  localStorage.setItem(LS_MANUAL_HISTORY, JSON.stringify(next.slice(-730)));
+  localStorage.setItem(LS_MANUAL_HISTORY, JSON.stringify(next.slice(-1000)));
   window.dispatchEvent(new Event("nisab-overrides"));
 }
 
