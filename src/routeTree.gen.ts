@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
@@ -37,6 +38,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FiqhRoute = FiqhRouteImport.update({
+  id: '/fiqh',
+  path: '/fiqh',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -84,15 +93,31 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin' | '/calculator' | '/faq' | '/history' | '/types' | '/waqf'
+    | '/'
+    | '/admin'
+    | '/calculator'
+    | '/faq'
+    | '/fiqh'
+    | '/history'
+    | '/types'
+    | '/waqf'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/calculator' | '/faq' | '/history' | '/types' | '/waqf'
+  to:
+    | '/'
+    | '/admin'
+    | '/calculator'
+    | '/faq'
+    | '/fiqh'
+    | '/history'
+    | '/types'
+    | '/waqf'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/calculator'
     | '/faq'
+    | '/fiqh'
     | '/history'
     | '/types'
     | '/waqf'
@@ -103,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CalculatorRoute: typeof CalculatorRoute
   FaqRoute: typeof FaqRoute
+  FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
   TypesRoute: typeof TypesRoute
   WaqfRoute: typeof WaqfRoute
@@ -138,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fiqh': {
+      id: '/fiqh'
+      path: '/fiqh'
+      fullPath: '/fiqh'
+      preLoaderRoute: typeof FiqhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history': {
       id: '/history'
       path: '/history'
@@ -167,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   CalculatorRoute: CalculatorRoute,
   FaqRoute: FaqRoute,
+  FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
   TypesRoute: TypesRoute,
   WaqfRoute: WaqfRoute,

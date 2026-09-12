@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
+import { citiesOf, cityName } from "@/lib/cities";
 
 const NAV = [
   { to: "/", key: "nav.home" },
   { to: "/calculator", key: "nav.calculator" },
   { to: "/history", key: "nav.history" },
   { to: "/types", key: "nav.types" },
+  { to: "/fiqh", key: "nav.fiqh" },
   { to: "/faq", key: "nav.faq" },
   { to: "/waqf", key: "nav.about" },
 ] as const;
@@ -45,6 +47,30 @@ export function CountryPicker({ compact = false }: { compact?: boolean }) {
   );
 }
 
+export function CityPicker() {
+  const { t, lang, country, city, setCity } = useI18n();
+  const cities = citiesOf(country);
+  if (cities.length === 0) return null;
+  return (
+    <label className="flex items-center gap-2 text-sm">
+      <span className="text-muted-foreground">{t("city.label")}</span>
+      <select
+        aria-label={t("city.label")}
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+      >
+        <option value="">{t("city.all")}</option>
+        {cities.map((c) => (
+          <option key={c.id} value={c.id}>
+            {cityName(c, lang)}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function LangPicker() {
   const { lang, setLang } = useI18n();
   return (
@@ -67,10 +93,10 @@ export function Shell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 shadow-[0_1px_0_0_var(--color-border)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground font-[family-name:var(--font-display)] text-lg">
+            <span className="grid size-9 place-items-center rounded-2xl bg-[image:var(--gradient-brand)] text-primary-foreground shadow-sm ring-1 ring-accent/30 font-[family-name:var(--font-display)] text-lg">
               ن
             </span>
             <span className="leading-tight">
@@ -89,8 +115,8 @@ export function Shell({ children }: { children: ReactNode }) {
                 key={item.to}
                 to={item.to}
                 activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "bg-secondary text-foreground" }}
-                className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground ring-1 ring-accent/40" }}
+                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               >
                 {t(item.key)}
               </Link>
@@ -105,7 +131,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="mt-16 border-t border-border bg-card">
+      <footer className="mt-16 border-t border-border bg-[image:var(--gradient-paper)]">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <p className="font-[family-name:var(--font-display)] text-lg text-foreground">
             {t("footer.waqf")}
