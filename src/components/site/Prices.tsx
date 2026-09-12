@@ -148,6 +148,46 @@ export function UpdateMeta() {
   );
 }
 
+/** Warns that the figures on screen come from a manual override saved on this device. */
+export function ManualNotice() {
+  const { t } = useI18n();
+  const { data, scoped } = useNisab();
+  if (!data?.manual && !scoped) return null;
+  return (
+    <div className="mb-6 rounded-xl border border-accent/50 bg-accent/10 p-4 text-sm" role="status">
+      <p className="font-medium text-foreground">{t("trust.manual.title")}</p>
+      <p className="mt-1 text-muted-foreground">{t("trust.manual.body")}</p>
+      <button
+        onClick={() => clearOverrides()}
+        className="mt-3 rounded-lg border border-border bg-card px-3 py-1.5 text-xs text-foreground"
+      >
+        {t("trust.manual.reset")}
+      </button>
+    </div>
+  );
+}
+
+/** Short, always-visible note that the numbers are indicative and not a fatwa. */
+export function Disclaimer({ className = "" }: { className?: string }) {
+  const { t } = useI18n();
+  return (
+    <p className={`text-xs text-muted-foreground ${className}`}>{t("trust.disclaimer")}</p>
+  );
+}
+
+/** Compact "data as of …" line for placing next to the headline figures. */
+export function AsOf({ className = "" }: { className?: string }) {
+  const { t, lang } = useI18n();
+  const { data } = useNisab();
+  if (!data) return null;
+  return (
+    <p className={`text-xs text-muted-foreground ${className}`}>
+      {t("trust.asof")}: <span className="num">{fmtDate(data.metalsUpdatedAt, lang)}</span> ·{" "}
+      {data.metalsSource}
+    </p>
+  );
+}
+
 /** Alerts the visitor when the nisab moved sharply since their last visit. */
 export function NisabAlert({ value }: { value: number | null | undefined }) {
   const { t, currency } = useI18n();
