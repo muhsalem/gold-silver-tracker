@@ -4,7 +4,7 @@ import { RotateCcw } from "lucide-react";
 
 import { Field, Page } from "@/components/site/Page";
 import { CountryPicker } from "@/components/site/Shell";
-import { StateNote, useNisab } from "@/components/site/Prices";
+import { AsOf, Disclaimer, ManualNotice, StateNote, useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
@@ -67,8 +67,13 @@ function Calculator() {
 
   return (
     <Page eyebrow="CALCULATOR" title={t("calc.title")} sub={t("calc.sub")}>
-      <div className="mb-6">
+      <ManualNotice />
+      <div className="mb-3">
         <CountryPicker />
+      </div>
+      <div className="mb-6">
+        <AsOf />
+        <Disclaimer className="mt-1" />
       </div>
 
       {(isLoading || isError) && (
