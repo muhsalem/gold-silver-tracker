@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { annualSince } from "./long-history";
 
 export type LivePrices = {
   goldUsdOz: number;
@@ -52,7 +53,18 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export type HistoryRange = "1mo" | "6mo" | "1y" | "5y" | "10y" | "1448";
+export type HistoryRange =
+  | "1mo"
+  | "6mo"
+  | "1y"
+  | "5y"
+  | "10y"
+  | "1448"
+  | "20y"
+  | "30y"
+  | "40y"
+  | "50y"
+  | "100y";
 export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
 export type HistoryResponse = {
   points: HistoryPoint[];
@@ -60,9 +72,20 @@ export type HistoryResponse = {
   fxAvailable: boolean;
   metalsSource: string;
   ratesSource: string;
+  /** Long ranges use annual averages converted with today's exchange rate. */
+  approx?: boolean;
+};
+
+export const LONG_RANGES: Record<string, number> = {
+  "20y": 20,
+  "30y": 30,
+  "40y": 40,
+  "50y": 50,
+  "100y": 100,
 };
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
+
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
@@ -86,16 +109,57 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
-    const allowed: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "1448"];
+    const allowed: HistoryRange[] = [
+      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "100y",
+    ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
     return { range, currency };
   })
   .handler(async ({ data }): Promise<HistoryResponse> => {
+    const longYears = LONG_RANGES[data.range];
+    if (longYears) {
+      let rate = 1;
+      if (data.currency !== "USD") {
+        try {
+          const fx = await fetchJson("https://open.er-api.com/v6/latest/USD");
+          rate = Number(fx?.rates?.[data.currency]) || 0;
+        } catch {
+          rate = 0;
+        }
+        if (!rate) {
+          return {
+            points: [],
+            currency: data.currency,
+            fxAvailable: false,
+            metalsSource: "متوسطات سنوية تاريخية (USD/oz)",
+            ratesSource: `سعر صرف غير متاح لـ ${data.currency}`,
+            approx: true,
+          };
+        }
+      }
+      const points: HistoryPoint[] = annualSince(longYears).map((p) => ({
+        t: Date.UTC(p.year, 6, 1),
+        gold: p.gold,
+        silver: p.silver,
+        rate,
+      }));
+      return {
+        points,
+        currency: data.currency,
+        fxAvailable: true,
+        metalsSource: "متوسطات سنوية تاريخية للذهب والفضة (USD/oz)",
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `سعر الصرف الحالي لـ ${data.currency}`,
+        approx: true,
+      };
+    }
+
     const cacheKey = `${data.range}:${data.currency}`;
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < TTL_MS) {
       return {
+
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,

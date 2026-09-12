@@ -412,6 +412,8 @@ type Ctx = {
   setCountry: (c: string) => void;
   currency: string;
   setCurrency: (c: string) => void;
+  city: string;
+  setCity: (c: string) => void;
 };
 
 const I18nContext = createContext<Ctx | null>(null);
@@ -419,11 +421,13 @@ const I18nContext = createContext<Ctx | null>(null);
 const LS_LANG = "nisab.lang";
 const LS_COUNTRY = "nisab.country";
 const LS_CURRENCY = "nisab.currency";
+const LS_CITY = "nisab.city";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("ar");
   const [country, setCountryState] = useState<string>(DEFAULT_COUNTRY);
   const [currency, setCurrencyState] = useState<string>(findCountry(DEFAULT_COUNTRY).currency);
+  const [city, setCityState] = useState<string>("");
 
   useEffect(() => {
     const storedLang = localStorage.getItem(LS_LANG) as Lang | null;
@@ -432,6 +436,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (storedCountry) setCountryState(storedCountry);
     const storedCurrency = localStorage.getItem(LS_CURRENCY);
     if (storedCurrency) setCurrencyState(storedCurrency);
+    const storedCity = localStorage.getItem(LS_CITY);
+    if (storedCity) setCityState(storedCity);
   }, []);
 
   const rtl = LANGS.find((l) => l.code === lang)?.rtl ?? false;
@@ -462,14 +468,22 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         const cur = findCountry(c).currency;
         setCurrencyState(cur);
         localStorage.setItem(LS_CURRENCY, cur);
+        setCityState("");
+        localStorage.removeItem(LS_CITY);
       },
       currency,
       setCurrency: (c) => {
         setCurrencyState(c);
         localStorage.setItem(LS_CURRENCY, c);
       },
+      city,
+      setCity: (c) => {
+        setCityState(c);
+        if (c) localStorage.setItem(LS_CITY, c);
+        else localStorage.removeItem(LS_CITY);
+      },
     }),
-    [lang, rtl, country, currency],
+    [lang, rtl, country, currency, city],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
