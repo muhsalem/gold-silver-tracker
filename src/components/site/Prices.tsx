@@ -4,10 +4,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
-import { BIG_CHANGE_PCT, clearOverrides, trackNisabChange } from "@/lib/overrides";
+import {
+  BIG_CHANGE_PCT,
+  clearOverrides,
+  recordManualPrice,
+  trackNisabChange,
+  writeScopeOverride,
+} from "@/lib/overrides";
 import {
   GOLD_NISAB_G,
   SILVER_NISAB_G,
+  TROY_OUNCE_G,
   formatMoney,
   goldNisabValue,
   perGram,
@@ -186,6 +193,145 @@ export function AsOf({ className = "" }: { className?: string }) {
       {t("trust.asof")}: <span className="num">{fmtDate(data.metalsUpdatedAt, lang)}</span> ·{" "}
       {data.metalsSource}
     </p>
+  );
+}
+
+const LS_CONFIRMED = "nisab.priceConfirmed";
+
+function readConfirmed(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(LS_CONFIRMED) ?? "{}") as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Lets the visitor verify the gold/silver gram price against their own city
+ * and correct it when the local market differs from the global feed.
+ */
+export function CityPriceCheck() {
+  const { t, lang, country, city, currency } = useI18n();
+  const { data, values, money, rate } = useNisab();
+  const key = scopeKey(country, city);
+  const [open, setOpen] = useState(false);
+  const [gold, setGold] = useState("");
+  const [silver, setSilver] = useState("");
+  const [confirmedAt, setConfirmedAt] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    setConfirmedAt(readConfirmed()[key]);
+    setOpen(false);
+    setGold("");
+    setSilver("");
+  }, [key]);
+
+  if (!values || !data) return null;
+
+  const confirm = () => {
+    const store = { ...readConfirmed(), [key]: new Date().toISOString() };
+    localStorage.setItem(LS_CONFIRMED, JSON.stringify(store));
+    setConfirmedAt(store[key]);
+    setOpen(false);
+  };
+
+  const save = () => {
+    const g = parseFloat(gold);
+    const s = parseFloat(silver);
+    const goldUsdOz =
+      Number.isFinite(g) && g > 0 ? (g / rate) * TROY_OUNCE_G : data.goldUsdOz;
+    const silverUsdOz =
+      Number.isFinite(s) && s > 0 ? (s / rate) * TROY_OUNCE_G : data.silverUsdOz;
+    writeScopeOverride(key, { goldUsdOz, silverUsdOz, rate, currency });
+    recordManualPrice({ goldUsdOz, silverUsdOz, currency, rate, country, city });
+    confirm();
+  };
+
+  return (
+    <section className="card-surface mt-6 p-5">
+      <h2 className="text-base text-foreground">{t("verify.title")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{t("verify.sub")}</p>
+      <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+        <div className="flex items-baseline justify-between gap-2 rounded-lg bg-secondary px-3 py-2">
+          <dt className="text-muted-foreground">
+            {t("gold")} · {t("perGram")}
+          </dt>
+          <dd className="num text-foreground">{money(values.goldGram)}</dd>
+        </div>
+        <div className="flex items-baseline justify-between gap-2 rounded-lg bg-secondary px-3 py-2">
+          <dt className="text-muted-foreground">
+            {t("silver")} · {t("perGram")}
+          </dt>
+          <dd className="num text-foreground">{money(values.silverGram)}</dd>
+        </div>
+      </dl>
+
+      {!open && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            onClick={confirm}
+            className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+          >
+            {t("verify.match")}
+          </button>
+          <button
+            onClick={() => setOpen(true)}
+            className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground"
+          >
+            {t("verify.differs")}
+          </button>
+        </div>
+      )}
+
+      {open && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label className="block text-sm">
+            <span className="text-muted-foreground">
+              {t("verify.goldInput")} ({currency})
+            </span>
+            <input
+              inputMode="decimal"
+              value={gold}
+              onChange={(e) => setGold(e.target.value)}
+              className="num mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-muted-foreground">
+              {t("verify.silverInput")} ({currency})
+            </span>
+            <input
+              inputMode="decimal"
+              value={silver}
+              onChange={(e) => setSilver(e.target.value)}
+              className="num mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+          <div className="flex flex-wrap gap-2 sm:col-span-2">
+            <button
+              onClick={save}
+              className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+            >
+              {t("verify.save")}
+            </button>
+            <button
+              onClick={() => setOpen(false)}
+              className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground"
+            >
+              {t("verify.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {confirmedAt && !open && (
+        <p className="mt-3 text-xs text-muted-foreground" role="status">
+          {t("verify.confirmed")}: <span className="num">{fmtDate(confirmedAt, lang)}</span>
+        </p>
+      )}
+      <p className="mt-2 text-xs text-muted-foreground">{t("verify.note")}</p>
+    </section>
   );
 }
 
