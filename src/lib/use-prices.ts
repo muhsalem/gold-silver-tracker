@@ -47,7 +47,7 @@ export function usePrices() {
     };
   }, [query.data, overrides]);
 
-  return { ...query, data };
+  return { ...query, data, overrides };
 }
 
 export function useRate(currency: string, rates?: Record<string, number>) {
