@@ -52,7 +52,18 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export type HistoryRange = "1mo" | "6mo" | "1y" | "5y" | "10y" | "1448";
+export type HistoryRange =
+  | "1mo"
+  | "6mo"
+  | "1y"
+  | "5y"
+  | "10y"
+  | "1448"
+  | "20y"
+  | "30y"
+  | "40y"
+  | "50y"
+  | "100y";
 export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
 export type HistoryResponse = {
   points: HistoryPoint[];
@@ -60,9 +71,20 @@ export type HistoryResponse = {
   fxAvailable: boolean;
   metalsSource: string;
   ratesSource: string;
+  /** Long ranges use annual averages converted with today's exchange rate. */
+  approx?: boolean;
+};
+
+export const LONG_RANGES: Record<string, number> = {
+  "20y": 20,
+  "30y": 30,
+  "40y": 40,
+  "50y": 50,
+  "100y": 100,
 };
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
+
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
