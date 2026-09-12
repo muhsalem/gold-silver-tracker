@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calculator, ChartNoAxesCombined } from "lucide-react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
-import { NisabAlert, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
+import {
+  AsOf,
+  Disclaimer,
+  ManualNotice,
+  NisabAlert,
+  StateNote,
+  UpdateMeta,
+  useNisab,
+} from "@/components/site/Prices";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 
