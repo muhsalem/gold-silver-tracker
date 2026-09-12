@@ -203,9 +203,22 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
   }, [value, currency]);
 
   if (pct == null || hidden) return null;
-  const key = pct > 0 ? "alert.up" : "alert.down";
+  const up = pct > 0;
+  const key = up ? "alert.up" : "alert.down";
   return (
-    <div className="card-surface mb-6 flex flex-wrap items-center gap-3 border-accent/60 bg-accent/15 p-4 text-sm">
+    <div
+      role="status"
+      className={`card-surface mb-6 flex flex-wrap items-center gap-3 p-4 text-sm ${
+        up
+          ? "border-positive/50 bg-positive/10"
+          : "border-negative/50 bg-negative/10"
+      }`}
+    >
+      {up ? (
+        <TrendingUp aria-hidden="true" className="size-4 text-positive" />
+      ) : (
+        <TrendingDown aria-hidden="true" className="size-4 text-negative" />
+      )}
       <span className="text-foreground">
         {t(key).replace("{pct}", Math.abs(pct).toFixed(1))}
       </span>
