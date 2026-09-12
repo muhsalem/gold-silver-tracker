@@ -11,6 +11,7 @@ const NAV = [
   { to: "/history", key: "nav.history" },
   { to: "/types", key: "nav.types" },
   { to: "/fiqh", key: "nav.fiqh" },
+  { to: "/compare", key: "nav.compare" },
   { to: "/faq", key: "nav.faq" },
   { to: "/waqf", key: "nav.about" },
 ] as const;
