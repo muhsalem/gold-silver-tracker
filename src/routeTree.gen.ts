@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -31,6 +32,11 @@ const AdminRoute = AdminRouteImport.update({
 const CalculatorRoute = CalculatorRouteImport.update({
   id: '/calculator',
   path: '/calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
+  '/compare': typeof CompareRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
+  '/compare': typeof CompareRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
+  '/compare': typeof CompareRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/calculator'
+    | '/compare'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/calculator'
+    | '/compare'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/calculator'
+    | '/compare'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CalculatorRoute: typeof CalculatorRoute
+  CompareRoute: typeof CompareRoute
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/calculator'
       fullPath: '/calculator'
       preLoaderRoute: typeof CalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CalculatorRoute: CalculatorRoute,
+  CompareRoute: CompareRoute,
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
