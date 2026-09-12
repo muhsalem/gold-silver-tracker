@@ -662,3 +662,40 @@ const EXTRA2: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA2)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA3: Record<string, Record<string, string>> = {
+  ar: {
+    "nav.menu": "القائمة",
+    "nav.close": "إغلاق",
+    "nav.group.live": "البيانات الحيّة",
+    "nav.group.reference": "المرجع الفقهي",
+    "nav.group.about": "عن المنصة",
+    "nav.tools": "أدوات",
+    "country.group.muslim": "دول ذات أغلبية مسلمة",
+    "country.group.other": "بقيّة دول العالم",
+    "trust.manual.title": "أسعار معدّلة يدوياً على جهازك",
+    "trust.manual.body": "الأرقام المعروضة تعتمد تعديلاً حفظته أنت في صفحة المعايرة المحلية، ولا يراه غيرك.",
+    "trust.manual.reset": "العودة لأسعار السوق",
+    "trust.disclaimer": "هذه الأرقام استرشادية لحساب النصاب، وليست فتوى؛ وتُسأل في النوازل جهة علمية موثوقة.",
+    "trust.asof": "بيانات بتاريخ",
+  },
+  en: {
+    "nav.menu": "Menu",
+    "nav.close": "Close",
+    "nav.group.live": "Live data",
+    "nav.group.reference": "Fiqh reference",
+    "nav.group.about": "About",
+    "nav.tools": "Tools",
+    "country.group.muslim": "Muslim-majority countries",
+    "country.group.other": "Other countries",
+    "trust.manual.title": "Prices manually adjusted on this device",
+    "trust.manual.body": "These figures use an override you saved in local calibration. Nobody else sees it.",
+    "trust.manual.reset": "Back to market prices",
+    "trust.disclaimer": "These figures are indicative for nisab calculation, not a fatwa; ask a trusted scholar for rulings.",
+    "trust.asof": "Data as of",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA3)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}
