@@ -12,10 +12,28 @@ import {
   silverNisabValue,
 } from "@/lib/nisab";
 
-/** Live prices resolved into the current country's currency. */
+/** Live prices resolved into the current country's currency (and city, if set). */
 export function useNisab() {
-  const { currency, lang } = useI18n();
-  const { data, isLoading, isError, refetch } = usePrices();
+  const { currency, lang, country, city } = useI18n();
+  const { data: base, overrides, isLoading, isError, refetch } = usePrices();
+
+  const scope =
+    overrides?.scopes?.[scopeKey(country, city)] ?? overrides?.scopes?.[scopeKey(country, "")];
+
+  const data = useMemo(() => {
+    if (!base) return undefined;
+    const goldUsdOz = scope?.goldUsdOz ?? base.goldUsdOz;
+    const silverUsdOz = scope?.silverUsdOz ?? base.silverUsdOz;
+    const rates =
+      scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
+    return {
+      ...base,
+      goldUsdOz,
+      silverUsdOz,
+      rates,
+      manual: base.manual || Boolean(scope),
+    };
+  }, [base, scope, currency]);
 
   const rate = data?.rates?.[currency];
   const ready = Boolean(data && Number.isFinite(rate));
@@ -39,8 +57,20 @@ export function useNisab() {
     };
   }, [data, r, ready]);
 
-  return { data, values, money, rate: r, isLoading, isError, refetch, currency };
+  return {
+    data,
+    market: base,
+    values,
+    money,
+    rate: r,
+    isLoading,
+    isError,
+    refetch,
+    currency,
+    scoped: Boolean(scope),
+  };
 }
+
 
 export function StateNote({
   isLoading,
