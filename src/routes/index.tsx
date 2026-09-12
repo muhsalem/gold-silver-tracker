@@ -43,6 +43,7 @@ function Home() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <ManualNotice />
       <NisabAlert value={values?.lower} />
 
       <section className="rise">
@@ -55,6 +56,8 @@ function Home() {
           <CountryPicker />
           <CityPicker />
         </div>
+        <AsOf className="mt-3" />
+        <Disclaimer className="mt-2 max-w-2xl" />
       </section>
 
       {(isLoading || isError) && (
