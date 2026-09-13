@@ -14,7 +14,12 @@ import {
 
 import { Page } from "@/components/site/Page";
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
-import { Disclaimer, ManualNotice, useNisab } from "@/components/site/Prices";
+import {
+  CityPriceCheck,
+  Disclaimer,
+  ManualNotice,
+  useNisab,
+} from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
@@ -148,7 +153,7 @@ function History() {
 
       <div className="mb-4 border-s-2 border-accent bg-card px-4 py-3 text-sm text-muted-foreground">
         <strong className="text-foreground">{currency}</strong> · {t("history.countrySeries")}
-        {range === "1448" && <span> · {t("history.from1448")}</span>}
+        
         {data?.approx && <span> · {t("history.approx")}</span>}
         <Disclaimer className="mt-2" />
       </div>
