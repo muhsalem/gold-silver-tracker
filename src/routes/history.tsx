@@ -248,6 +248,8 @@ function History() {
           )}
         </div>
       </div>
+
+      <CityPriceCheck />
     </Page>
   );
 }
