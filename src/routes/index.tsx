@@ -4,6 +4,7 @@ import { Calculator, ChartNoAxesCombined } from "lucide-react";
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import {
   AsOf,
+  CityPriceCheck,
   Disclaimer,
   ManualNotice,
   NisabAlert,
@@ -146,6 +147,7 @@ function Home() {
             </p>
           </section>
 
+          <CityPriceCheck />
           <UpdateMeta />
         </>
       )}

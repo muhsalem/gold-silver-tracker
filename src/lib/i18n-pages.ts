@@ -699,3 +699,34 @@ const EXTRA3: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA3)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA4: Record<string, Record<string, string>> = {
+  ar: {
+    "verify.title": "تأكّد من السعر حسب مدينتك",
+    "verify.sub": "قارن سعر الجرام المعروض بسعر السوق عندك، وصحّحه إن اختلف.",
+    "verify.match": "السعر مطابق لمدينتي",
+    "verify.differs": "السعر مختلف · أدخل سعر مدينتي",
+    "verify.goldInput": "سعر جرام الذهب عيار ٢٤ في مدينتي",
+    "verify.silverInput": "سعر جرام الفضّة في مدينتي",
+    "verify.save": "اعتماد أسعار مدينتي",
+    "verify.cancel": "إلغاء",
+    "verify.confirmed": "آخر تأكيد منك",
+    "verify.note": "ما تدخله يُحفظ على جهازك فقط، ويُستخدم في النصاب والحاسبة والرسم.",
+  },
+  en: {
+    "verify.title": "Check the price for your city",
+    "verify.sub": "Compare the gram price shown with your local market, and correct it if it differs.",
+    "verify.match": "Matches my city",
+    "verify.differs": "Different · enter my city price",
+    "verify.goldInput": "24K gold gram price in my city",
+    "verify.silverInput": "Silver gram price in my city",
+    "verify.save": "Use my city prices",
+    "verify.cancel": "Cancel",
+    "verify.confirmed": "Last confirmed by you",
+    "verify.note": "What you enter stays on your device and feeds the nisab, calculator and chart.",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA4)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}
