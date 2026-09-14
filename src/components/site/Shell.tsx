@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Menu, Search } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
@@ -18,6 +18,7 @@ const NAV_GROUPS = [
     key: "nav.group.live",
     items: [
       { to: "/", key: "nav.home" },
+      { to: "/countries", key: "nav.countries" },
       { to: "/calculator", key: "nav.calculator" },
       { to: "/history", key: "nav.history" },
       { to: "/compare", key: "nav.compare" },
