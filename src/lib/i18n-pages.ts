@@ -730,3 +730,41 @@ const EXTRA4: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA4)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA5: Record<string, Record<string, string>> = {
+  ar: {
+    "nav.countries": "الدول",
+    "countries.eyebrow": "دليل عالمي",
+    "countries.title": "نصاب الزكاة لكل دولة",
+    "countries.sub": "لكل دولة صفحة مستقلة بنصابها بعملتها المحلية وطريقة حسابه ومصدره.",
+    "countries.search": "ابحث عن دولة",
+    "countries.searchHint": "اسم الدولة أو رمز العملة، مثل: مصر أو EGP",
+    "countries.none": "لا توجد نتائج مطابقة.",
+    "country.title": "نصاب الزكاة في {name}",
+    "country.how": "كيف حُسب هذا الرقم؟",
+    "country.noRate": "سعر الصرف غير متاح حالياً لعملة {currency}.",
+    "country.history": "الأسعار التاريخية لهذه الدولة",
+    "search.label": "بحث عالمي",
+    "search.placeholder": "ابحث: دولة أو عملة",
+  },
+  en: {
+    "nav.countries": "Countries",
+    "countries.eyebrow": "Global directory",
+    "countries.title": "Zakat nisab for every country",
+    "countries.sub":
+      "Each country has its own page with the nisab in its local currency, the method and the source.",
+    "countries.search": "Search for a country",
+    "countries.searchHint": "Country name or currency code, e.g. Egypt or EGP",
+    "countries.none": "No matching results.",
+    "country.title": "Zakat nisab in {name}",
+    "country.how": "How was this figure calculated?",
+    "country.noRate": "An exchange rate for {currency} is unavailable right now.",
+    "country.history": "Historical prices for this country",
+    "search.label": "Global search",
+    "search.placeholder": "Search: country or currency",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA5)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}

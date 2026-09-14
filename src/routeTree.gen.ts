@@ -13,11 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as CountriesRouteImport } from './routes/countries'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
+import { Route as CountryCodeRouteImport } from './routes/country.$code'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,6 +39,11 @@ const CalculatorRoute = CalculatorRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CountriesRoute = CountriesRouteImport.update({
+  id: '/countries',
+  path: '/countries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -64,28 +71,37 @@ const WaqfRoute = WaqfRouteImport.update({
   path: '/waqf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CountryCodeRoute = CountryCodeRouteImport.update({
+  id: '/country/$code',
+  path: '/country/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +109,13 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,33 +124,39 @@ export interface FileRouteTypes {
     | '/admin'
     | '/calculator'
     | '/compare'
+    | '/countries'
     | '/faq'
     | '/fiqh'
     | '/history'
     | '/types'
     | '/waqf'
+    | '/country/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/calculator'
     | '/compare'
+    | '/countries'
     | '/faq'
     | '/fiqh'
     | '/history'
     | '/types'
     | '/waqf'
+    | '/country/$code'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/calculator'
     | '/compare'
+    | '/countries'
     | '/faq'
     | '/fiqh'
     | '/history'
     | '/types'
     | '/waqf'
+    | '/country/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,11 +164,13 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CalculatorRoute: typeof CalculatorRoute
   CompareRoute: typeof CompareRoute
+  CountriesRoute: typeof CountriesRoute
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
   TypesRoute: typeof TypesRoute
   WaqfRoute: typeof WaqfRoute
+  CountryCodeRoute: typeof CountryCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -175,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/countries': {
+      id: '/countries'
+      path: '/countries'
+      fullPath: '/countries'
+      preLoaderRoute: typeof CountriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -212,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WaqfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/country/$code': {
+      id: '/country/$code'
+      path: '/country/$code'
+      fullPath: '/country/$code'
+      preLoaderRoute: typeof CountryCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -220,11 +260,13 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   CalculatorRoute: CalculatorRoute,
   CompareRoute: CompareRoute,
+  CountriesRoute: CountriesRoute,
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
   TypesRoute: TypesRoute,
   WaqfRoute: WaqfRoute,
+  CountryCodeRoute: CountryCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
