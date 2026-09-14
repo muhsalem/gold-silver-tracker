@@ -100,6 +100,73 @@ export function CityPicker() {
   );
 }
 
+/** Header search: jumps to a country page by name, code or currency. */
+function GlobalSearch() {
+  const { t, lang } = useI18n();
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    if (!needle) return [];
+    return COUNTRIES.filter(
+      (c) =>
+        c.code.toLowerCase().includes(needle) ||
+        c.currency.toLowerCase().includes(needle) ||
+        c.en.toLowerCase().includes(needle) ||
+        c.ar.includes(q.trim()) ||
+        countryName(c, lang).toLowerCase().includes(needle),
+    ).slice(0, 6);
+  }, [q, lang]);
+
+  const go = (code: string) => {
+    setQ("");
+    setOpen(false);
+    navigate({ to: "/country/$code", params: { code: code.toLowerCase() } });
+  };
+
+  return (
+    <div className="relative hidden lg:block">
+      <label className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2">
+        <Search aria-hidden="true" className="size-4 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => window.setTimeout(() => setOpen(false), 150)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && results[0]) go(results[0].code);
+          }}
+          aria-label={t("search.label")}
+          placeholder={t("search.placeholder")}
+          className="w-44 bg-transparent text-sm text-foreground outline-none"
+        />
+      </label>
+      {open && results.length > 0 && (
+        <ul className="absolute z-40 mt-1 w-64 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          {results.map((c) => (
+            <li key={c.code}>
+              <button
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => go(c.code)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-start text-sm text-foreground hover:bg-secondary"
+              >
+                <span aria-hidden="true">{flagOf(c.code)}</span>
+                <span>{countryName(c, lang)}</span>
+                <span className="num ms-auto text-xs text-muted-foreground">{c.currency}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function LangPicker() {
   const { lang, setLang } = useI18n();
   return (
