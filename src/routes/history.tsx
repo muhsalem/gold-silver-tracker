@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
+import { CalendarSearch, Download } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -55,6 +56,7 @@ function History() {
   const { money } = useNisab();
   const [range, setRange] = useState<HistoryRange>("1y");
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
+  const [lookupDate, setLookupDate] = useState("");
   const [manualHistory, setManualHistory] = useState<ManualPricePoint[]>([]);
 
   useEffect(() => {
@@ -109,10 +111,28 @@ function History() {
     return {
       high: Math.max(...vals),
       low: Math.min(...vals),
+      average: vals.reduce((sum, value) => sum + value, 0) / vals.length,
       change: ((last - first) / first) * 100,
       last,
     };
   }, [series]);
+
+  const nearest = useMemo(() => {
+    if (!lookupDate || series.length === 0) return null;
+    const target = new Date(`${lookupDate}T12:00:00Z`).getTime();
+    return series.reduce((best, point) => Math.abs(point.t - target) < Math.abs(best.t - target) ? point : best);
+  }, [lookupDate, series]);
+
+  const exportCsv = () => {
+    const rows = [[t("history.date"), t("history.price"), currency], ...series.map((point) => [new Date(point.t).toISOString().slice(0, 10), point.value.toFixed(2), currency])];
+    const blob = new Blob([rows.map((row) => row.join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `nisab-${metal}-${currency}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
 
   const fmtTick = (v: number) =>
     new Intl.DateTimeFormat(lang === "ar" ? "en" : lang, {
@@ -159,10 +179,11 @@ function History() {
       </div>
 
       {stats && (
-        <div className="mb-4 grid gap-4 sm:grid-cols-3">
+        <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { l: t("history.high"), v: money(stats.high) },
             { l: t("history.low"), v: money(stats.low) },
+            { l: t("history.average"), v: money(stats.average) },
             {
               l: t("history.change"),
               v: `${stats.change >= 0 ? "+" : ""}${stats.change.toFixed(1)}%`,
@@ -175,6 +196,17 @@ function History() {
           ))}
         </div>
       )}
+
+      <section className="mb-6 grid gap-4 border-y border-border py-6 lg:grid-cols-[1fr_1fr]">
+        <div>
+          <div className="flex items-center gap-2"><CalendarSearch aria-hidden="true" className="size-5 text-primary" /><h2 className="text-xl text-foreground">{t("history.lookup")}</h2></div>
+          <p className="mt-2 text-sm text-muted-foreground">{t("history.lookupSub")}</p>
+        </div>
+        <div>
+          <input type="date" value={lookupDate} onChange={(event) => setLookupDate(event.target.value)} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" />
+          {nearest && <div className="mt-3 flex items-baseline justify-between gap-4 rounded-md bg-secondary p-4 text-sm"><span className="text-muted-foreground">{t("history.nearest")} · <span className="num">{new Date(nearest.t).toISOString().slice(0, 10)}</span></span><strong className="num text-lg text-foreground">{money(nearest.value)}</strong></div>}
+        </div>
+      </section>
 
       <div className="card-surface p-4 sm:p-6">
         {isLoading && <p className="py-20 text-center text-muted-foreground">{t("common.loading")}</p>}
@@ -248,6 +280,16 @@ function History() {
           )}
         </div>
       </div>
+
+      {series.length > 0 && (
+        <section className="card-surface mt-6 overflow-hidden">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+            <div><h2 className="text-lg text-foreground">{t("history.table")}</h2><p className="text-xs text-muted-foreground">{t("history.showTable")}</p></div>
+            <Button variant="outline" size="sm" onClick={exportCsv}><Download />{t("history.export")}</Button>
+          </header>
+          <div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-secondary text-muted-foreground"><tr><th className="p-3 text-start font-normal">{t("history.date")}</th><th className="p-3 text-start font-normal">{t("history.price")}</th><th className="p-3 text-start font-normal">{t("history.pick")}</th></tr></thead><tbody>{series.slice(-12).reverse().map((point) => <tr key={`${point.t}-${point.manual}`} className="border-t border-border"><td className="num p-3 text-foreground">{new Date(point.t).toISOString().slice(0, 10)}</td><td className="num p-3 text-foreground">{money(point.value)}</td><td className="p-3 text-muted-foreground">{t(metal)}</td></tr>)}</tbody></table></div>
+        </section>
+      )}
 
       <CityPriceCheck />
     </Page>
