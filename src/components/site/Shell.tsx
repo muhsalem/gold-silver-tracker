@@ -17,18 +17,20 @@ const NAV_GROUPS = [
   {
     key: "nav.group.live",
     items: [
-      { to: "/", key: "nav.home" },
+      { to: "/today", key: "nav.today" },
       { to: "/countries", key: "nav.countries" },
-      { to: "/calculator", key: "nav.calculator" },
       { to: "/history", key: "nav.history" },
       { to: "/compare", key: "nav.compare" },
+      { to: "/map", key: "nav.map" },
     ],
   },
   {
     key: "nav.group.reference",
     items: [
       { to: "/types", key: "nav.types" },
+      { to: "/methodology", key: "nav.methodology" },
       { to: "/fiqh", key: "nav.fiqh" },
+      { to: "/calculator", key: "nav.calculator" },
       { to: "/faq", key: "nav.faq" },
     ],
   },

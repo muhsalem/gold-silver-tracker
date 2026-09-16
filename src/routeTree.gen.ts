@@ -17,6 +17,9 @@ import { Route as CountriesRouteImport } from './routes/countries'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
@@ -61,6 +64,21 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MethodologyRoute = MethodologyRouteImport.update({
+  id: '/methodology',
+  path: '/methodology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodayRoute = TodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TypesRoute = TypesRouteImport.update({
   id: '/types',
   path: '/types',
@@ -86,6 +104,9 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/country/$code': typeof CountryCodeRoute
@@ -99,6 +120,9 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/country/$code': typeof CountryCodeRoute
@@ -113,6 +137,9 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/country/$code': typeof CountryCodeRoute
@@ -128,6 +155,9 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/map'
+    | '/methodology'
+    | '/today'
     | '/types'
     | '/waqf'
     | '/country/$code'
@@ -141,6 +171,9 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/map'
+    | '/methodology'
+    | '/today'
     | '/types'
     | '/waqf'
     | '/country/$code'
@@ -154,6 +187,9 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/map'
+    | '/methodology'
+    | '/today'
     | '/types'
     | '/waqf'
     | '/country/$code'
@@ -168,6 +204,9 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
+  MapRoute: typeof MapRoute
+  MethodologyRoute: typeof MethodologyRoute
+  TodayRoute: typeof TodayRoute
   TypesRoute: typeof TypesRoute
   WaqfRoute: typeof WaqfRoute
   CountryCodeRoute: typeof CountryCodeRoute
@@ -231,6 +270,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/methodology': {
+      id: '/methodology'
+      path: '/methodology'
+      fullPath: '/methodology'
+      preLoaderRoute: typeof MethodologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/today': {
+      id: '/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/types': {
       id: '/types'
       path: '/types'
@@ -264,6 +324,9 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
+  MapRoute: MapRoute,
+  MethodologyRoute: MethodologyRoute,
+  TodayRoute: TodayRoute,
   TypesRoute: TypesRoute,
   WaqfRoute: WaqfRoute,
   CountryCodeRoute: CountryCodeRoute,
