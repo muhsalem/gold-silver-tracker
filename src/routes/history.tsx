@@ -106,8 +106,9 @@ function History() {
   const stats = useMemo(() => {
     if (series.length === 0) return null;
     const vals = series.map((s) => s.value);
-    const first = vals[0]!;
-    const last = vals[vals.length - 1]!;
+    const first = vals[0];
+    const last = vals[vals.length - 1];
+    if (first == null || last == null) return null;
     return {
       high: Math.max(...vals),
       low: Math.min(...vals),
