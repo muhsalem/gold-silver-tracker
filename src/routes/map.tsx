@@ -4,6 +4,7 @@ import { Globe2, Search } from "lucide-react";
 
 import { Page } from "@/components/site/Page";
 import { StateNote, useNisab } from "@/components/site/Prices";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { formatMoney, goldNisabValue, silverNisabValue } from "@/lib/nisab";
@@ -53,7 +54,7 @@ function WorldMapPage() {
       {(isLoading || isError) && <StateNote isLoading={isLoading} isError={isError} refetch={refetch} />}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex rounded-md border border-border bg-card p-1">
-          {(["gold", "silver"] as const).map((key) => <button key={key} onClick={() => setMetal(key)} className={`rounded px-4 py-2 text-sm ${metal === key ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t(key)}</button>)}
+          {(["gold", "silver"] as const).map((key) => <Button key={key} size="sm" variant={metal === key ? "default" : "ghost"} onClick={() => setMetal(key)}>{t(key)}</Button>)}
         </div>
         <label className="flex min-w-64 items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
           <Search aria-hidden="true" className="size-4 text-muted-foreground" />

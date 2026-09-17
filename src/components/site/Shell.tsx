@@ -213,7 +213,7 @@ function MobileNav() {
                     key={item.to}
                     to={item.to}
                     onClick={() => setOpen(false)}
-                    activeOptions={{ exact: item.to === "/" }}
+                    activeOptions={{ exact: true }}
                     activeProps={{ className: "text-foreground font-medium" }}
                     className="rounded-lg px-2 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
                   >
@@ -257,7 +257,7 @@ export function Shell({ children }: { children: ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
+                activeOptions={{ exact: true }}
                 activeProps={{ className: "bg-secondary text-foreground" }}
                 className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               >
