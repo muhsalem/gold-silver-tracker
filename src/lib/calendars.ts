@@ -81,7 +81,7 @@ export function gregorianToHijri(date: Date): HijriDate {
     date.getUTCMonth() + 1,
     date.getUTCDate(),
   );
-  const normalized = Math.floor(julianDay) + 0.5;
+  const normalized = julianDay - 0.5;
   const year = Math.floor((30 * (normalized - ISLAMIC_EPOCH) + 10646) / 10631);
   const month = Math.min(
     12,
