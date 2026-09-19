@@ -379,4 +379,110 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
   );
 }
 
+/**
+ * Per-country data-reliability panel: which feed produced each number,
+ * its market, refresh frequency and an explicit quality grade.
+ */
+export function SourceQuality({ currency }: { currency?: string }) {
+  const { t, lang, currency: active } = useI18n();
+  const { data, market } = useNisab();
+  const code = currency ?? active;
+  if (!data) return null;
+
+  const meta = market as typeof data | undefined;
+  const metals = meta?.metals;
+  const fx = meta?.fx;
+  const rateOk = Number.isFinite(data.rates?.[code]);
+
+  const badge = (quality: string) => {
+    const tone =
+      quality === "live"
+        ? "bg-positive/15 text-positive"
+        : quality === "delayed"
+          ? "bg-accent/20 text-foreground"
+          : "bg-negative/15 text-negative";
+    return (
+      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${tone}`}>
+        {t(`quality.${quality}`)}
+      </span>
+    );
+  };
+
+  const rows = [
+    {
+      label: t("update.metals"),
+      source: data.metalsSource,
+      market: metals?.market ?? "—",
+      frequency: metals?.frequency ?? "—",
+      quality: data.manual ? "manual" : (metals?.quality ?? "delayed"),
+      at: fmtDate(data.metalsUpdatedAt, lang),
+      url: metals?.url,
+      fallback: (metals?.fallbackDepth ?? 0) > 0,
+    },
+    {
+      label: t("update.rates"),
+      source: data.ratesSource,
+      market: fx?.market ?? "—",
+      frequency: fx?.frequency ?? "—",
+      quality: rateOk ? (fx?.quality ?? "delayed") : "stale",
+      at: fmtDate(data.ratesUpdatedAt, lang),
+      url: fx?.url,
+      fallback: (fx?.fallbackDepth ?? 0) > 0,
+    },
+  ];
+
+  return (
+    <section className="card-surface mt-4 overflow-hidden">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-5 py-4">
+        <h2 className="text-base text-foreground">{t("quality.title")}</h2>
+        <span className="num text-xs text-muted-foreground">{code}</span>
+      </header>
+      <div className="grid gap-4 p-5 sm:grid-cols-2">
+        {rows.map((row) => (
+          <article key={row.label} className="rounded-xl border border-border p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="eyebrow text-muted-foreground">{row.label}</p>
+              {badge(row.quality)}
+            </div>
+            <p className="mt-2 text-sm text-foreground">{row.source}</p>
+            <dl className="mt-3 grid gap-1 text-xs text-muted-foreground">
+              <div className="flex justify-between gap-3">
+                <dt>{t("quality.market")}</dt>
+                <dd className="text-end text-foreground">{row.market}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt>{t("quality.frequency")}</dt>
+                <dd className="text-end text-foreground">{row.frequency}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt>{t("quality.updated")}</dt>
+                <dd className="num text-end text-foreground">{row.at}</dd>
+              </div>
+            </dl>
+            {row.fallback && <p className="mt-2 text-xs text-accent">{t("quality.fallback")}</p>}
+            {row.url && (
+              <a
+                href={row.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-block text-xs text-primary underline underline-offset-4"
+              >
+                {t("quality.viewSource")}
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+      {!rateOk && (
+        <p className="border-t border-border px-5 py-3 text-xs text-negative">
+          {t("quality.noRate").replace("{currency}", code)}
+        </p>
+      )}
+      <p className="border-t border-border px-5 py-3 text-xs text-muted-foreground">
+        {t("quality.note")}
+      </p>
+    </section>
+  );
+}
+
 export { GOLD_NISAB_G, SILVER_NISAB_G };
