@@ -1,6 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { annualSince } from "./long-history";
 
+/** How trustworthy a figure on screen is right now. */
+export type Quality = "live" | "delayed" | "stale";
+
+export type FeedMeta = {
+  source: string;
+  url: string;
+  market: string;
+  frequency: string;
+  quality: Quality;
+  /** 0 = primary source answered, 1+ = a fallback answered. */
+  fallbackDepth: number;
+};
+
 export type LivePrices = {
   goldUsdOz: number;
   silverUsdOz: number;
@@ -10,10 +23,14 @@ export type LivePrices = {
   fetchedAt: string;
   metalsSource: string;
   ratesSource: string;
+  metals: FeedMeta;
+  fx: FeedMeta;
 };
 
 type Cache = { data: LivePrices; at: number } | null;
 let cache: Cache = null;
+/** Last successful payload, kept so an outage shows real stale data instead of nothing. */
+let lastGood: Cache = null;
 /** Prices refresh at most once an hour on the server; the client polls daily. */
 const TTL_MS = 60 * 60 * 1000;
 
@@ -23,33 +40,157 @@ async function fetchJson(url: string) {
   return res.json() as Promise<any>;
 }
 
+/** Runs sources in order and reports which one answered. */
+async function firstOk<T>(
+  sources: { run: () => Promise<T> }[],
+): Promise<{ value: T; depth: number }> {
+  let lastError: unknown;
+  for (let i = 0; i < sources.length; i += 1) {
+    const source = sources[i];
+    if (!source) continue;
+    try {
+      return { value: await source.run(), depth: i };
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("All sources failed");
+}
+
+function ageQuality(iso: string): Quality {
+  const age = Date.now() - new Date(iso).getTime();
+  if (!Number.isFinite(age) || age < 0) return "delayed";
+  if (age < 2 * 60 * 60 * 1000) return "live";
+  if (age < 36 * 60 * 60 * 1000) return "delayed";
+  return "stale";
+}
+
+type Metals = { gold: number; silver: number; updatedAt: string; label: string; url: string };
+
+async function metalsFromGoldApi(): Promise<Metals> {
+  const [gold, silver] = await Promise.all([
+    fetchJson("https://api.gold-api.com/price/XAU"),
+    fetchJson("https://api.gold-api.com/price/XAG"),
+  ]);
+  const g = Number(gold.price);
+  const s = Number(silver.price);
+  if (!Number.isFinite(g) || !Number.isFinite(s)) throw new Error("gold-api: bad payload");
+  return {
+    gold: g,
+    silver: s,
+    updatedAt: String(gold.updatedAt ?? new Date().toISOString()),
+    label: "gold-api.com — spot XAU/XAG",
+    url: "https://api.gold-api.com/price/XAU",
+  };
+}
+
+async function lastCloseFromYahoo(symbol: string) {
+  const json = await fetchJson(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`,
+  );
+  const result = json?.chart?.result?.[0];
+  const closes: (number | null)[] = result?.indicators?.quote?.[0]?.close ?? [];
+  const stamps: number[] = result?.timestamp ?? [];
+  for (let i = closes.length - 1; i >= 0; i -= 1) {
+    const close = closes[i];
+    const stamp = stamps[i];
+    if (typeof close === "number" && Number.isFinite(close)) {
+      return { price: close, at: new Date((stamp ?? Date.now() / 1000) * 1000).toISOString() };
+    }
+  }
+  throw new Error(`yahoo: no close for ${symbol}`);
+}
+
+async function metalsFromYahoo(): Promise<Metals> {
+  const [gold, silver] = await Promise.all([
+    lastCloseFromYahoo("GC=F"),
+    lastCloseFromYahoo("SI=F"),
+  ]);
+  return {
+    gold: gold.price,
+    silver: silver.price,
+    updatedAt: gold.at,
+    label: "Yahoo Finance — COMEX futures close (GC=F, SI=F)",
+    url: "https://finance.yahoo.com/quote/GC=F",
+  };
+}
+
+type Fx = { rates: Record<string, number>; updatedAt: string; label: string; url: string };
+
+async function fxFromErApi(): Promise<Fx> {
+  const fx = await fetchJson("https://open.er-api.com/v6/latest/USD");
+  const rates = fx?.rates as Record<string, number> | undefined;
+  if (!rates || !Number.isFinite(Number(rates["EUR"]))) throw new Error("er-api: bad payload");
+  return {
+    rates,
+    updatedAt: String(fx.time_last_update_utc ?? new Date().toISOString()),
+    label: "exchangerate-api.com — daily reference rates",
+    url: "https://open.er-api.com/v6/latest/USD",
+  };
+}
+
+async function fxFromFrankfurter(): Promise<Fx> {
+  const fx = await fetchJson("https://api.frankfurter.app/latest?from=USD");
+  const rates = fx?.rates as Record<string, number> | undefined;
+  if (!rates || !Number.isFinite(Number(rates["EUR"]))) throw new Error("frankfurter: bad payload");
+  return {
+    rates,
+    updatedAt: fx?.date ? `${fx.date}T00:00:00Z` : new Date().toISOString(),
+    label: "Frankfurter / ECB — official daily reference rates",
+    url: "https://api.frankfurter.app/latest?from=USD",
+  };
+}
+
 export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<LivePrices> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data;
 
-    const [gold, silver, fx] = await Promise.all([
-      fetchJson("https://api.gold-api.com/price/XAU"),
-      fetchJson("https://api.gold-api.com/price/XAG"),
-      fetchJson("https://open.er-api.com/v6/latest/USD"),
-    ]);
+    try {
+      const [metals, fx] = await Promise.all([
+        firstOk<Metals>([{ run: metalsFromGoldApi }, { run: metalsFromYahoo }]),
+        firstOk<Fx>([{ run: fxFromErApi }, { run: fxFromFrankfurter }]),
+      ]);
 
-    const data: LivePrices = {
-      goldUsdOz: Number(gold.price),
-      silverUsdOz: Number(silver.price),
-      rates: { USD: 1, ...(fx.rates ?? {}) },
-      metalsUpdatedAt: String(gold.updatedAt ?? new Date().toISOString()),
-      ratesUpdatedAt: String(fx.time_last_update_utc ?? new Date().toISOString()),
-      fetchedAt: new Date().toISOString(),
-      metalsSource: "gold-api.com (spot XAU/XAG)",
-      ratesSource: "exchangerate-api.com (open access)",
-    };
+      const data: LivePrices = {
+        goldUsdOz: metals.value.gold,
+        silverUsdOz: metals.value.silver,
+        rates: { USD: 1, ...fx.value.rates },
+        metalsUpdatedAt: metals.value.updatedAt,
+        ratesUpdatedAt: fx.value.updatedAt,
+        fetchedAt: new Date().toISOString(),
+        metalsSource: metals.value.label,
+        ratesSource: fx.value.label,
+        metals: {
+          source: metals.value.label,
+          url: metals.value.url,
+          market: "International spot / futures (USD per troy ounce)",
+          frequency: metals.depth === 0 ? "Continuous, cached hourly" : "Daily close",
+          quality: metals.depth === 0 ? ageQuality(metals.value.updatedAt) : "delayed",
+          fallbackDepth: metals.depth,
+        },
+        fx: {
+          source: fx.value.label,
+          url: fx.value.url,
+          market: "Official / reference interbank rates",
+          frequency: "Daily",
+          quality: fx.depth === 0 ? ageQuality(fx.value.updatedAt) : "delayed",
+          fallbackDepth: fx.depth,
+        },
+      };
 
-    if (!Number.isFinite(data.goldUsdOz) || !Number.isFinite(data.silverUsdOz)) {
-      throw new Error("Invalid metal prices received");
+      cache = { data, at: Date.now() };
+      lastGood = cache;
+      return data;
+    } catch (error) {
+      if (lastGood) {
+        return {
+          ...lastGood.data,
+          metals: { ...lastGood.data.metals, quality: "stale" },
+          fx: { ...lastGood.data.fx, quality: "stale" },
+        };
+      }
+      throw error instanceof Error ? error : new Error("Price sources unavailable");
     }
-
-    cache = { data, at: Date.now() };
-    return data;
   },
 );
 
