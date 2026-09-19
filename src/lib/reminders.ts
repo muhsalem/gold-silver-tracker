@@ -64,10 +64,10 @@ export function nextDue(settings: HawlSettings, now = new Date()): Date | null {
   const currentHijriYear = gregorianToHijri(now).year;
   for (let year = currentHijriYear; year <= currentHijriYear + 1; year += 1) {
     if (year <= h.year) continue;
-    const due = hijriToGregorian(year, h.month, h.day);
+    const due = hijriToGregorian({ year, month: h.month, day: h.day });
     if (due.getTime() >= now.getTime() - DAY) return due;
   }
-  return hijriToGregorian(currentHijriYear + 1, h.month, h.day);
+  return hijriToGregorian({ year: currentHijriYear + 1, month: h.month, day: h.day });
 }
 
 export function daysUntil(date: Date, now = new Date()): number {
