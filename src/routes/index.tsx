@@ -8,10 +8,12 @@ import {
   Disclaimer,
   ManualNotice,
   NisabAlert,
+  SourceQuality,
   StateNote,
   UpdateMeta,
   useNisab,
 } from "@/components/site/Prices";
+import { HawlReminder } from "@/components/site/Reminders";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 
