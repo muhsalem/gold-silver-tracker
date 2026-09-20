@@ -150,6 +150,8 @@ function Home() {
           </section>
 
           <CityPriceCheck />
+          <SourceQuality />
+          <HawlReminder />
           <UpdateMeta />
         </>
       )}
