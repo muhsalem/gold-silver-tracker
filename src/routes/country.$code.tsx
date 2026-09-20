@@ -3,7 +3,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
-import { StateNote, Disclaimer } from "@/components/site/Prices";
+import { StateNote, Disclaimer, SourceQuality } from "@/components/site/Prices";
 import {
   GOLD_NISAB_G,
   KARATS,
@@ -157,44 +157,35 @@ function CountryPage() {
             <p className="mt-2 text-sm text-muted-foreground">{t("ratio.note")}</p>
           </section>
 
-          <section className="card-surface mt-4 overflow-x-auto p-6">
+          <section className="card-surface mt-4 p-4 sm:p-6">
             <h2 className="text-xl text-foreground">{t("karat.title")}</h2>
-            <table className="mt-4 w-full text-sm">
-              <thead className="text-muted-foreground">
-                <tr>
-                  <th className="py-2 text-start font-normal">{t("karat.title")}</th>
-                  <th className="py-2 text-start font-normal">{t("karat.purity")}</th>
-                  <th className="py-2 text-start font-normal">{t("karat.price")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {KARATS.map((k) => (
-                  <tr key={k.k} className="border-t border-border">
-                    <td className="num py-2.5 text-foreground">{k.k}K</td>
-                    <td className="num py-2.5 text-muted-foreground">
-                      {(k.purity * 100).toFixed(1)}%
-                    </td>
-                    <td className="num py-2.5 text-foreground">{money(goldGram * k.purity)}</td>
+            <div className="scroll-x -mx-4 mt-4 px-4 sm:mx-0 sm:px-0">
+              <table className="w-full min-w-[22rem] text-sm">
+                <thead className="text-muted-foreground">
+                  <tr>
+                    <th className="py-2 text-start font-normal">{t("karat.title")}</th>
+                    <th className="py-2 text-start font-normal">{t("karat.purity")}</th>
+                    <th className="py-2 text-start font-normal">{t("karat.price")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {KARATS.map((k) => (
+                    <tr key={k.k} className="border-t border-border">
+                      <td className="num whitespace-nowrap py-2.5 text-foreground">{k.k}K</td>
+                      <td className="num whitespace-nowrap py-2.5 text-muted-foreground">
+                        {(k.purity * 100).toFixed(1)}%
+                      </td>
+                      <td className="num whitespace-nowrap py-2.5 text-foreground">
+                        {money(goldGram * k.purity)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
 
-          <section className="card-surface mt-4 grid gap-3 p-6 text-sm sm:grid-cols-3">
-            <div>
-              <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
-              <p className="mt-1 text-foreground">{data.metalsSource}</p>
-            </div>
-            <div>
-              <p className="eyebrow text-muted-foreground">{t("update.rates")}</p>
-              <p className="mt-1 text-foreground">{data.ratesSource}</p>
-            </div>
-            <div>
-              <p className="eyebrow text-muted-foreground">{t("update.fetched")}</p>
-              <p className="num mt-1 text-foreground">{data.fetchedAt.slice(0, 16).replace("T", " ")}</p>
-            </div>
-          </section>
+          <SourceQuality currency={country.currency} />
         </>
       )}
 

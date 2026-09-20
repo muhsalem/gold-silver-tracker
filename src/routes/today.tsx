@@ -82,6 +82,8 @@ function TodayPage() {
               </div>
             ))}
           </section>
+          <SourceQuality />
+          <HawlReminder />
           <UpdateMeta />
         </>
       )}
