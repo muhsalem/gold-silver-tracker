@@ -8,10 +8,12 @@ import {
   Disclaimer,
   ManualNotice,
   NisabAlert,
+  SourceQuality,
   StateNote,
   UpdateMeta,
   useNisab,
 } from "@/components/site/Prices";
+import { HawlReminder } from "@/components/site/Reminders";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 
@@ -118,7 +120,7 @@ function Home() {
             <p className="mt-2 text-sm text-muted-foreground">{t("ratio.note")}</p>
           </section>
 
-          <section className="card-surface mt-4 overflow-x-auto p-6">
+          <section className="card-surface scroll-x mt-4 p-6">
             <h2 className="text-xl text-foreground">{t("karat.title")}</h2>
             <table className="mt-4 w-full text-sm">
               <thead className="text-muted-foreground">
@@ -148,6 +150,8 @@ function Home() {
           </section>
 
           <CityPriceCheck />
+          <SourceQuality />
+          <HawlReminder />
           <UpdateMeta />
         </>
       )}

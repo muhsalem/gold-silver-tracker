@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, CircleCheck, Database, Scale, ShieldCheck } from "lucide-react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
-import { AsOf, Disclaimer, ManualNotice, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
+import { AsOf, Disclaimer, ManualNotice, SourceQuality, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
+import { HawlReminder } from "@/components/site/Reminders";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
@@ -81,6 +82,8 @@ function TodayPage() {
               </div>
             ))}
           </section>
+          <SourceQuality />
+          <HawlReminder />
           <UpdateMeta />
         </>
       )}

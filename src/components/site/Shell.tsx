@@ -188,7 +188,7 @@ function LangPicker() {
 }
 
 function MobileNav() {
-  const { t } = useI18n();
+  const { t, rtl } = useI18n();
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -199,7 +199,7 @@ function MobileNav() {
         <Menu aria-hidden="true" className="size-4" />
         {t("nav.menu")}
       </SheetTrigger>
-      <SheetContent side="right" className="w-[18rem] overflow-y-auto">
+      <SheetContent side={rtl ? "right" : "left"} className="w-[85vw] max-w-[20rem] overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{t("brand.name")}</SheetTitle>
         </SheetHeader>

@@ -52,17 +52,17 @@ function WorldMapPage() {
   return (
     <Page eyebrow={t("map.eyebrow")} title={t("map.title")} sub={t("map.sub")}>
       {(isLoading || isError) && <StateNote isLoading={isLoading} isError={isError} refetch={refetch} />}
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-md border border-border bg-card p-1">
-          {(["gold", "silver"] as const).map((key) => <Button key={key} size="sm" variant={metal === key ? "default" : "ghost"} onClick={() => setMetal(key)}>{t(key)}</Button>)}
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="inline-flex w-full rounded-md border border-border bg-card p-1 sm:w-auto">
+          {(["gold", "silver"] as const).map((key) => <Button key={key} size="sm" className="flex-1 sm:flex-none" variant={metal === key ? "default" : "ghost"} onClick={() => setMetal(key)}>{t(key)}</Button>)}
         </div>
-        <label className="flex min-w-64 items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
+        <label className="flex w-full items-center gap-2 rounded-md border border-border bg-card px-3 py-2 sm:w-64">
           <Search aria-hidden="true" className="size-4 text-muted-foreground" />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("countries.searchHint")} className="w-full bg-transparent text-sm text-foreground outline-none" />
         </label>
       </div>
 
-      <section className="relative hidden aspect-[2/1] overflow-hidden rounded-lg border border-border bg-secondary lg:block" aria-label={t("map.title")}>
+      <section className="relative hidden aspect-[2/1] overflow-hidden rounded-lg border border-border bg-secondary md:block" aria-label={t("map.title")}>
         <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)", backgroundSize: "5% 10%" }} />
         <Globe2 aria-hidden="true" className="absolute start-6 top-6 size-10 text-primary/25" />
         {MAP_POINTS.map(([code, x, y]) => {
