@@ -191,7 +191,7 @@ function Compare() {
         )}
       </section>
 
-      <section className="card-surface mt-6 overflow-x-auto p-4 sm:p-6">
+      <section className="card-surface scroll-x mt-6 p-4 sm:p-6">
         <table className="w-full text-sm">
           <thead className="text-xs text-muted-foreground">
             <tr>

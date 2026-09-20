@@ -245,7 +245,7 @@ function History() {
               <input type="date" value={lookupDate} onChange={(event) => setLookupDate(event.target.value)} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" />
             </label>
           ) : (
-            <div className="grid grid-cols-[0.8fr_1.5fr_1fr] gap-2" dir={lang === "ar" || lang === "ur" ? "rtl" : "ltr"}>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-[0.8fr_1.5fr_1fr]" dir={lang === "ar" || lang === "ur" ? "rtl" : "ltr"}>
               <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriDay")}</span><input aria-label={t("history.hijriDay")} type="number" min={1} max={hijriMonthDays(hijriYear, hijriMonth)} value={hijriDay} onChange={(event) => setHijriDay(Number(event.target.value))} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" /></label>
               <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriMonth")}</span><select aria-label={t("history.hijriMonth")} value={hijriMonth} onChange={(event) => setHijriMonth(Number(event.target.value))} className="w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring">{(lang === "ar" || lang === "ur" ? HIJRI_MONTHS_AR : HIJRI_MONTHS_EN).map((month, index) => <option key={month} value={index + 1}>{month}</option>)}</select></label>
               <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriYear")}</span><input aria-label={t("history.hijriYear")} type="number" min={1200} max={1700} value={hijriYear} onChange={(event) => setHijriYear(Number(event.target.value))} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" /></label>
@@ -284,7 +284,7 @@ function History() {
           <p className="py-20 text-center text-muted-foreground">{t("history.empty")}</p>
         )}
         {!isLoading && !isError && data?.fxAvailable && series.length > 0 && (
-          <div dir="ltr" className="h-[380px] w-full">
+          <div dir="ltr" className="h-[260px] w-full sm:h-[380px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={series} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
                 <defs>
@@ -345,7 +345,7 @@ function History() {
             <div><h2 className="text-lg text-foreground">{t("history.table")}</h2><p className="text-xs text-muted-foreground">{t("history.showTable")}</p></div>
             <Button variant="outline" size="sm" onClick={exportCsv}><Download />{t("history.export")}</Button>
           </header>
-          <div className="overflow-x-auto"><table className="w-full text-sm"><thead className="bg-secondary text-muted-foreground"><tr><th className="p-3 text-start font-normal">{t("history.gregorianDate")}</th><th className="p-3 text-start font-normal">{t("history.hijriDate")}</th><th className="p-3 text-start font-normal">{t("history.price")}</th><th className="p-3 text-start font-normal">{t("history.pick")}</th></tr></thead><tbody>{series.slice(-12).reverse().map((point) => <tr key={`${point.t}-${point.manual}`} className="border-t border-border"><td className="num whitespace-nowrap p-3 text-foreground">{formatGregorianIso(new Date(point.t))}</td><td className="whitespace-nowrap p-3 text-foreground">{formatHijri(new Date(point.t), lang)}</td><td className="num whitespace-nowrap p-3 text-foreground">{money(point.value)}</td><td className="p-3 text-muted-foreground">{t(metal)}</td></tr>)}</tbody></table></div>
+          <div className="scroll-x"><table className="w-full min-w-[34rem] text-sm"><thead className="bg-secondary text-muted-foreground"><tr><th className="p-3 text-start font-normal">{t("history.gregorianDate")}</th><th className="p-3 text-start font-normal">{t("history.hijriDate")}</th><th className="p-3 text-start font-normal">{t("history.price")}</th><th className="p-3 text-start font-normal">{t("history.pick")}</th></tr></thead><tbody>{series.slice(-12).reverse().map((point) => <tr key={`${point.t}-${point.manual}`} className="border-t border-border"><td className="num whitespace-nowrap p-3 text-foreground">{formatGregorianIso(new Date(point.t))}</td><td className="whitespace-nowrap p-3 text-foreground">{formatHijri(new Date(point.t), lang)}</td><td className="num whitespace-nowrap p-3 text-foreground">{money(point.value)}</td><td className="p-3 text-muted-foreground">{t(metal)}</td></tr>)}</tbody></table></div>
         </section>
       )}
 
