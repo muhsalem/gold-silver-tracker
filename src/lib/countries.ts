@@ -1816,8 +1816,24 @@ export const COUNTRIES: Country[] = [
 
 export const DEFAULT_COUNTRY = "SA";
 
+const FALLBACK_COUNTRY: Country = {
+  code: "SA",
+  numericCode: "682",
+  currency: "SAR",
+  ar: "السعودية",
+  en: "Saudi Arabia",
+  muslim: true,
+  lat: 24,
+  lng: 45,
+};
+
 export function findCountry(code: string): Country {
-  return COUNTRIES.find((c) => c.code === code) ?? COUNTRIES.find((c) => c.code === DEFAULT_COUNTRY) ?? COUNTRIES[0];
+  return (
+    COUNTRIES.find((c) => c.code === code) ??
+    COUNTRIES.find((c) => c.code === DEFAULT_COUNTRY) ??
+    COUNTRIES[0] ??
+    FALLBACK_COUNTRY
+  );
 }
 
 export function flagOf(code: string): string {
