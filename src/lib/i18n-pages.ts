@@ -893,3 +893,73 @@ const EXTRA6: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA6)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA7: Record<string, Record<string, string>> = {
+  ar: {
+    "quality.title": "مصادر البيانات ودرجة الجودة",
+    "quality.market": "السوق",
+    "quality.frequency": "تكرار التحديث",
+    "quality.updated": "آخر تحديث",
+    "quality.viewSource": "عرض المصدر",
+    "quality.fallback": "تعذّر المصدر الأساسي، والرقم من مصدر احتياطي.",
+    "quality.live": "مباشر",
+    "quality.delayed": "متأخر",
+    "quality.stale": "آخر قيمة متاحة",
+    "quality.manual": "تعديل يدوي منك",
+    "quality.noRate": "لا يتوفر سعر صرف موثوق لـ {currency} الآن؛ نعرض آخر قيمة متاحة بدل اختلاق رقم.",
+    "quality.note":
+      "سعر المعدن عالمي (سبوت)، وقد يختلف عن سعر التجزئة المحلي بسبب المصنعية والجمارك والضريبة. أسعار الصرف رسمية وقد تختلف عن السوق الموازي.",
+    "hawl.title": "تذكير سنوي بموعد الحَوْل",
+    "hawl.sub": "حدّد تاريخ بداية حولك، ونُذكّرك قبل موعده، وننبهك عند تغير النصاب بنسبة كبيرة.",
+    "hawl.start": "تاريخ بداية الحول",
+    "hawl.calendar": "نوع السنة",
+    "hawl.lunar": "سنة هجرية (قمرية)",
+    "hawl.solar": "سنة ميلادية (شمسية)",
+    "hawl.next": "الموعد القادم",
+    "hawl.remaining": "بقي {days} يومًا",
+    "hawl.due": "اقترب موعد حولك: بقي {days} يومًا.",
+    "hawl.dueToday": "اليوم موعد حولك؛ راجع مالك وقارنه بالنصاب.",
+    "hawl.notifyEnable": "تفعيل إشعارات الهاتف",
+    "hawl.notifyOn": "الإشعارات مفعّلة",
+    "hawl.notifyTitle": "نِصاب · موعد الحَوْل",
+    "hawl.notifyBody": "بقي {days} يومًا على موعد حولك. راجع مالك وقارنه بالنصاب.",
+    "hawl.nisabAlerts": "نبّهني عند تغير النصاب بنسبة كبيرة",
+    "hawl.privacy": "التاريخ والتفضيلات محفوظة على جهازك فقط ولا تُرسل إلى أي خادم.",
+  },
+  en: {
+    "quality.title": "Data sources and quality",
+    "quality.market": "Market",
+    "quality.frequency": "Refresh frequency",
+    "quality.updated": "Last updated",
+    "quality.viewSource": "View source",
+    "quality.fallback": "The primary source failed; this figure came from a fallback source.",
+    "quality.live": "Live",
+    "quality.delayed": "Delayed",
+    "quality.stale": "Last available data",
+    "quality.manual": "Your manual edit",
+    "quality.noRate":
+      "No reliable exchange rate for {currency} right now; we show the last available value instead of inventing one.",
+    "quality.note":
+      "Metal prices are international spot quotes and can differ from local retail prices (craftsmanship, customs, tax). Exchange rates are official references and may differ from parallel markets.",
+    "hawl.title": "Yearly hawl reminder",
+    "hawl.sub": "Set the start of your hawl; we remind you before it is due and flag sharp nisab moves.",
+    "hawl.start": "Hawl start date",
+    "hawl.calendar": "Year type",
+    "hawl.lunar": "Hijri (lunar) year",
+    "hawl.solar": "Gregorian (solar) year",
+    "hawl.next": "Next due date",
+    "hawl.remaining": "{days} days left",
+    "hawl.due": "Your hawl is near: {days} days left.",
+    "hawl.dueToday": "Your hawl is due today — review your wealth against the nisab.",
+    "hawl.notifyEnable": "Enable phone notifications",
+    "hawl.notifyOn": "Notifications enabled",
+    "hawl.notifyTitle": "Nisab · Hawl due",
+    "hawl.notifyBody": "{days} days until your hawl. Review your wealth against the nisab.",
+    "hawl.nisabAlerts": "Alert me on sharp nisab changes",
+    "hawl.privacy": "The date and preferences stay on your device and are never uploaded.",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA7)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}
