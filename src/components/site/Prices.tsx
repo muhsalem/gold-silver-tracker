@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
+import { notify, readHawl } from "@/lib/reminders";
 import {
   BIG_CHANGE_PCT,
   clearOverrides,
@@ -344,10 +345,20 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
   useEffect(() => {
     if (!value) return;
     const change = trackNisabChange(currency, value);
-    if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) setPct(change);
-    else setPct(null);
+    if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
+      setPct(change);
+      if (readHawl().nisabAlerts) {
+        notify(
+          t("hawl.notifyTitle"),
+          t(change > 0 ? "alert.up" : "alert.down").replace(
+            "{pct}",
+            Math.abs(change).toFixed(1),
+          ),
+        );
+      }
+    } else setPct(null);
     setHidden(false);
-  }, [value, currency]);
+  }, [value, currency, t]);
 
   if (pct == null || hidden) return null;
   const up = pct > 0;
