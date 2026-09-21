@@ -243,11 +243,11 @@ export function Shell({ children }: { children: ReactNode }) {
             <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[image:var(--gradient-brand)] font-[family-name:var(--font-display)] text-lg text-primary-foreground shadow-sm">
               ن
             </span>
-            <span className="hidden min-w-0 leading-tight sm:block">
+            <span className="min-w-0 leading-tight">
               <span className="block truncate font-[family-name:var(--font-display)] text-lg text-foreground">
                 {t("brand.name")}
               </span>
-              <span className="brand-latin block text-[0.62rem] font-semibold text-muted-foreground">
+              <span className="brand-latin hidden text-[0.62rem] font-semibold text-muted-foreground sm:block">
                 NISAB · {t("brand.tagline")}
               </span>
             </span>
