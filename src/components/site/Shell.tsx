@@ -199,7 +199,11 @@ function MobileNav() {
         <Menu aria-hidden="true" className="size-4" />
         {t("nav.menu")}
       </SheetTrigger>
-      <SheetContent side={rtl ? "right" : "left"} className="w-[85vw] max-w-[20rem] overflow-y-auto">
+      <SheetContent
+        side={rtl ? "right" : "left"}
+        dir={rtl ? "rtl" : "ltr"}
+        className="w-[85vw] max-w-[20rem] overflow-y-auto"
+      >
         <SheetHeader>
           <SheetTitle>{t("brand.name")}</SheetTitle>
         </SheetHeader>
@@ -235,16 +239,16 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-xl bg-[image:var(--gradient-brand)] text-primary-foreground shadow-sm font-[family-name:var(--font-display)] text-lg">
+          <Link to="/" aria-label={`${t("brand.name")} · NISAB`} className="flex min-w-0 items-center gap-2">
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[image:var(--gradient-brand)] font-[family-name:var(--font-display)] text-lg text-primary-foreground shadow-sm">
               ن
             </span>
-            <span className="leading-tight">
-              <span className="block font-[family-name:var(--font-display)] text-lg text-foreground">
+            <span className="min-w-0 leading-tight">
+              <span className="block truncate font-[family-name:var(--font-display)] text-lg text-foreground">
                 {t("brand.name")}
               </span>
-              <span className="eyebrow block text-[0.6rem] text-muted-foreground">
-                {t("brand.tagline")}
+              <span className="brand-latin hidden text-[0.62rem] font-semibold text-muted-foreground sm:block">
+                NISAB · {t("brand.tagline")}
               </span>
             </span>
           </Link>
