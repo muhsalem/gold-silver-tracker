@@ -110,10 +110,6 @@
 
   body {
     background-color: var(--color-background);
-    background-image:
-      radial-gradient(1000px 560px at 100% -10%, oklch(0.6231 0.188 259.81 / 8%), transparent 62%),
-      radial-gradient(760px 460px at 0% 0%, oklch(0.7686 0.1647 70.08 / 6%), transparent 60%);
-    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-arabic);
     -webkit-font-smoothing: antialiased;
@@ -125,6 +121,20 @@
   h3 {
     font-family: var(--font-display);
   }
+
+  html[dir="ltr"] body,
+  html[dir="ltr"] h1,
+  html[dir="ltr"] h2,
+  html[dir="ltr"] h3 {
+    font-family: var(--font-latin);
+  }
+
+  html[dir="rtl"] body,
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3 {
+    font-family: var(--font-arabic);
+  }
 }
 
 @utility num {
@@ -132,14 +142,26 @@
   direction: ltr;
   unicode-bidi: isolate;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 @utility eyebrow {
   font-family: var(--font-latin);
   font-size: 0.75rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0;
   text-transform: uppercase;
+}
+
+@utility brand-latin {
+  font-family: var(--font-latin);
+  direction: ltr;
+  unicode-bidi: isolate;
+  letter-spacing: 0;
+}
+
+html[dir="rtl"] .eyebrow {
+  font-family: var(--font-arabic);
+  text-transform: none;
 }
 
 @utility card-surface {
