@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
-import worldGeography from "world-atlas/countries-110m.json";
+import worldGeographyUrl from "world-atlas/countries-110m.json?url";
 
 import { Page } from "@/components/site/Page";
 import { StateNote, useNisab } from "@/components/site/Prices";
@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { formatMoney, goldNisabValue, silverNisabValue } from "@/lib/nisab";
-
-const WORLD_GEOGRAPHY: Record<string, unknown> = worldGeography;
 
 export const Route = createFileRoute("/map")({
   head: () => ({
@@ -76,7 +74,7 @@ function WorldMapPage() {
           aria-label={t("map.title")}
         >
           <ZoomableGroup center={[8, 5]} zoom={1} minZoom={1} maxZoom={5}>
-            <Geographies geography={WORLD_GEOGRAPHY}>
+            <Geographies geography={worldGeographyUrl}>
               {({ geographies }) => geographies.map((geography) => {
                 const numericCode = String(geography.id).padStart(3, "0");
                 const country = countryByNumeric.get(numericCode);
