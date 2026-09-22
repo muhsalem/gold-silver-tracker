@@ -963,3 +963,52 @@ const EXTRA7: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA7)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA8: Record<string, Record<string, string>> = {
+  ar: {
+    "local.title": "سعر السوق المحلي (الصاغة)",
+    "local.sub":
+      "العبرة في النصاب بسعر المعدن المجرد داخل بلدك يوم وجوب الزكاة، كما يتعامل به الصاغة المعتمدون.",
+    "local.badge.jeweler": "سعر صاغة مدينتك",
+    "local.badge.derived": "مشتق من السعر العالمي",
+    "local.goldQuote": "جرام الذهب عيار ٢٤ (معلن)",
+    "local.silverQuote": "جرام الفضّة النقية (معلن)",
+    "local.goldBuy": "جرام الذهب · سعر شراء الصائغ (تسييل)",
+    "local.silverBuy": "جرام الفضّة · سعر شراء الصائغ (تسييل)",
+    "local.goldNisab": "نصاب الذهب ٨٥غ بسعر التسييل",
+    "local.silverNisab": "نصاب الفضّة ٥٩٥غ بسعر التسييل",
+    "local.spread": "فرق سعر الشراء لدى الصائغ (%)",
+    "local.apply": "تطبيق",
+    "local.rule.pure": "التقويم على الخالص: الذهب عيار ٢٤ لوزن ٨٥ جرامًا، والفضّة النقية ٥٩٥ جرامًا.",
+    "local.rule.nomaking": "لا تُحتسب المصنعية ولا الدمغة ولا الضرائب؛ الزكاة في عين المعدن وقيمته الذاتية.",
+    "local.rule.hawlday": "العبرة بسعر يوم اكتمال الحول الهجري، لا بسعر يوم الشراء.",
+    "local.rule.buyback": "في التدقيق المحاسبي يُعتمد السعر الذي يشتري به الصائغ من العميل، لأنه القيمة التي يمكن تسييل المعدن بها.",
+    "local.note":
+      "سعر السوق المحلي يبدأ من السعر العالمي المجرد ثم يُضبط بما تُدخله من سعر صاغة مدينتك وفرق سعر الشراء، ويُحفظ على جهازك فقط.",
+  },
+  en: {
+    "local.title": "Local jeweller market price",
+    "local.sub":
+      "Nisab is valued on the bare metal price inside your own country on the day zakat falls due, as traded by licensed jewellers.",
+    "local.badge.jeweler": "Your city's jeweller price",
+    "local.badge.derived": "Derived from the global price",
+    "local.goldQuote": "24K gold gram (quoted)",
+    "local.silverQuote": "Pure silver gram (quoted)",
+    "local.goldBuy": "Gold gram · jeweller buy-back",
+    "local.silverBuy": "Silver gram · jeweller buy-back",
+    "local.goldNisab": "85 g gold nisab at buy-back price",
+    "local.silverNisab": "595 g silver nisab at buy-back price",
+    "local.spread": "Jeweller buy-back discount (%)",
+    "local.apply": "Apply",
+    "local.rule.pure": "Valued on pure metal: 85 g of 24K gold, 595 g of pure silver.",
+    "local.rule.nomaking": "Making charges, hallmark fees and taxes are excluded; zakat is on the metal itself.",
+    "local.rule.hawlday": "The price of the day the hijri hawl completes applies, not the purchase-day price.",
+    "local.rule.buyback": "Precise accounting uses the price a jeweller pays you, since that is the real liquidation value.",
+    "local.note":
+      "The local price starts from the bare global quote and is adjusted by your city jeweller price and buy-back discount; it stays on your device.",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA8)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}
