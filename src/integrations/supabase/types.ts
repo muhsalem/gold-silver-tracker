@@ -14,16 +14,284 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          meta: Json
+          reason: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          entity: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
+        Relationships: []
+      }
+      notification_prefs: {
+        Row: {
+          countries: string[]
+          daily_digest: boolean
+          email: boolean
+          in_app: boolean
+          metals: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          countries?: string[]
+          daily_digest?: boolean
+          email?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          countries?: string[]
+          daily_digest?: boolean
+          email?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          country: string
+          created_at: string
+          id: string
+          kind: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          country?: string
+          created_at?: string
+          id?: string
+          kind: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          country?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_submissions: {
+        Row: {
+          ai_summary: string | null
+          auto_approved: boolean
+          buyback_gram: number | null
+          city: string
+          country: string
+          created_at: string
+          currency: string
+          gold_gram: number | null
+          id: string
+          metal: string
+          note: string
+          quality: number | null
+          review_reason: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          silver_gram: number | null
+          source: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          auto_approved?: boolean
+          buyback_gram?: number | null
+          city?: string
+          country: string
+          created_at?: string
+          currency: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          note?: string
+          quality?: number | null
+          review_reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          auto_approved?: boolean
+          buyback_gram?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          note?: string
+          quality?: number | null
+          review_reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+          vote?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "price_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          city: string
+          contact: string
+          country: string
+          created_at: string
+          display_name: string
+          id: string
+          license: string
+          org: string
+        }
+        Insert: {
+          city?: string
+          contact?: string
+          country?: string
+          created_at?: string
+          display_name?: string
+          id: string
+          license?: string
+          org?: string
+        }
+        Update: {
+          city?: string
+          contact?: string
+          country?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          license?: string
+          org?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_trusted: { Args: { _user_id: string }; Returns: boolean }
+      jeweler_leaderboard: {
+        Args: { _country?: string }
+        Returns: {
+          accuracy: number
+          approved: number
+          country: string
+          display_name: string
+          down_votes: number
+          org: string
+          points: number
+          up_votes: number
+          user_id: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "jeweler" | "ambassador" | "volunteer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +418,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "jeweler", "ambassador", "volunteer"],
+    },
   },
 } as const
