@@ -13,6 +13,13 @@ import {
   writeScopeOverride,
 } from "@/lib/overrides";
 import {
+  buyBack,
+  clampSpread,
+  readLocalMarket,
+  writeLocalMarket,
+  type LocalMarket as LocalMarketSettings,
+} from "@/lib/local-market";
+import {
   GOLD_NISAB_G,
   SILVER_NISAB_G,
   TROY_OUNCE_G,
@@ -492,6 +499,122 @@ export function SourceQuality({ currency }: { currency?: string }) {
       <p className="border-t border-border px-5 py-3 text-xs text-muted-foreground">
         {t("quality.note")}
       </p>
+    </section>
+  );
+}
+
+/**
+ * Local jeweller market layer: the bare 24K gram price inside the visitor's own
+ * country, stripped of making charges, and the jeweller buy-back (liquidation)
+ * price used in precise zakat accounting.
+ */
+export function LocalMarket({
+  currency: currencyProp,
+  rate: rateProp,
+  goldGram: goldGramProp,
+  silverGram: silverGramProp,
+}: {
+  currency?: string;
+  rate?: number;
+  goldGram?: number;
+  silverGram?: number;
+}) {
+  const { t, lang, country, city, currency: activeCurrency } = useI18n();
+  const { values, data, scoped } = useNisab();
+  const key = scopeKey(country, city);
+  const [local, setLocal] = useState<LocalMarketSettings>({ spreadPct: 0, jeweler: false });
+  const [draft, setDraft] = useState("0");
+
+  useEffect(() => {
+    const sync = () => {
+      const next = readLocalMarket(key);
+      setLocal(next);
+      setDraft(String(next.spreadPct));
+    };
+    sync();
+    window.addEventListener("nisab-overrides", sync);
+    return () => window.removeEventListener("nisab-overrides", sync);
+  }, [key]);
+
+  const currency = currencyProp ?? activeCurrency;
+  const goldGram = goldGramProp ?? values?.goldGram;
+  const silverGram = silverGramProp ?? values?.silverGram;
+  if (!data || goldGram == null || silverGram == null) return null;
+
+  const money = (v: number) => formatMoney(v, currency, lang);
+  const goldBuy = buyBack(goldGram, local.spreadPct);
+  const silverBuy = buyBack(silverGram, local.spreadPct);
+  const jeweler = scoped || local.jeweler;
+  void rateProp;
+
+  const apply = () => {
+    const parsed = parseFloat(draft);
+    writeLocalMarket(key, { spreadPct: clampSpread(parsed) });
+  };
+
+  return (
+    <section className="card-surface mt-4 p-5">
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base text-foreground">{t("local.title")}</h2>
+        <span
+          className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+            jeweler ? "bg-positive/15 text-positive" : "bg-accent/20 text-foreground"
+          }`}
+        >
+          {t(jeweler ? "local.badge.jeweler" : "local.badge.derived")}
+        </span>
+      </header>
+      <p className="mt-1 text-sm text-muted-foreground">{t("local.sub")}</p>
+
+      <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+        {[
+          { label: t("local.goldQuote"), value: money(goldGram) },
+          { label: t("local.silverQuote"), value: money(silverGram) },
+          { label: t("local.goldBuy"), value: money(goldBuy) },
+          { label: t("local.silverBuy"), value: money(silverBuy) },
+          { label: t("local.goldNisab"), value: money(goldBuy * GOLD_NISAB_G) },
+          { label: t("local.silverNisab"), value: money(silverBuy * SILVER_NISAB_G) },
+        ].map((row) => (
+          <div
+            key={row.label}
+            className="flex items-baseline justify-between gap-2 rounded-lg bg-secondary px-3 py-2"
+          >
+            <dt className="text-muted-foreground">{row.label}</dt>
+            <dd className="num text-foreground">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="mt-4 flex flex-wrap items-end gap-3">
+        <label className="block text-sm">
+          <span className="text-muted-foreground">{t("local.spread")}</span>
+          <input
+            inputMode="decimal"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            className="num mt-1 w-32 rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+          />
+        </label>
+        <button
+          onClick={apply}
+          className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+        >
+          {t("local.apply")}
+        </button>
+        {local.updatedAt && (
+          <span className="text-xs text-muted-foreground">
+            {t("verify.confirmed")}: <span className="num">{fmtDate(local.updatedAt, lang)}</span>
+          </span>
+        )}
+      </div>
+
+      <ul className="mt-4 space-y-1 text-xs leading-6 text-muted-foreground">
+        <li>{t("local.rule.pure")}</li>
+        <li>{t("local.rule.nomaking")}</li>
+        <li>{t("local.rule.hawlday")}</li>
+        <li>{t("local.rule.buyback")}</li>
+      </ul>
+      <p className="mt-2 text-xs text-muted-foreground">{t("local.note")}</p>
     </section>
   );
 }
