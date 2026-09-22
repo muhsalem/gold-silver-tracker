@@ -11,6 +11,8 @@ import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { formatMoney, goldNisabValue, silverNisabValue } from "@/lib/nisab";
 
+const WORLD_GEOGRAPHY: Record<string, unknown> = worldGeography;
+
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
@@ -74,7 +76,7 @@ function WorldMapPage() {
           aria-label={t("map.title")}
         >
           <ZoomableGroup center={[8, 5]} zoom={1} minZoom={1} maxZoom={5}>
-            <Geographies geography={worldGeography}>
+            <Geographies geography={WORLD_GEOGRAPHY}>
               {({ geographies }) => geographies.map((geography) => {
                 const numericCode = String(geography.id).padStart(3, "0");
                 const country = countryByNumeric.get(numericCode);
