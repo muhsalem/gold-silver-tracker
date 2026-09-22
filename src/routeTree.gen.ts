@@ -19,6 +19,7 @@ import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
@@ -74,6 +75,11 @@ const MethodologyRoute = MethodologyRouteImport.update({
   path: '/methodology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/partners'
     | '/today'
     | '/types'
     | '/waqf'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/partners'
     | '/today'
     | '/types'
     | '/waqf'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/partners'
     | '/today'
     | '/types'
     | '/waqf'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   MapRoute: typeof MapRoute
   MethodologyRoute: typeof MethodologyRoute
+  PartnersRoute: typeof PartnersRoute
   TodayRoute: typeof TodayRoute
   TypesRoute: typeof TypesRoute
   WaqfRoute: typeof WaqfRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MethodologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/today': {
       id: '/today'
       path: '/today'
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   MapRoute: MapRoute,
   MethodologyRoute: MethodologyRoute,
+  PartnersRoute: PartnersRoute,
   TodayRoute: TodayRoute,
   TypesRoute: TypesRoute,
   WaqfRoute: WaqfRoute,
