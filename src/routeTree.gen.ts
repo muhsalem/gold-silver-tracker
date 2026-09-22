@@ -19,6 +19,7 @@ import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as OutlookRouteImport } from './routes/outlook'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
@@ -75,6 +76,11 @@ const MethodologyRoute = MethodologyRouteImport.update({
   path: '/methodology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutlookRoute = OutlookRouteImport.update({
+  id: '/outlook',
+  path: '/outlook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/outlook'
     | '/partners'
     | '/today'
     | '/types'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/outlook'
     | '/partners'
     | '/today'
     | '/types'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/map'
     | '/methodology'
+    | '/outlook'
     | '/partners'
     | '/today'
     | '/types'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   MapRoute: typeof MapRoute
   MethodologyRoute: typeof MethodologyRoute
+  OutlookRoute: typeof OutlookRoute
   PartnersRoute: typeof PartnersRoute
   TodayRoute: typeof TodayRoute
   TypesRoute: typeof TypesRoute
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MethodologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outlook': {
+      id: '/outlook'
+      path: '/outlook'
+      fullPath: '/outlook'
+      preLoaderRoute: typeof OutlookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partners': {
       id: '/partners'
       path: '/partners'
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   MapRoute: MapRoute,
   MethodologyRoute: MethodologyRoute,
+  OutlookRoute: OutlookRoute,
   PartnersRoute: PartnersRoute,
   TodayRoute: TodayRoute,
   TypesRoute: TypesRoute,

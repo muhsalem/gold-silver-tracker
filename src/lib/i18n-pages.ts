@@ -1012,3 +1012,18 @@ const EXTRA8: Record<string, Record<string, string>> = {
 for (const [lang, dict] of Object.entries(EXTRA8)) {
   PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
 }
+
+const EXTRA9: Record<string, Record<string, string>> = {
+  ar: {
+    "nav.partners": "شبكة الصاغة",
+    "nav.outlook": "تقييم اقتصادي",
+  },
+  en: {
+    "nav.partners": "Jeweller network",
+    "nav.outlook": "Market outlook",
+  },
+};
+
+for (const [lang, dict] of Object.entries(EXTRA9)) {
+  PAGE_STRINGS[lang] = { ...(PAGE_STRINGS[lang] ?? {}), ...dict };
+}

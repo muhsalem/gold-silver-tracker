@@ -29,6 +29,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/types", key: "nav.types" },
       { to: "/methodology", key: "nav.methodology" },
+      { to: "/outlook", key: "nav.outlook" },
       { to: "/fiqh", key: "nav.fiqh" },
       { to: "/calculator", key: "nav.calculator" },
       { to: "/faq", key: "nav.faq" },
@@ -36,7 +37,10 @@ const NAV_GROUPS = [
   },
   {
     key: "nav.group.about",
-    items: [{ to: "/waqf", key: "nav.about" }],
+    items: [
+      { to: "/partners", key: "nav.partners" },
+      { to: "/waqf", key: "nav.about" },
+    ],
   },
 ] as const;
 
