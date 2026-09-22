@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Globe2, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
+import worldGeographyUrl from "world-atlas/countries-110m.json?url";
 
 import { Page } from "@/components/site/Page";
 import { StateNote, useNisab } from "@/components/site/Prices";
@@ -23,18 +25,21 @@ export const Route = createFileRoute("/map")({
   component: WorldMapPage,
 });
 
-const MAP_POINTS = [
-  ["US", 13, 39], ["CA", 16, 25], ["BR", 30, 70], ["GB", 45, 26], ["FR", 47, 35],
-  ["MA", 45, 48], ["DZ", 49, 49], ["EG", 57, 49], ["NG", 50, 65], ["ZA", 56, 86],
-  ["SA", 62, 55], ["TR", 58, 39], ["PK", 70, 49], ["IN", 74, 55], ["BD", 78, 57],
-  ["ID", 84, 70], ["MY", 82, 65], ["CN", 80, 41], ["JP", 92, 42], ["AU", 89, 83],
-] as const;
-
 function WorldMapPage() {
   const { t, lang } = useI18n();
+  const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useNisab();
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
   const [query, setQuery] = useState("");
+  const [hoveredCode, setHoveredCode] = useState<string | null>(null);
+
+  const countryByNumeric = useMemo(
+    () => new Map(COUNTRIES.map((country) => [country.numericCode, country])),
+    [],
+  );
+  const hoveredCountry = hoveredCode
+    ? COUNTRIES.find((country) => country.code === hoveredCode)
+    : undefined;
 
   const results = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -62,19 +67,58 @@ function WorldMapPage() {
         </label>
       </div>
 
-      <section className="relative hidden aspect-[2/1] overflow-hidden rounded-lg border border-border bg-secondary md:block" aria-label={t("map.title")}>
-        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)", backgroundSize: "5% 10%" }} />
-        <Globe2 aria-hidden="true" className="absolute start-6 top-6 size-10 text-primary/25" />
-        {MAP_POINTS.map(([code, x, y]) => {
-          const country = COUNTRIES.find((item) => item.code === code);
-          if (!country) return null;
-          return <Link key={code} to="/country/$code" params={{ code: code.toLowerCase() }} className="group absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${x}%`, top: `${y}%` }}>
-            <span className="block size-3 rounded-full border-2 border-card bg-primary shadow-sm transition-transform group-hover:scale-150" />
-            <span className="pointer-events-none absolute bottom-full start-1/2 z-10 mb-2 hidden min-w-max -translate-x-1/2 rounded-md border border-border bg-card px-3 py-2 text-xs text-foreground shadow-lg group-hover:block">
-              {flagOf(code)} {countryName(country, lang)}<strong className="num ms-2 font-medium">{valueOf(code) ?? "—"}</strong>
-            </span>
-          </Link>;
-        })}
+      <section className="relative hidden overflow-hidden rounded-lg border border-border bg-secondary md:block" aria-label={t("map.title")}>
+        <ComposableMap
+          projectionConfig={{ scale: 145 }}
+          className="h-auto w-full"
+          aria-label={t("map.title")}
+        >
+          <ZoomableGroup center={[8, 5]} zoom={1} minZoom={1} maxZoom={5}>
+            <Geographies geography={worldGeographyUrl}>
+              {({ geographies }) => geographies.map((geography) => {
+                const numericCode = String(geography.id).padStart(3, "0");
+                const country = countryByNumeric.get(numericCode);
+                const isHovered = country?.code === hoveredCode;
+                return (
+                  <Geography
+                    key={geography.rsmKey}
+                    geography={geography}
+                    tabIndex={country ? 0 : -1}
+                    role={country ? "link" : undefined}
+                    aria-label={country ? `${countryName(country, lang)} — ${valueOf(country.code) ?? "—"}` : undefined}
+                    onMouseEnter={() => setHoveredCode(country?.code ?? null)}
+                    onMouseLeave={() => setHoveredCode(null)}
+                    onFocus={() => setHoveredCode(country?.code ?? null)}
+                    onBlur={() => setHoveredCode(null)}
+                    onClick={() => {
+                      if (country) void navigate({ to: "/country/$code", params: { code: country.code.toLowerCase() } });
+                    }}
+                    onKeyDown={(event) => {
+                      if (country && (event.key === "Enter" || event.key === " ")) {
+                        event.preventDefault();
+                        void navigate({ to: "/country/$code", params: { code: country.code.toLowerCase() } });
+                      }
+                    }}
+                    fill={isHovered ? "var(--color-accent)" : country ? "var(--color-primary)" : "var(--color-muted)"}
+                    stroke="var(--color-card)"
+                    strokeWidth={0.45}
+                    className={country ? "cursor-pointer outline-none transition-colors focus:fill-accent" : "outline-none"}
+                  />
+                );
+              })}
+            </Geographies>
+          </ZoomableGroup>
+        </ComposableMap>
+        <div className="pointer-events-none absolute start-4 top-4 min-h-16 min-w-52 rounded-md border border-border bg-card/95 px-4 py-3 text-sm shadow-sm backdrop-blur-sm" aria-live="polite">
+          {hoveredCountry ? (
+            <>
+              <strong className="block font-medium text-foreground">{flagOf(hoveredCountry.code)} {countryName(hoveredCountry, lang)}</strong>
+              <span className="num mt-1 block text-muted-foreground">{valueOf(hoveredCountry.code) ?? "—"}</span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">{t("map.sub")}</span>
+          )}
+        </div>
       </section>
 
       <section className="mt-5 overflow-hidden rounded-lg border border-border bg-card">
