@@ -8,6 +8,7 @@ import {
   Disclaimer,
   ManualNotice,
   NisabAlert,
+  LocalMarket,
   SourceQuality,
   StateNote,
   UpdateMeta,
@@ -150,6 +151,7 @@ function Home() {
           </section>
 
           <CityPriceCheck />
+          <LocalMarket />
           <SourceQuality />
           <HawlReminder />
           <UpdateMeta />

@@ -3,7 +3,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
-import { StateNote, Disclaimer, SourceQuality } from "@/components/site/Prices";
+import { StateNote, Disclaimer, LocalMarket, SourceQuality } from "@/components/site/Prices";
 import {
   GOLD_NISAB_G,
   KARATS,
@@ -185,6 +185,7 @@ function CountryPage() {
             </div>
           </section>
 
+          <LocalMarket currency={country.currency} goldGram={goldGram} silverGram={silverGram} />
           <SourceQuality currency={country.currency} />
         </>
       )}
