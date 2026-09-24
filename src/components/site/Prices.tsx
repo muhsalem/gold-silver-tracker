@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { scopeKey } from "@/lib/cities";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { BIG_CHANGE_PCT, trackNisabChange } from "@/lib/overrides";

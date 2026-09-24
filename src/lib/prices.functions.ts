@@ -27,11 +27,18 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<LivePrices> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data;
 
-    const [gold, silver, fx] = await Promise.all([
+    const fetched = await Promise.all([
       fetchJson("https://api.gold-api.com/price/XAU"),
       fetchJson("https://api.gold-api.com/price/XAG"),
       fetchJson("https://open.er-api.com/v6/latest/USD"),
-    ]);
+    ]).catch((error: unknown) => {
+      // Keep serving the last good prices (with their original timestamps) when a
+      // provider is down, rather than taking every page offline.
+      if (cache) return null;
+      throw error;
+    });
+    if (!fetched) return cache!.data;
+    const [gold, silver, fx] = fetched;
 
     const data: LivePrices = {
       goldUsdOz: Number(gold.price),
@@ -45,6 +52,7 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
     };
 
     if (!Number.isFinite(data.goldUsdOz) || !Number.isFinite(data.silverUsdOz)) {
+      if (cache) return cache.data;
       throw new Error("Invalid metal prices received");
     }
 
@@ -84,13 +92,16 @@ export const LONG_RANGES: Record<string, number> = {
   "100y": 100,
 };
 
+/** 1 Muharram 1448 AH (16 June 2026), start of the "1448" history range. */
+export const HIJRI_1448_START_MS = Date.UTC(2026, 5, 16);
+
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
   const timeQuery = range === "1448"
-    ? `period1=${Math.floor(new Date("2026-06-16T00:00:00Z").getTime() / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+    ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
     : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });

@@ -42,18 +42,22 @@ function Calculator() {
   const [debts, setDebts] = useState("");
   const [goldG, setGoldG] = useState("");
   const [karat, setKarat] = useState(21);
+  const [jewelryG, setJewelryG] = useState("");
+  const [jewelryRule, setJewelryRule] = useState<"include" | "exclude">("include");
   const [silverG, setSilverG] = useState("");
   const [standard, setStandard] = useState<"silver" | "gold">("silver");
 
   const purity = KARATS.find((k) => k.k === karat)?.purity ?? 1;
-  const goldValue = values ? num(goldG) * values.goldGram * purity : 0;
+  const zakatableGoldG = num(goldG) + (jewelryRule === "include" ? num(jewelryG) : 0);
+  const goldValue = values ? zakatableGoldG * values.goldGram * purity : 0;
   const silverValue = values ? num(silverG) * values.silverGram : 0;
   const metals = goldValue + silverValue;
   const net =
     num(cash) + num(business) + num(investments) + num(receivables) + metals - num(debts);
   const nisab = values ? (standard === "silver" ? values.silver : values.gold) : 0;
-  const due = net >= nisab ? net * ZAKAT_RATE : 0;
-  const above = Boolean(values) && net >= nisab && net > 0;
+  // No verdict until live prices (and hence the nisab) are known.
+  const above = Boolean(values) && net > 0 && net >= nisab;
+  const due = above ? net * ZAKAT_RATE : 0;
 
   const reset = () => {
     setCash("");
@@ -62,6 +66,7 @@ function Calculator() {
     setReceivables("");
     setDebts("");
     setGoldG("");
+    setJewelryG("");
     setSilverG("");
   };
 
@@ -107,6 +112,23 @@ function Calculator() {
               </select>
             </label>
             <Field
+              label={t("calc.jewelryWeight")}
+              value={jewelryG}
+              onChange={setJewelryG}
+              suffix={t("grams")}
+            />
+            <label className="block">
+              <span className="text-sm text-muted-foreground">{t("calc.jewelryRule")}</span>
+              <select
+                value={jewelryRule}
+                onChange={(e) => setJewelryRule(e.target.value as "include" | "exclude")}
+                className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="include">{t("calc.jewelry.include")}</option>
+                <option value="exclude">{t("calc.jewelry.exclude")}</option>
+              </select>
+            </label>
+            <Field
               label={t("calc.silverWeight")}
               value={silverG}
               onChange={setSilverG}
@@ -122,6 +144,9 @@ function Calculator() {
                 <option value="silver">{t("nisab.silver")}</option>
                 <option value="gold">{t("nisab.gold")}</option>
               </select>
+              <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                {t("calc.standardNote")}
+              </span>
             </label>
           </div>
 
@@ -153,7 +178,7 @@ function Calculator() {
             <p className="num mt-1 text-3xl">{money(due)}</p>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            {above ? t("calc.above") : t("calc.below")}
+            {!values ? t("common.loading") : above ? t("calc.above") : t("calc.below")}
           </p>
         </aside>
       </div>

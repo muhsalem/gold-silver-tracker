@@ -38,7 +38,8 @@ const en: Record<string, string> = {
   "nisab.gold": "Gold nisab",
   "nisab.silver": "Silver nisab",
   "ratio.label": "Gold-to-silver ratio",
-  "ratio.note": "Most scholars advise using the lower of the two nisabs, which benefits the poor.",
+  "ratio.note":
+      "Scholars differ: some measure the cash nisab by silver as it is better for the poor, others by gold for its stable value. Follow the fatwa authority in your country.",
   "calc.title": "Zakat calculator",
   "calc.eyebrow": "Calculator",
   "calc.cash": "Cash, bank and savings",
@@ -107,7 +108,8 @@ const ar: Record<string, string> = {
   "nisab.gold": "نصاب الذهب",
   "nisab.silver": "نصاب الفضّة",
   "ratio.label": "نسبة الذهب إلى الفضّة",
-  "ratio.note": "يُستحبّ عند جمهور أهل العلم الأخذ بأقلّ النصابين لما فيه من نفعٍ للفقراء.",
+  "ratio.note":
+      "لكلٍّ من النصابين قائلون من أهل العلم المعاصرين: فمنهم من يقدّر نصاب النقود بالفضّة لأنه أحظّ للفقراء، ومنهم من يقدّره بالذهب لثبات قيمته. والأَولى اتّباع جهة الفتوى في بلدك.",
   "calc.title": "حاسبة الزكاة",
   "calc.eyebrow": "Calculator",
   "calc.cash": "النقد والحسابات والمدّخرات",
@@ -173,7 +175,8 @@ const fr: Record<string, string> = {
   "nisab.gold": "Nisab de l'or",
   "nisab.silver": "Nisab de l'argent",
   "ratio.label": "Ratio or / argent",
-  "ratio.note": "La plupart des savants recommandent le nisab le plus bas, au bénéfice des pauvres.",
+  "ratio.note":
+      "Les savants divergent : certains évaluent le nisab monétaire en argent, plus favorable aux pauvres, d'autres en or pour sa valeur stable. Suivez l'autorité de fatwa de votre pays.",
   "calc.title": "Calculateur de zakat",
   "calc.cash": "Liquidités et épargne",
   "calc.goldValue": "Valeur de votre or",
@@ -236,7 +239,8 @@ const tr: Record<string, string> = {
   "nisab.gold": "Altın nisabı",
   "nisab.silver": "Gümüş nisabı",
   "ratio.label": "Altın / gümüş oranı",
-  "ratio.note": "Âlimlerin çoğu, fakirin lehine olan düşük nisabın esas alınmasını tavsiye eder.",
+  "ratio.note":
+      "Âlimler ihtilaf etmiştir: kimi nakit nisabını fakirin lehine olduğu için gümüşle, kimi değeri istikrarlı olduğu için altınla ölçer. Ülkenizin fetva makamına uyun.",
   "calc.title": "Zekât hesaplayıcı",
   "calc.cash": "Nakit ve birikimler",
   "calc.goldValue": "Sahip olunan altının değeri",
@@ -299,7 +303,8 @@ const id: Record<string, string> = {
   "nisab.gold": "Nisab emas",
   "nisab.silver": "Nisab perak",
   "ratio.label": "Rasio emas / perak",
-  "ratio.note": "Mayoritas ulama menganjurkan memakai nisab terendah karena lebih bermanfaat bagi fakir miskin.",
+  "ratio.note":
+      "Ulama berbeda pendapat: sebagian mengukur nisab uang dengan perak karena lebih memihak fakir miskin, sebagian dengan emas karena nilainya stabil. Ikuti otoritas fatwa di negara Anda.",
   "calc.title": "Kalkulator zakat",
   "calc.cash": "Kas, bank dan tabungan",
   "calc.goldValue": "Nilai emas yang dimiliki",
@@ -362,7 +367,8 @@ const ur: Record<string, string> = {
   "nisab.gold": "سونے کا نصاب",
   "nisab.silver": "چاندی کا نصاب",
   "ratio.label": "سونے اور چاندی کا تناسب",
-  "ratio.note": "اکثر علماء کم نصاب اختیار کرنے کا مشورہ دیتے ہیں کیونکہ اس میں فقراء کا فائدہ ہے۔",
+  "ratio.note":
+      "علماء میں اختلاف ہے: بعض نقدی کا نصاب چاندی سے لگاتے ہیں کیونکہ یہ فقراء کے حق میں ہے، اور بعض سونے سے کیونکہ اس کی قدر مستحکم ہے۔ اپنے ملک کے دارالافتاء کی پیروی کریں۔",
   "calc.title": "زکوٰۃ کیلکولیٹر",
   "calc.cash": "نقدی، بینک اور بچت",
   "calc.goldValue": "آپ کے سونے کی مالیت",

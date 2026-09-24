@@ -3,7 +3,14 @@ import { useState } from "react";
 
 import { Page } from "@/components/site/Page";
 import { useI18n } from "@/lib/i18n";
-import { CAMEL_TIERS, COW_TIERS, CROP_NISAB_KG, FITR_SAA_KG, SHEEP_TIERS } from "@/lib/nisab";
+import {
+  CAMEL_TIERS,
+  COW_TIERS,
+  CROP_NISAB_KG,
+  FITR_SAA_KG,
+  SHEEP_TIERS,
+  livestockDue,
+} from "@/lib/nisab";
 
 export const Route = createFileRoute("/types")({
   head: () => ({
@@ -32,8 +39,8 @@ function Types() {
 
   const tiers = kind === "camels" ? CAMEL_TIERS : kind === "cows" ? COW_TIERS : SHEEP_TIERS;
   const n = parseInt(count || "0", 10) || 0;
-  const match = tiers.find((tier) => n >= tier.from && n <= tier.to);
-  const label = match ? (lang === "ar" ? match.ar : match.en) : "—";
+  const due = livestockDue(kind, n);
+  const label = due ? (lang === "ar" ? due.ar : due.en) : "—";
 
   return (
     <Page eyebrow="REFERENCE" title={t("types.title")} sub={t("home.types.sub")}>

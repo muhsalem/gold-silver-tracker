@@ -19,7 +19,12 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { readManualHistory, type ManualPricePoint } from "@/lib/overrides";
-import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
+import {
+  HIJRI_1448_START_MS,
+  getHistory,
+  type HistoryRange,
+  type HistoryResponse,
+} from "@/lib/prices.functions";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
@@ -89,7 +94,7 @@ function History() {
             manual: true,
           })),
       ]
-        .filter((p) => range !== "1448" || p.t >= new Date("2026-06-16T00:00:00Z").getTime())
+        .filter((p) => range !== "1448" || p.t >= HIJRI_1448_START_MS)
         .sort((a, b) => a.t - b.t),
     [data, manualHistory, currency, metal, grams, range],
   );
