@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CountriesRouteImport } from './routes/countries'
@@ -24,6 +26,8 @@ import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
+import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
+import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 
 const IndexRoute = IndexRouteImport.update({
@@ -31,9 +35,18 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalculatorRoute = CalculatorRouteImport.update({
@@ -101,6 +114,16 @@ const WaqfRoute = WaqfRouteImport.update({
   path: '/waqf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const CountryCodeRoute = CountryCodeRouteImport.update({
   id: '/country/$code',
   path: '/country/$code',
@@ -110,6 +133,7 @@ const CountryCodeRoute = CountryCodeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
@@ -123,11 +147,14 @@ export interface FileRoutesByFullPath {
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
@@ -141,12 +168,16 @@ export interface FileRoutesByTo {
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
@@ -160,6 +191,8 @@ export interface FileRoutesById {
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
+  '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
+  '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
 }
 export interface FileRouteTypes {
@@ -167,6 +200,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/auth'
     | '/calculator'
     | '/compare'
     | '/countries'
@@ -180,11 +214,14 @@ export interface FileRouteTypes {
     | '/today'
     | '/types'
     | '/waqf'
+    | '/alerts'
+    | '/moderation'
     | '/country/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/auth'
     | '/calculator'
     | '/compare'
     | '/countries'
@@ -198,11 +235,15 @@ export interface FileRouteTypes {
     | '/today'
     | '/types'
     | '/waqf'
+    | '/alerts'
+    | '/moderation'
     | '/country/$code'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/admin'
+    | '/auth'
     | '/calculator'
     | '/compare'
     | '/countries'
@@ -216,12 +257,16 @@ export interface FileRouteTypes {
     | '/today'
     | '/types'
     | '/waqf'
+    | '/_authenticated/alerts'
+    | '/_authenticated/moderation'
     | '/country/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
   CompareRoute: typeof CompareRoute
   CountriesRoute: typeof CountriesRoute
@@ -247,11 +292,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculator': {
@@ -345,6 +404,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WaqfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/alerts': {
+      id: '/_authenticated/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AuthenticatedAlertsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/moderation': {
+      id: '/_authenticated/moderation'
+      path: '/moderation'
+      fullPath: '/moderation'
+      preLoaderRoute: typeof AuthenticatedModerationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/country/$code': {
       id: '/country/$code'
       path: '/country/$code'
@@ -355,9 +428,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
+  AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
+  AuthenticatedModerationRoute: AuthenticatedModerationRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
   CompareRoute: CompareRoute,
   CountriesRoute: CountriesRoute,
