@@ -144,14 +144,20 @@ function Home() {
           className="flex min-h-20 items-center gap-4 rounded-lg bg-primary px-5 py-4 text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Calculator aria-hidden="true" />
-          <span><strong className="block font-medium">{t("home.cta.calc")}</strong><small className="mt-1 block opacity-75">{t("home.cta.calcSub")}</small></span>
+          <span>
+            <strong className="block font-medium">{t("home.cta.calc")}</strong>
+            <small className="mt-1 block opacity-75">{t("home.cta.calcSub")}</small>
+          </span>
         </Link>
         <Link
           to="/history"
           className="flex min-h-20 items-center gap-4 rounded-lg border border-border bg-card px-5 py-4 text-foreground transition-colors hover:bg-secondary"
         >
           <ChartNoAxesCombined aria-hidden="true" />
-          <span><strong className="block font-medium">{t("home.cta.history")}</strong><small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small></span>
+          <span>
+            <strong className="block font-medium">{t("home.cta.history")}</strong>
+            <small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small>
+          </span>
         </Link>
       </section>
 

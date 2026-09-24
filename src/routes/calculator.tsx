@@ -52,8 +52,7 @@ function Calculator() {
   const goldValue = values ? zakatableGoldG * values.goldGram * purity : 0;
   const silverValue = values ? num(silverG) * values.silverGram : 0;
   const metals = goldValue + silverValue;
-  const net =
-    num(cash) + num(business) + num(investments) + num(receivables) + metals - num(debts);
+  const net = num(cash) + num(business) + num(investments) + num(receivables) + metals - num(debts);
   const nisab = values ? (standard === "silver" ? values.silver : values.gold) : 0;
   // No verdict until live prices (and hence the nisab) are known.
   const above = Boolean(values) && net > 0 && net >= nisab;
@@ -151,7 +150,8 @@ function Calculator() {
           </div>
 
           <Button onClick={reset} variant="outline" className="justify-self-start">
-            <RotateCcw aria-hidden="true" />{t("calc.reset")}
+            <RotateCcw aria-hidden="true" />
+            {t("calc.reset")}
           </Button>
         </div>
 

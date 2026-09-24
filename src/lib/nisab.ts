@@ -81,8 +81,10 @@ export const SHEEP_TIERS = [
 export type LivestockKind = "camels" | "cows" | "sheep";
 export type LivestockDue = { ar: string; en: string };
 
-const TIERS: Record<LivestockKind, readonly { from: number; to: number; ar: string; en: string }[]> =
-  { camels: CAMEL_TIERS, cows: COW_TIERS, sheep: SHEEP_TIERS };
+const TIERS: Record<
+  LivestockKind,
+  readonly { from: number; to: number; ar: string; en: string }[]
+> = { camels: CAMEL_TIERS, cows: COW_TIERS, sheep: SHEEP_TIERS };
 
 /**
  * Splits `units` (a count of tens) into `small`/`large` multiples, using as many
@@ -119,16 +121,22 @@ export function livestockDue(kind: LivestockKind, count: number): LivestockDue |
   const tens = Math.floor(n / 10);
   if (kind === "camels") {
     const s = splitTens(tens, 4, 5);
-    return s && joinParts([
-      [s.a, "بنت لبون", "bint labūn"],
-      [s.b, "حِقّة", "ḥiqqa"],
-    ]);
+    return (
+      s &&
+      joinParts([
+        [s.a, "بنت لبون", "bint labūn"],
+        [s.b, "حِقّة", "ḥiqqa"],
+      ])
+    );
   }
   const s = splitTens(tens, 3, 4);
-  return s && joinParts([
-    [s.a, "تبيع", "tabīʿ"],
-    [s.b, "مُسِنّة", "musinna"],
-  ]);
+  return (
+    s &&
+    joinParts([
+      [s.a, "تبيع", "tabīʿ"],
+      [s.b, "مُسِنّة", "musinna"],
+    ])
+  );
 }
 
 /** Nisab of crops: 5 wasq ≈ 653 kg of staple grain. */

@@ -31,15 +31,19 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "Ruling on worn jewelry",
     "calc.jewelry.include": "Zakatable (Hanafi view, more cautious)",
     "calc.jewelry.exclude": "Exempt (view of the majority)",
-    "calc.standardNote": "Scholars differ on measuring the cash nisab by silver or by gold; follow the fatwa authority in your country.",
+    "calc.standardNote":
+      "Scholars differ on measuring the cash nisab by silver or by gold; follow the fatwa authority in your country.",
     "history.pick": "Metal",
-    "history.note": "Closing prices from the international futures market, converted to your currency.",
+    "history.note":
+      "Closing prices from the international futures market, converted to your currency.",
     "history.period": "Historical period",
     "history.countrySeries": "Historical nisab calculated with each date's exchange rate",
     "history.from1448": "From 1 Muharram 1448 AH to today, continuing automatically",
-    "history.fxUnavailable": "A reliable historical exchange-rate series is unavailable for this currency.",
+    "history.fxUnavailable":
+      "A reliable historical exchange-rate series is unavailable for this currency.",
     "history.empty": "No historical points are available for this period.",
-    "history.manualPoint": "Manual administrative entries appear as dated points alongside market history.",
+    "history.manualPoint":
+      "Manual administrative entries appear as dated points alongside market history.",
     "types.cash.t": "Zakat on money and savings",
     "types.cash.d":
       "2.5% of cash, bank balances, savings and receivables once they reach the nisab and a lunar year passes.",
@@ -103,7 +107,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.historyHint": "Saving adds a dated point to this currency's historical chart.",
     "admin.deviceOnly": "This device only",
     "admin.preview": "Current result after adjustment",
-    "admin.localNote": "These values are saved on this device only. A manual price appears as today's point in the historical chart.",
+    "admin.localNote":
+      "These values are saved on this device only. A manual price appears as today's point in the historical chart.",
   },
   ar: {
     "nav.admin": "الأسعار اليدوية",
@@ -135,7 +140,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "حكم الحُليّ المستعمل",
     "calc.jewelry.include": "تجب فيه الزكاة (الحنفية، وهو الأحوط)",
     "calc.jewelry.exclude": "لا زكاة فيه (الجمهور)",
-    "calc.standardNote": "اختلف أهل العلم في تقدير نصاب النقود بالفضّة أو بالذهب؛ والأَولى اتّباع جهة الفتوى في بلدك.",
+    "calc.standardNote":
+      "اختلف أهل العلم في تقدير نصاب النقود بالفضّة أو بالذهب؛ والأَولى اتّباع جهة الفتوى في بلدك.",
     "history.pick": "المعدن",
     "history.note": "أسعار الإغلاق من سوق العقود العالمية، محوَّلة إلى عملتك.",
     "history.period": "الفترة التاريخية",
@@ -205,7 +211,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.historyHint": "يضيف الحفظ نقطة مؤرخة إلى الرسم التاريخي لهذه العملة.",
     "admin.deviceOnly": "على هذا الجهاز فقط",
     "admin.preview": "النتيجة الحالية بعد التعديل",
-    "admin.localNote": "تُحفظ هذه القيم على هذا الجهاز فقط. ويظهر السعر اليدوي كنقطة اليوم في الرسم التاريخي.",
+    "admin.localNote":
+      "تُحفظ هذه القيم على هذا الجهاز فقط. ويظهر السعر اليدوي كنقطة اليوم في الرسم التاريخي.",
   },
   fr: {
     "nav.admin": "Prix manuels",
@@ -235,7 +242,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "Statut des bijoux portés",
     "calc.jewelry.include": "Soumis à la zakat (avis hanafite, plus prudent)",
     "calc.jewelry.exclude": "Exemptés (avis de la majorité)",
-    "calc.standardNote": "Les savants divergent sur l'évaluation du nisab monétaire en argent ou en or ; suivez l'autorité de fatwa de votre pays.",
+    "calc.standardNote":
+      "Les savants divergent sur l'évaluation du nisab monétaire en argent ou en or ; suivez l'autorité de fatwa de votre pays.",
     "history.pick": "Métal",
     "history.note": "Cours de clôture du marché international, convertis dans votre devise.",
     "types.cash.t": "Zakat sur l'argent et l'épargne",
@@ -326,7 +334,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "Kullanılan ziynetin hükmü",
     "calc.jewelry.include": "Zekâta tabi (Hanefî görüşü, ihtiyatlı olan)",
     "calc.jewelry.exclude": "Muaf (çoğunluğun görüşü)",
-    "calc.standardNote": "Âlimler nakit nisabının gümüşle mi altınla mı ölçüleceğinde ihtilaf etmiştir; ülkenizin fetva makamına uyun.",
+    "calc.standardNote":
+      "Âlimler nakit nisabının gümüşle mi altınla mı ölçüleceğinde ihtilaf etmiştir; ülkenizin fetva makamına uyun.",
     "history.pick": "Maden",
     "history.note": "Uluslararası piyasa kapanış fiyatları, para biriminize çevrilmiştir.",
     "types.cash.t": "Para ve birikimin zekâtı",
@@ -362,7 +371,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "faq.q3": "Zekât oranı nedir?",
     "faq.a3": "Zekât gününüzdeki net zekâta tabi malın %2,5'i (kırkta bir).",
     "faq.q4": "Hangi borçlar düşülür?",
-    "faq.a4": "Şu an vadesi gelmiş borçlar ve yıl içindeki taksitler; uzun vadeli kredinin tamamı değil.",
+    "faq.a4":
+      "Şu an vadesi gelmiş borçlar ve yıl içindeki taksitler; uzun vadeli kredinin tamamı değil.",
     "faq.q5": "Fiyatlar nereden geliyor?",
     "faq.a5":
       "Açık piyasa verilerinden alınan altın, gümüş ve kur bilgileri her gün otomatik yenilenir. Yerel fiyatlarınızı fiyatlar sayfasından girebilirsiniz; yalnızca cihazınızda saklanır.",
@@ -414,7 +424,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "Hukum perhiasan yang dipakai",
     "calc.jewelry.include": "Wajib zakat (mazhab Hanafi, lebih hati-hati)",
     "calc.jewelry.exclude": "Tidak wajib (pendapat jumhur)",
-    "calc.standardNote": "Ulama berbeda pendapat apakah nisab uang diukur dengan perak atau emas; ikuti otoritas fatwa di negara Anda.",
+    "calc.standardNote":
+      "Ulama berbeda pendapat apakah nisab uang diukur dengan perak atau emas; ikuti otoritas fatwa di negara Anda.",
     "history.pick": "Logam",
     "history.note": "Harga penutupan pasar internasional, dikonversi ke mata uang Anda.",
     "types.cash.t": "Zakat uang dan tabungan",
@@ -451,7 +462,8 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "faq.q3": "Berapa kadar zakatnya?",
     "faq.a3": "2,5% dari harta bersih wajib zakat pada tanggal haul Anda.",
     "faq.q4": "Utang apa yang dikurangkan?",
-    "faq.a4": "Utang yang jatuh tempo sekarang dan cicilan dalam tahun berjalan, bukan seluruh pinjaman jangka panjang.",
+    "faq.a4":
+      "Utang yang jatuh tempo sekarang dan cicilan dalam tahun berjalan, bukan seluruh pinjaman jangka panjang.",
     "faq.q5": "Dari mana harga diambil?",
     "faq.a5":
       "Dari data pasar terbuka untuk emas, perak dan kurs harian, diperbarui otomatis tiap hari. Anda bisa mengisi harga lokal di halaman harga; hanya tersimpan di perangkat Anda.",
@@ -503,11 +515,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "استعمال کے زیورات کا حکم",
     "calc.jewelry.include": "زکوٰۃ واجب (احناف، زیادہ احتیاط)",
     "calc.jewelry.exclude": "زکوٰۃ نہیں (جمہور)",
-    "calc.standardNote": "نقدی کا نصاب چاندی سے لگے یا سونے سے، اس میں علماء کا اختلاف ہے؛ اپنے ملک کے دارالافتاء کی پیروی کریں۔",
+    "calc.standardNote":
+      "نقدی کا نصاب چاندی سے لگے یا سونے سے، اس میں علماء کا اختلاف ہے؛ اپنے ملک کے دارالافتاء کی پیروی کریں۔",
     "history.pick": "دھات",
     "history.note": "عالمی منڈی کی اختتامی قیمتیں، آپ کی کرنسی میں۔",
     "types.cash.t": "نقدی اور بچت کی زکوٰۃ",
-    "types.cash.d": "نقدی، بینک بیلنس، بچت اور وصول طلب رقم پر 2.5٪، جب نصاب کو پہنچے اور سال گزرے۔",
+    "types.cash.d":
+      "نقدی، بینک بیلنس، بچت اور وصول طلب رقم پر 2.5٪، جب نصاب کو پہنچے اور سال گزرے۔",
     "types.gold.t": "سونے چاندی کی زکوٰۃ",
     "types.gold.d": "85 گرام / 595 گرام کے معیار پر، مارکیٹ مالیت کا 2.5٪۔",
     "types.trade.t": "مالِ تجارت کی زکوٰۃ",

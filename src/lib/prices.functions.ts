@@ -62,17 +62,7 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
 );
 
 export type HistoryRange =
-  | "1mo"
-  | "6mo"
-  | "1y"
-  | "5y"
-  | "10y"
-  | "1448"
-  | "20y"
-  | "30y"
-  | "40y"
-  | "50y"
-  | "100y";
+  "1mo" | "6mo" | "1y" | "5y" | "10y" | "1448" | "20y" | "30y" | "40y" | "50y" | "100y";
 export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
 export type HistoryResponse = {
   points: HistoryPoint[];
@@ -97,12 +87,12 @@ export const HIJRI_1448_START_MS = Date.UTC(2026, 5, 16);
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
-
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
-  const timeQuery = range === "1448"
-    ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
-    : `range=${range}`;
+  const timeQuery =
+    range === "1448"
+      ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+      : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
@@ -121,7 +111,17 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
     const allowed: HistoryRange[] = [
-      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "100y",
+      "1mo",
+      "6mo",
+      "1y",
+      "5y",
+      "10y",
+      "1448",
+      "20y",
+      "30y",
+      "40y",
+      "50y",
+      "100y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
@@ -170,12 +170,12 @@ export const getHistory = createServerFn({ method: "GET" })
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < TTL_MS) {
       return {
-
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,
         metalsSource: "Yahoo Finance (GC=F, SI=F)",
-        ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
       };
     }
 

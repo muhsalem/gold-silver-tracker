@@ -25,8 +25,7 @@ export function useNisab() {
     if (!base) return undefined;
     const goldUsdOz = scope?.goldUsdOz ?? base.goldUsdOz;
     const silverUsdOz = scope?.silverUsdOz ?? base.silverUsdOz;
-    const rates =
-      scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
+    const rates = scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
     return {
       ...base,
       goldUsdOz,
@@ -71,7 +70,6 @@ export function useNisab() {
     scoped: Boolean(scope),
   };
 }
-
 
 export function StateNote({
   isLoading,
@@ -166,9 +164,7 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
   const key = pct > 0 ? "alert.up" : "alert.down";
   return (
     <div className="card-surface mb-6 flex flex-wrap items-center gap-3 border-accent/60 bg-accent/15 p-4 text-sm">
-      <span className="text-foreground">
-        {t(key).replace("{pct}", Math.abs(pct).toFixed(1))}
-      </span>
+      <span className="text-foreground">{t(key).replace("{pct}", Math.abs(pct).toFixed(1))}</span>
       <button
         onClick={() => setHidden(true)}
         className="ms-auto rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
