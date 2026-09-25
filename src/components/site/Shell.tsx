@@ -39,6 +39,9 @@ const NAV_GROUPS = [
     key: "nav.group.about",
     items: [
       { to: "/partners", key: "nav.partners" },
+      { to: "/alerts", key: "nav.alerts" },
+      { to: "/moderation", key: "nav.moderation" },
+      { to: "/auth", key: "nav.account" },
       { to: "/waqf", key: "nav.about" },
     ],
   },
