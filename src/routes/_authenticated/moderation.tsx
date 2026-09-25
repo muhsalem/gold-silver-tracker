@@ -126,9 +126,12 @@ function ModerationPage() {
     void load();
   };
 
-  if (loading) return <Page eyebrow="" title={t("m.title")} sub="" />;
-  if (!isAdmin) {
-    return <Page eyebrow={t("nav.moderation")} title={t("m.title")} sub={t("m.denied")} />;
+  if (loading || !isAdmin) {
+    return (
+      <Page eyebrow={t("nav.moderation")} title={t("m.title")} sub={t("m.denied")}>
+        <p className="text-sm text-muted-foreground">{t("m.denied")}</p>
+      </Page>
+    );
   }
 
   return (
