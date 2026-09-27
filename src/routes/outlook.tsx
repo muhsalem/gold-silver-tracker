@@ -6,6 +6,7 @@ import { Page } from "@/components/site/Page";
 import { Button } from "@/components/ui/button";
 import { ANNUAL_METALS } from "@/lib/long-history";
 import { formatNumber } from "@/lib/nisab";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/outlook")({
   head: () => ({
@@ -75,6 +76,7 @@ function drawdown(span: number, metal: Metal): number {
 const HORIZONS = [10, 20, 30, 50, 100];
 
 function OutlookPage() {
+  const { t } = useI18n();
   const [metal, setMetal] = useState<Metal>("gold");
 
   const stats = useMemo(() => {
@@ -96,26 +98,26 @@ function OutlookPage() {
     const base = (stats.cagr20 + stats.cagr50) / 2;
     const spread = Math.max(2, stats.vol20 / 2);
     return [
-      { key: "low", label: "متحفظ", rate: base - spread, tone: "text-muted-foreground" },
-      { key: "base", label: "أساسي", rate: base, tone: "text-foreground" },
-      { key: "high", label: "متفائل", rate: base + spread, tone: "text-primary" },
+      { key: "low", label: t("o.low"), rate: base - spread, tone: "text-muted-foreground" },
+      { key: "base", label: t("o.base"), rate: base, tone: "text-foreground" },
+      { key: "high", label: t("o.high"), rate: base + spread, tone: "text-primary" },
     ];
-  }, [stats]);
+  }, [stats, t]);
 
   const project = (rate: number, years: number) =>
     LATEST[metal] * Math.pow(1 + rate / 100, years);
 
   return (
     <Page
-      eyebrow="قراءة اقتصادية"
-      title="تقييم سعر الذهب والفضة: الماضي والاحتمالات"
-      sub="قراءة مبنية على سلسلة المتوسطات السنوية من ١٩٢٥ حتى اليوم بالدولار للأونصة. الأرقام اجتهاد تحليلي لمساعدتك على فهم سلوك المعدن، وليست وعدًا بسعر ولا نصيحة استثمارية."
+      eyebrow={t("o.eyebrow")}
+      title={t("o.title")}
+      sub={t("o.sub")}
     >
       <div className="flex flex-wrap gap-2">
         {(
           [
-            { key: "gold", label: "الذهب" },
-            { key: "silver", label: "الفضة" },
+            { key: "gold", label: t("o.gold") },
+            { key: "silver", label: t("o.silver") },
           ] as const
         ).map((option) => (
           <Button
@@ -133,22 +135,22 @@ function OutlookPage() {
         {[
           {
             icon: TrendingUp,
-            title: `سعر ${LATEST.year} (متوسط)`,
+            title: `${t("o.price")} · ${LATEST.year}`,
             value: `${formatNumber(LATEST[metal], 2)} USD/oz`,
           },
           {
             icon: LineChart,
-            title: "نمو سنوي مركب · ٢٠ سنة",
+            title: t("o.cagr20"),
             value: `${formatNumber(stats.cagr20, 2)}%`,
           },
           {
             icon: Activity,
-            title: "تقلب سنوي · ٢٠ سنة",
+            title: t("o.vol20"),
             value: `${formatNumber(stats.vol20, 1)}%`,
           },
           {
             icon: Scale,
-            title: "نسبة الذهب/الفضة",
+            title: t("o.ratio"),
             value: `${formatNumber(stats.ratio, 1)} : 1`,
           },
         ].map((item) => (
@@ -161,16 +163,16 @@ function OutlookPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="text-2xl text-foreground">النمو المركب عبر الفترات</h2>
+        <h2 className="text-2xl text-foreground">{t("o.cagrTable")}</h2>
         <div className="scroll-x mt-4">
           <table className="w-full min-w-[34rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-muted-foreground">
-                <th className="p-3 text-start font-medium">الفترة</th>
-                <th className="p-3 text-start font-medium">سعر البداية</th>
-                <th className="p-3 text-start font-medium">سعر اليوم</th>
-                <th className="p-3 text-start font-medium">المضاعف</th>
-                <th className="p-3 text-start font-medium">نمو سنوي مركب</th>
+                <th className="p-3 text-start font-medium">{t("o.period")}</th>
+                <th className="p-3 text-start font-medium">{t("o.start")}</th>
+                <th className="p-3 text-start font-medium">{t("o.today")}</th>
+                <th className="p-3 text-start font-medium">{t("o.multiple")}</th>
+                <th className="p-3 text-start font-medium">{t("o.cagr")}</th>
               </tr>
             </thead>
             <tbody>
@@ -179,7 +181,7 @@ function OutlookPage() {
                 const growth = cagr(years, metal);
                 return (
                   <tr key={years} className="border-b border-border last:border-0">
-                    <td className="p-3 text-foreground">{years} سنة</td>
+                    <td className="p-3 text-foreground">{years} {t("o.years")}</td>
                     <td className="num p-3 text-muted-foreground">
                       {start ? formatNumber(start, 2) : "—"}
                     </td>
@@ -200,46 +202,40 @@ function OutlookPage() {
 
       <section className="mt-10 grid gap-4 md:grid-cols-3">
         <article className="card-surface p-6">
-          <h3 className="text-lg text-foreground">قراءة الاتجاه</h3>
+          <h3 className="text-lg text-foreground">{t("o.trend")}</h3>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            الذهب ثبت عند نحو ٣٥ دولارًا للأونصة حتى انهيار نظام بريتون وودز سنة ١٩٧١، ومنذ تحرير السعر صار
-            يتحرك مع التضخم وأسعار الفائدة الحقيقية وشراء البنوك المركزية. لذلك أي متوسط يبدأ قبل ١٩٧١ يقلّل
-            الصورة الحقيقية للتقلب.
+            {t("o.trendBody")}
           </p>
         </article>
         <article className="card-surface p-6">
-          <h3 className="text-lg text-foreground">التقلب والتراجعات</h3>
+          <h3 className="text-lg text-foreground">{t("o.volTitle")}</h3>
           <p className="num mt-2 text-sm leading-7 text-muted-foreground">
-            الانحراف المعياري للتغير السنوي: {formatNumber(stats.vol20, 1)}% على عشرين سنة و
-            {formatNumber(stats.vol50, 1)}% على خمسين سنة، وأعمق تراجع من قمة إلى قاع في السلسلة السنوية بلغ{" "}
-            {formatNumber(Math.abs(stats.dd50), 0)}%. الفضة أعلى تقلبًا لأن نصف الطلب عليها صناعي.
+            σ 20y: {formatNumber(stats.vol20, 1)}% · σ 50y: {formatNumber(stats.vol50, 1)}% · max drawdown: {formatNumber(Math.abs(stats.dd50), 0)}%
           </p>
         </article>
         <article className="card-surface p-6">
-          <h3 className="text-lg text-foreground">نسبة الذهب إلى الفضة</h3>
+          <h3 className="text-lg text-foreground">{t("o.ratioTitle")}</h3>
           <p className="num mt-2 text-sm leading-7 text-muted-foreground">
-            النسبة اليوم {formatNumber(stats.ratio, 1)} مقابل متوسط {formatNumber(stats.ratioAvg, 1)} خلال
-            خمسين سنة. ارتفاعها يعني أن نصاب الفضة صار أرخص كثيرًا من نصاب الذهب، وهو سبب الخلاف العملي في
-            اختيار أي النصابين يُعتمد.
+            {formatNumber(stats.ratio, 1)} : 1 (50y avg {formatNumber(stats.ratioAvg, 1)}).
+            {t("o.ratioBody")}
           </p>
         </article>
       </section>
 
       <section className="mt-10">
-        <h2 className="text-2xl text-foreground">سيناريوهات استرشادية</h2>
+        <h2 className="text-2xl text-foreground">{t("o.scenarios")}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-          السيناريو الأساسي هو متوسط النمو المركب على عشرين وخمسين سنة، والمتحفظ والمتفائل يبعدان عنه بمقدار
-          نصف التقلب السنوي. هذه حسابات امتداد للماضي ولا تتنبأ بأحداث السوق.
-        </p>
+            {t("o.scenariosSub")}
+          </p>
         <div className="scroll-x mt-4">
           <table className="w-full min-w-[34rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-muted-foreground">
-                <th className="p-3 text-start font-medium">السيناريو</th>
-                <th className="p-3 text-start font-medium">نمو سنوي</th>
-                <th className="p-3 text-start font-medium">بعد سنة</th>
-                <th className="p-3 text-start font-medium">بعد ٥ سنوات</th>
-                <th className="p-3 text-start font-medium">بعد ١٠ سنوات</th>
+                <th className="p-3 text-start font-medium">{t("o.scenario")}</th>
+                <th className="p-3 text-start font-medium">{t("o.rate")}</th>
+                <th className="p-3 text-start font-medium">{t("o.after")} 1 {t("o.years")}</th>
+                <th className="p-3 text-start font-medium">{t("o.after")} 5 {t("o.years")}</th>
+                <th className="p-3 text-start font-medium">{t("o.after")} 10 {t("o.years")}</th>
               </tr>
             </thead>
             <tbody>
@@ -261,45 +257,42 @@ function OutlookPage() {
 
       <section className="mt-10 grid gap-4 md:grid-cols-2">
         <article className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-lg text-foreground">ما الذي يرفع السعر؟</h3>
+          <h3 className="text-lg text-foreground">{t("o.up")}</h3>
           <ul className="mt-3 grid gap-2 text-sm leading-7 text-muted-foreground">
-            <li>تراجع الفائدة الحقيقية وضعف الدولار.</li>
-            <li>استمرار شراء البنوك المركزية للذهب كاحتياطي.</li>
-            <li>التضخم المرتفع والاضطرابات الجيوسياسية.</li>
-            <li>للفضة: نمو الطلب الصناعي، خصوصًا الطاقة الشمسية والإلكترونيات.</li>
+            <li>{t("o.up1")}</li>
+            <li>{t("o.up2")}</li>
+            <li>{t("o.up3")}</li>
+            <li>{t("o.up4")}</li>
           </ul>
         </article>
         <article className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-lg text-foreground">ما الذي يخفضه؟</h3>
+          <h3 className="text-lg text-foreground">{t("o.down")}</h3>
           <ul className="mt-3 grid gap-2 text-sm leading-7 text-muted-foreground">
-            <li>ارتفاع الفائدة الحقيقية وقوة الدولار.</li>
-            <li>تباطؤ التضخم وعودة الثقة بالأصول المدرّة للعائد.</li>
-            <li>بيع المستثمرين بعد موجات صعود حادة.</li>
-            <li>للفضة: ركود صناعي يخفض الطلب بسرعة.</li>
+            <li>{t("o.down1")}</li>
+            <li>{t("o.down2")}</li>
+            <li>{t("o.down3")}</li>
+            <li>{t("o.down4")}</li>
           </ul>
         </article>
       </section>
 
       <section className="mt-10 border-s-2 border-accent bg-card p-6">
-        <h2 className="text-xl text-foreground">أثر ذلك على النصاب</h2>
+        <h2 className="text-xl text-foreground">{t("o.impact")}</h2>
         <p className="mt-3 max-w-4xl text-sm leading-8 text-muted-foreground">
-          وزن النصاب ثابت لا يتغير: ٨٥ جرام ذهب و٥٩٥ جرام فضة، ونسبة الزكاة ٢٫٥٪. المتغير هو قيمة هذا الوزن
-          بعملتك، وهي ترتفع وتنخفض مع السوق ومع سعر صرف عملتك. العبرة عند الحساب بسعر يوم اكتمال الحول
-          الهجري، لا بالتوقع المستقبلي ولا بسعر يوم الشراء.
-        </p>
+            {t("o.impactBody")}
+          </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button asChild>
-            <Link to="/history">السجل التاريخي</Link>
+            <Link to="/history">{t("nav.history")}</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link to="/methodology">المنهجية</Link>
+            <Link to="/methodology">{t("nav.methodology")}</Link>
           </Button>
         </div>
       </section>
 
       <p className="mt-8 rounded-lg border border-border bg-secondary p-5 text-sm leading-7 text-secondary-foreground">
-        إخلاء مسؤولية: هذه قراءة اقتصادية استرشادية مبنية على متوسطات سنوية تقريبية، وليست نصيحة استثمارية
-        ولا فتوى. لا تُبنى قرارات بيع أو شراء على هذه الأرقام وحدها.
+        {t("o.disclaimer")}
       </p>
     </Page>
   );
