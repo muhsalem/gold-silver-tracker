@@ -4,6 +4,46 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
+import { useLocalQuote } from "@/lib/local-quotes";
+
+const LQ = {
+  ar: {
+    live: "سعر صاغة محلي معتمد (وسيط آخر ٧٢ ساعة)",
+    count: "عدد الأسعار:",
+    warnTitle: "تنبيه: لا يوجد سعر صاغة محلي معتمد حاليًا.",
+    warn: "المعروض هو السعر العالمي المجرّد للجرام محوّلًا بسعر الصرف، من مصدرين موثوقين (gold-api.com، واحتياطيًا Yahoo Finance/COMEX). قد يختلف عن سعر الصاغة في بلدك؛ تحقّق منه قبل إخراج الزكاة.",
+  },
+  en: {
+    live: "Approved local jeweller price (median of last 72h)",
+    count: "Quotes:",
+    warnTitle: "Warning: no approved local jeweller price right now.",
+    warn: "Showing the bare global gram price converted at the exchange rate, from two trusted sources (gold-api.com, with Yahoo Finance/COMEX as fallback). It may differ from jewellers in your country; verify before paying zakat.",
+  },
+  fr: {
+    live: "Prix local approuvé des bijoutiers (médiane 72 h)",
+    count: "Cotations :",
+    warnTitle: "Attention : aucun prix local approuvé pour le moment.",
+    warn: "Prix mondial brut du gramme converti au taux de change, issu de deux sources fiables (gold-api.com, repli Yahoo Finance/COMEX). Il peut différer des bijoutiers locaux ; vérifiez avant de payer la zakat.",
+  },
+  tr: {
+    live: "Onaylı yerel kuyumcu fiyatı (son 72 saat medyanı)",
+    count: "Fiyat sayısı:",
+    warnTitle: "Uyarı: şu anda onaylı yerel kuyumcu fiyatı yok.",
+    warn: "Gösterilen, iki güvenilir kaynaktan (gold-api.com, yedek Yahoo Finance/COMEX) döviz kuruyla çevrilmiş saf küresel gram fiyatıdır. Yerel kuyumculardan farklı olabilir; zekât öncesi doğrulayın.",
+  },
+  id: {
+    live: "Harga toko emas lokal disetujui (median 72 jam)",
+    count: "Jumlah harga:",
+    warnTitle: "Peringatan: belum ada harga toko emas lokal yang disetujui.",
+    warn: "Ditampilkan harga gram global murni yang dikonversi kurs, dari dua sumber tepercaya (gold-api.com, cadangan Yahoo Finance/COMEX). Bisa berbeda dari toko emas setempat; periksa sebelum membayar zakat.",
+  },
+  ur: {
+    live: "منظور شدہ مقامی سنار کی قیمت (آخری ۷۲ گھنٹے کا وسطانیہ)",
+    count: "قیمتوں کی تعداد:",
+    warnTitle: "انتباہ: ابھی کوئی منظور شدہ مقامی سنار کی قیمت موجود نہیں۔",
+    warn: "دکھائی گئی قیمت دو معتبر ذرائع (gold-api.com، متبادل Yahoo Finance/COMEX) سے عالمی خالص فی گرام قیمت ہے جو شرحِ مبادلہ سے تبدیل کی گئی۔ مقامی سناروں سے مختلف ہو سکتی ہے؛ زکوٰۃ سے پہلے تصدیق کریں۔",
+  },
+};
 import { notify, readHawl } from "@/lib/reminders";
 import {
   BIG_CHANGE_PCT,
@@ -537,14 +577,18 @@ export function LocalMarket({
   }, [key]);
 
   const currency = currencyProp ?? activeCurrency;
-  const goldGram = goldGramProp ?? values?.goldGram;
-  const silverGram = silverGramProp ?? values?.silverGram;
-  if (!data || goldGram == null || silverGram == null) return null;
+  const quote = useLocalQuote(country, currency).data ?? null;
+  const spotGold = goldGramProp ?? values?.goldGram;
+  const spotSilver = silverGramProp ?? values?.silverGram;
+  if (!data || spotGold == null || spotSilver == null) return null;
 
+  const L = LQ[lang as keyof typeof LQ] ?? LQ.en;
   const money = (v: number) => formatMoney(v, currency, lang);
-  const goldBuy = buyBack(goldGram, local.spreadPct);
+  const goldGram = quote?.goldGram ?? spotGold;
+  const silverGram = quote?.silverGram ?? spotSilver;
+  const goldBuy = quote?.buybackGram ?? buyBack(goldGram, local.spreadPct);
   const silverBuy = buyBack(silverGram, local.spreadPct);
-  const jeweler = scoped || local.jeweler;
+  const jeweler = Boolean(quote) || scoped || local.jeweler;
   void rateProp;
 
   const apply = () => {
@@ -565,6 +609,22 @@ export function LocalMarket({
         </span>
       </header>
       <p className="mt-1 text-sm text-muted-foreground">{t("local.sub")}</p>
+
+      {quote ? (
+        <p className="mt-3 rounded-lg bg-positive/10 px-3 py-2 text-xs leading-6 text-foreground">
+          {L.live} · {quote.city || "—"} · {quote.source || "—"} ·{" "}
+          <span className="num">{fmtDate(quote.at, lang)}</span> · {L.count}{" "}
+          <span className="num">{quote.count}</span>
+        </p>
+      ) : (
+        <p
+          role="alert"
+          className="mt-3 rounded-lg border border-accent bg-accent/15 px-3 py-2 text-xs leading-6 text-foreground"
+        >
+          <strong>{L.warnTitle}</strong> {L.warn}
+          <span className="block text-muted-foreground">{data.metals.source}</span>
+        </p>
+      )}
 
       <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         {[
