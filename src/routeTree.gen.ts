@@ -29,6 +29,7 @@ import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
+import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -129,6 +130,12 @@ const CountryCodeRoute = CountryCodeRouteImport.update({
   path: '/country/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksJewelerFeedRoute =
+  ApiPublicHooksJewelerFeedRouteImport.update({
+    id: '/api/public/hooks/jeweler-feed',
+    path: '/api/public/hooks/jeweler-feed',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -171,6 +179,7 @@ export interface FileRoutesByTo {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -194,6 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/moderation'
     | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/moderation'
     | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
   id:
     | '__root__'
     | '/'
@@ -260,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/alerts'
     | '/_authenticated/moderation'
     | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -281,6 +294,7 @@ export interface RootRouteChildren {
   TypesRoute: typeof TypesRoute
   WaqfRoute: typeof WaqfRoute
   CountryCodeRoute: typeof CountryCodeRoute
+  ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -425,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/jeweler-feed': {
+      id: '/api/public/hooks/jeweler-feed'
+      path: '/api/public/hooks/jeweler-feed'
+      fullPath: '/api/public/hooks/jeweler-feed'
+      preLoaderRoute: typeof ApiPublicHooksJewelerFeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -460,6 +481,7 @@ const rootRouteChildren: RootRouteChildren = {
   TypesRoute: TypesRoute,
   WaqfRoute: WaqfRoute,
   CountryCodeRoute: CountryCodeRoute,
+  ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
