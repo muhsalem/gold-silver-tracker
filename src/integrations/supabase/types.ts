@@ -47,6 +47,48 @@ export type Database = {
         }
         Relationships: []
       }
+      jeweler_feed: {
+        Row: {
+          buyback_gram: number | null
+          change_pct: number | null
+          country: string
+          currency: string
+          day: string
+          fetched_at: string
+          gold_gram: number | null
+          id: string
+          silver_gram: number | null
+          source: string
+          source_url: string
+        }
+        Insert: {
+          buyback_gram?: number | null
+          change_pct?: number | null
+          country: string
+          currency: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_gram?: number | null
+          source: string
+          source_url: string
+        }
+        Update: {
+          buyback_gram?: number | null
+          change_pct?: number | null
+          country?: string
+          currency?: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_gram?: number | null
+          source?: string
+          source_url?: string
+        }
+        Relationships: []
+      }
       notification_prefs: {
         Row: {
           countries: string[]

@@ -8,6 +8,13 @@
       "when": 1790071634219,
       "tag": "0000_community_platform",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790561931223,
+      "tag": "0001_jeweler_feed",
+      "breakpoints": true
     }
   ]
 }
