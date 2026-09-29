@@ -3,7 +3,7 @@
  * platforms and stores the bare 24K gram price (and buy-back where published).
  */
 const OZ = 31.1034768;
-const UA = { "User-Agent": "Mozilla/5.0 (compatible; NisabBot/1.0)" };
+const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36" };
 
 export type FeedRow = {
   country: string;
