@@ -30,7 +30,6 @@ import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
-import { Route as ApiPublicHooksTestUsersRouteImport } from './routes/api/public/hooks/test-users'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -137,11 +136,6 @@ const ApiPublicHooksJewelerFeedRoute =
     path: '/api/public/hooks/jeweler-feed',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksTestUsersRoute = ApiPublicHooksTestUsersRouteImport.update({
-  id: '/api/public/hooks/test-users',
-  path: '/api/public/hooks/test-users',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -164,7 +158,6 @@ export interface FileRoutesByFullPath {
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
-  '/api/public/hooks/test-users': typeof ApiPublicHooksTestUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -187,7 +180,6 @@ export interface FileRoutesByTo {
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
-  '/api/public/hooks/test-users': typeof ApiPublicHooksTestUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -212,7 +204,6 @@ export interface FileRoutesById {
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
-  '/api/public/hooks/test-users': typeof ApiPublicHooksTestUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -237,7 +228,6 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
-    | '/api/public/hooks/test-users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -260,7 +250,6 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
-    | '/api/public/hooks/test-users'
   id:
     | '__root__'
     | '/'
@@ -284,7 +273,6 @@ export interface FileRouteTypes {
     | '/_authenticated/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
-    | '/api/public/hooks/test-users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -307,7 +295,6 @@ export interface RootRouteChildren {
   WaqfRoute: typeof WaqfRoute
   CountryCodeRoute: typeof CountryCodeRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
-  ApiPublicHooksTestUsersRoute: typeof ApiPublicHooksTestUsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -459,13 +446,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksJewelerFeedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/test-users': {
-      id: '/api/public/hooks/test-users'
-      path: '/api/public/hooks/test-users'
-      fullPath: '/api/public/hooks/test-users'
-      preLoaderRoute: typeof ApiPublicHooksTestUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -502,7 +482,6 @@ const rootRouteChildren: RootRouteChildren = {
   WaqfRoute: WaqfRoute,
   CountryCodeRoute: CountryCodeRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
-  ApiPublicHooksTestUsersRoute: ApiPublicHooksTestUsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
