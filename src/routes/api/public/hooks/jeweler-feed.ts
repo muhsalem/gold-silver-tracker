@@ -6,11 +6,17 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const denied = await authenticateCronRequest(request);
-        if (denied) return denied;
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const jobToken = request.headers.get("x-job-token");
+        if (jobToken) {
+          const { data: ok } = await supabaseAdmin.rpc("verify_job_token", { _name: "jeweler_feed", _token: jobToken });
+          if (!ok) return new Response("Unauthorized", { status: 401 });
+        } else {
+          const denied = await authenticateCronRequest(request);
+          if (denied) return denied;
+        }
 
         const { collectFeed, BIG_CHANGE_PCT } = await import("@/lib/jeweler-feed.server");
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { rows, errors } = await collectFeed();
         const today = new Date().toISOString().slice(0, 10);
         const alerts: string[] = [];
