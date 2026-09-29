@@ -22,6 +22,13 @@
       "when": 1790655204038,
       "tag": "0002_enable_cron",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790655217131,
+      "tag": "0003_job_token",
+      "breakpoints": true
     }
   ]
 }

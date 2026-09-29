@@ -331,6 +331,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      verify_job_token: {
+        Args: { _name: string; _token: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "jeweler" | "ambassador" | "volunteer"
