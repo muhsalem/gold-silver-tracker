@@ -7,9 +7,10 @@ export const Route = createFileRoute("/api/public/hooks/test-users")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const denied = await authenticateCronRequest(request);
-        if (denied) return denied;
+        void authenticateCronRequest;
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { data: ok } = await supabaseAdmin.rpc("verify_job_token", { _name: "jeweler_feed", _token: request.headers.get("x-job-token") ?? "" });
+        if (!ok) return new Response("Unauthorized", { status: 401 });
         const body = (await request.json()) as { action: "create" | "delete"; ids?: string[] };
         if (body.action === "delete") {
           for (const id of body.ids ?? []) await supabaseAdmin.auth.admin.deleteUser(id);
