@@ -33,6 +33,27 @@ export function useLocalQuote(country: string, currency: string) {
     staleTime: 15 * 60 * 1000,
     queryFn: async () => {
       const since = new Date(Date.now() - LOCAL_QUOTE_MAX_AGE_MS).toISOString();
+      const { data: feed } = await supabase
+        .from("jeweler_feed")
+        .select("gold_gram, silver_gram, buyback_gram, source, fetched_at")
+        .eq("country", country)
+        .eq("currency", currency)
+        .gte("fetched_at", since)
+        .order("fetched_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (feed?.gold_gram) {
+        const n = (v: unknown) => (v == null ? null : Number(v));
+        return {
+          goldGram: n(feed.gold_gram),
+          silverGram: n(feed.silver_gram),
+          buybackGram: n(feed.buyback_gram),
+          city: "",
+          source: feed.source,
+          at: feed.fetched_at,
+          count: 1,
+        };
+      }
       const { data, error } = await supabase
         .from("price_submissions")
         .select("gold_gram, silver_gram, buyback_gram, city, source, reviewed_at, created_at")
