@@ -29,6 +29,13 @@
       "when": 1790655217131,
       "tag": "0003_job_token",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790655274888,
+      "tag": "0004_notify_quality_change",
+      "breakpoints": true
     }
   ]
 }
