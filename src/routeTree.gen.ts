@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CountriesRouteImport } from './routes/countries'
+import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -30,6 +31,8 @@ import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
+import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
+import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,6 +66,11 @@ const CompareRoute = CompareRouteImport.update({
 const CountriesRoute = CountriesRouteImport.update({
   id: '/countries',
   path: '/countries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -136,6 +144,16 @@ const ApiPublicHooksJewelerFeedRoute =
     path: '/api/public/hooks/jeweler-feed',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1NisabIndexRoute = ApiPublicV1NisabIndexRouteImport.update({
+  id: '/api/public/v1/nisab/',
+  path: '/api/public/v1/nisab/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
+  id: '/api/public/v1/nisab/history',
+  path: '/api/public/v1/nisab/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -144,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -158,6 +177,8 @@ export interface FileRoutesByFullPath {
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +187,7 @@ export interface FileRoutesByTo {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -180,6 +202,8 @@ export interface FileRoutesByTo {
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -190,6 +214,7 @@ export interface FileRoutesById {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -204,6 +229,8 @@ export interface FileRoutesById {
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -214,6 +241,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -228,6 +256,8 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -236,6 +266,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -250,6 +281,8 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab'
   id:
     | '__root__'
     | '/'
@@ -259,6 +292,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -273,6 +307,8 @@ export interface FileRouteTypes {
     | '/_authenticated/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -283,6 +319,7 @@ export interface RootRouteChildren {
   CalculatorRoute: typeof CalculatorRoute
   CompareRoute: typeof CompareRoute
   CountriesRoute: typeof CountriesRoute
+  DevelopersRoute: typeof DevelopersRoute
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
@@ -295,6 +332,8 @@ export interface RootRouteChildren {
   WaqfRoute: typeof WaqfRoute
   CountryCodeRoute: typeof CountryCodeRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
+  ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
+  ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -346,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/countries'
       fullPath: '/countries'
       preLoaderRoute: typeof CountriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -446,6 +492,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksJewelerFeedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/nisab/': {
+      id: '/api/public/v1/nisab/'
+      path: '/api/public/v1/nisab'
+      fullPath: '/api/public/v1/nisab/'
+      preLoaderRoute: typeof ApiPublicV1NisabIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/nisab/history': {
+      id: '/api/public/v1/nisab/history'
+      path: '/api/public/v1/nisab/history'
+      fullPath: '/api/public/v1/nisab/history'
+      preLoaderRoute: typeof ApiPublicV1NisabHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -470,6 +530,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalculatorRoute: CalculatorRoute,
   CompareRoute: CompareRoute,
   CountriesRoute: CountriesRoute,
+  DevelopersRoute: DevelopersRoute,
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
@@ -482,6 +543,8 @@ const rootRouteChildren: RootRouteChildren = {
   WaqfRoute: WaqfRoute,
   CountryCodeRoute: CountryCodeRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
+  ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
+  ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
