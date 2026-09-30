@@ -152,6 +152,45 @@ export type Database = {
         }
         Relationships: []
       }
+      official_nisab: {
+        Row: {
+          announced_on: string
+          authority: string
+          country: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          gold_nisab: number | null
+          id: string
+          silver_nisab: number | null
+          source_url: string
+        }
+        Insert: {
+          announced_on?: string
+          authority: string
+          country: string
+          created_at?: string
+          created_by?: string | null
+          currency: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string
+        }
+        Update: {
+          announced_on?: string
+          authority?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string
+        }
+        Relationships: []
+      }
       price_submissions: {
         Row: {
           ai_summary: string | null

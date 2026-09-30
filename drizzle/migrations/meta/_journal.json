@@ -36,6 +36,13 @@
       "when": 1790655274888,
       "tag": "0004_notify_quality_change",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790737754018,
+      "tag": "0005_official_nisab",
+      "breakpoints": true
     }
   ]
 }
