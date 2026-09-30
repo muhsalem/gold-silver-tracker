@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CountriesRouteImport } from './routes/countries'
+import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -65,6 +66,11 @@ const CompareRoute = CompareRouteImport.update({
 const CountriesRoute = CountriesRouteImport.update({
   id: '/countries',
   path: '/countries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/calculator': typeof CalculatorRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/compare'
     | '/countries'
+    | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   CalculatorRoute: typeof CalculatorRoute
   CompareRoute: typeof CompareRoute
   CountriesRoute: typeof CountriesRoute
+  DevelopersRoute: typeof DevelopersRoute
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
@@ -372,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/countries'
       fullPath: '/countries'
       preLoaderRoute: typeof CountriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -510,6 +530,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalculatorRoute: CalculatorRoute,
   CompareRoute: CompareRoute,
   CountriesRoute: CountriesRoute,
+  DevelopersRoute: DevelopersRoute,
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
