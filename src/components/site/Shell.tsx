@@ -42,6 +42,7 @@ const NAV_GROUPS = [
       { to: "/alerts", key: "nav.alerts" },
       { to: "/moderation", key: "nav.moderation" },
       { to: "/auth", key: "nav.account" },
+      { to: "/developers", key: "nav.api" },
       { to: "/waqf", key: "nav.about" },
     ],
   },
