@@ -58,7 +58,10 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           }
         }
 
-        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors });
+        const { watchOfficialSources } = await import("@/lib/official-watch.server");
+        const official = await watchOfficialSources(supabaseAdmin);
+
+        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official });
       },
     },
   },
