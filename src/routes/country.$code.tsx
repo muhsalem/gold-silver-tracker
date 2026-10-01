@@ -4,6 +4,8 @@ import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { StateNote, Disclaimer, LocalMarket, SourceQuality } from "@/components/site/Prices";
+import { OfficialNisab } from "@/components/site/OfficialNisab";
+import { ShareNisab } from "@/components/site/ShareNisab";
 import {
   GOLD_NISAB_G,
   KARATS,
@@ -186,7 +188,14 @@ function CountryPage() {
           </section>
 
           <LocalMarket currency={country.currency} goldGram={goldGram} silverGram={silverGram} />
+          <OfficialNisab country={country.code} locale={lang} />
           <SourceQuality currency={country.currency} />
+          <ShareNisab
+            countryName={country.ar}
+            goldText={money(gold)}
+            silverText={money(silver)}
+            url={`https://nissab-rates.lovable.app/country/${country.code.toLowerCase()}`}
+          />
         </>
       )}
 

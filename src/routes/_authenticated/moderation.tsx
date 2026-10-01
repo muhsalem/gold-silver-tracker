@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 
 import { Page } from "@/components/site/Page";
+import { OfficialNisabAdmin } from "@/components/site/OfficialNisabAdmin";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/lib/auth";
@@ -200,6 +201,10 @@ function ModerationPage() {
           {roleMsg && <span className="text-sm text-muted-foreground">{roleMsg}</span>}
         </div>
       </section>
+
+      {user && <OfficialNisabAdmin userId={user.id} />}
+
+
 
       <section className="mt-8 rounded-lg border border-border bg-card p-6">
         <h2 className="text-xl text-foreground">{t("m.audit")}</h2>
