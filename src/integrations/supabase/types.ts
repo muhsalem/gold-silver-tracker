@@ -191,6 +191,60 @@ export type Database = {
         }
         Relationships: []
       }
+      official_sources: {
+        Row: {
+          active: boolean
+          authority: string
+          country: string
+          created_at: string
+          currency: string
+          id: string
+          last_changed: string | null
+          last_checked: string | null
+          last_error: string
+          last_hash: string | null
+          last_snippet: string
+          last_value: number | null
+          metal: string
+          url: string
+          value_pattern: string | null
+        }
+        Insert: {
+          active?: boolean
+          authority: string
+          country: string
+          created_at?: string
+          currency: string
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string
+          last_hash?: string | null
+          last_snippet?: string
+          last_value?: number | null
+          metal?: string
+          url: string
+          value_pattern?: string | null
+        }
+        Update: {
+          active?: boolean
+          authority?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string
+          last_hash?: string | null
+          last_snippet?: string
+          last_value?: number | null
+          metal?: string
+          url?: string
+          value_pattern?: string | null
+        }
+        Relationships: []
+      }
       price_submissions: {
         Row: {
           ai_summary: string | null
