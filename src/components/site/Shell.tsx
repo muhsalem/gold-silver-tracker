@@ -25,13 +25,19 @@ const NAV_GROUPS = [
     ],
   },
   {
+    key: "nav.group.tools",
+    items: [
+      { to: "/calculator", key: "nav.calculator" },
+      { to: "/alerts", key: "nav.alerts" },
+      { to: "/outlook", key: "nav.outlook" },
+    ],
+  },
+  {
     key: "nav.group.reference",
     items: [
       { to: "/types", key: "nav.types" },
-      { to: "/methodology", key: "nav.methodology" },
-      { to: "/outlook", key: "nav.outlook" },
       { to: "/fiqh", key: "nav.fiqh" },
-      { to: "/calculator", key: "nav.calculator" },
+      { to: "/methodology", key: "nav.methodology" },
       { to: "/faq", key: "nav.faq" },
     ],
   },
@@ -39,20 +45,18 @@ const NAV_GROUPS = [
     key: "nav.group.about",
     items: [
       { to: "/partners", key: "nav.partners" },
-      { to: "/alerts", key: "nav.alerts" },
       { to: "/moderation", key: "nav.moderation" },
-      { to: "/auth", key: "nav.account" },
       { to: "/developers", key: "nav.api" },
+      { to: "/auth", key: "nav.account" },
       { to: "/waqf", key: "nav.about" },
     ],
   },
 ] as const;
 
-const NAV = [
-  ...NAV_GROUPS[0].items,
-  ...NAV_GROUPS[1].items,
-  ...NAV_GROUPS[2].items,
-];
+/** Core links shown directly in the desktop header bar. */
+const NAV_PRIMARY = NAV_GROUPS[0].items;
+/** Everything else lives under the "More" dropdown. */
+const NAV_MORE = NAV_GROUPS.slice(1);
 
 export function CountryPicker({ compact = false }: { compact?: boolean }) {
   const { t, lang, country, setCountry } = useI18n();
