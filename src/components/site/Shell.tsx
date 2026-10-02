@@ -1,5 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Search } from "lucide-react";
+import { ChevronDown, Menu, Search } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
