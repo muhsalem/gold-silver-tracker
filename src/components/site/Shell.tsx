@@ -277,7 +277,7 @@ export function Shell({ children }: { children: ReactNode }) {
             aria-label={t("nav.group.live")}
             className="hidden flex-1 flex-wrap items-center justify-center gap-1 md:flex"
           >
-            {NAV.map((item) => (
+            {NAV_PRIMARY.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
@@ -288,6 +288,29 @@ export function Shell({ children }: { children: ReactNode }) {
                 {t(item.key)}
               </Link>
             ))}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+                {t("nav.more")}
+                <ChevronDown aria-hidden="true" className="size-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {NAV_MORE.map((group, gi) => (
+                  <div key={group.key}>
+                    {gi > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuLabel className="eyebrow text-muted-foreground">
+                      {t(group.key)}
+                    </DropdownMenuLabel>
+                    {group.items.map((item) => (
+                      <DropdownMenuItem key={item.to} asChild>
+                        <Link to={item.to} activeOptions={{ exact: true }}>
+                          {t(item.key)}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
 
           <div className="ms-auto flex items-center gap-2">
