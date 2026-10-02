@@ -4,6 +4,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { Page } from "@/components/site/Page";
 import { OfficialNisabAdmin } from "@/components/site/OfficialNisabAdmin";
+import { OfficialSourcesAdmin } from "@/components/site/OfficialSourcesAdmin";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/lib/auth";
@@ -203,6 +204,7 @@ function ModerationPage() {
       </section>
 
       {user && <OfficialNisabAdmin userId={user.id} />}
+      <OfficialSourcesAdmin />
 
 
 
