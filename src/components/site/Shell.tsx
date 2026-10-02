@@ -331,7 +331,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <p className="mt-2 text-sm text-muted-foreground">{t("footer.meta")}</p>
           <nav
             aria-label={t("nav.group.about")}
-            className="mt-6 grid gap-6 text-sm sm:grid-cols-3"
+            className="mt-6 grid gap-6 text-sm sm:grid-cols-2 lg:grid-cols-4"
           >
             {NAV_GROUPS.map((group) => (
               <div key={group.key}>
