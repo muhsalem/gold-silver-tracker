@@ -1,5 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Search } from "lucide-react";
+import { ChevronDown, Menu, Search } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
@@ -25,13 +33,19 @@ const NAV_GROUPS = [
     ],
   },
   {
+    key: "nav.group.tools",
+    items: [
+      { to: "/calculator", key: "nav.calculator" },
+      { to: "/alerts", key: "nav.alerts" },
+      { to: "/outlook", key: "nav.outlook" },
+    ],
+  },
+  {
     key: "nav.group.reference",
     items: [
       { to: "/types", key: "nav.types" },
-      { to: "/methodology", key: "nav.methodology" },
-      { to: "/outlook", key: "nav.outlook" },
       { to: "/fiqh", key: "nav.fiqh" },
-      { to: "/calculator", key: "nav.calculator" },
+      { to: "/methodology", key: "nav.methodology" },
       { to: "/faq", key: "nav.faq" },
     ],
   },
@@ -39,20 +53,18 @@ const NAV_GROUPS = [
     key: "nav.group.about",
     items: [
       { to: "/partners", key: "nav.partners" },
-      { to: "/alerts", key: "nav.alerts" },
       { to: "/moderation", key: "nav.moderation" },
-      { to: "/auth", key: "nav.account" },
       { to: "/developers", key: "nav.api" },
+      { to: "/auth", key: "nav.account" },
       { to: "/waqf", key: "nav.about" },
     ],
   },
 ] as const;
 
-const NAV = [
-  ...NAV_GROUPS[0].items,
-  ...NAV_GROUPS[1].items,
-  ...NAV_GROUPS[2].items,
-];
+/** Core links shown directly in the desktop header bar. */
+const NAV_PRIMARY = NAV_GROUPS[0].items;
+/** Everything else lives under the "More" dropdown. */
+const NAV_MORE = NAV_GROUPS.slice(1);
 
 export function CountryPicker({ compact = false }: { compact?: boolean }) {
   const { t, lang, country, setCountry } = useI18n();
@@ -265,7 +277,7 @@ export function Shell({ children }: { children: ReactNode }) {
             aria-label={t("nav.group.live")}
             className="hidden flex-1 flex-wrap items-center justify-center gap-1 md:flex"
           >
-            {NAV.map((item) => (
+            {NAV_PRIMARY.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
@@ -276,6 +288,29 @@ export function Shell({ children }: { children: ReactNode }) {
                 {t(item.key)}
               </Link>
             ))}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+                {t("nav.more")}
+                <ChevronDown aria-hidden="true" className="size-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {NAV_MORE.map((group, gi) => (
+                  <div key={group.key}>
+                    {gi > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuLabel className="eyebrow text-muted-foreground">
+                      {t(group.key)}
+                    </DropdownMenuLabel>
+                    {group.items.map((item) => (
+                      <DropdownMenuItem key={item.to} asChild>
+                        <Link to={item.to} activeOptions={{ exact: true }}>
+                          {t(item.key)}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
 
           <div className="ms-auto flex items-center gap-2">
@@ -296,7 +331,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <p className="mt-2 text-sm text-muted-foreground">{t("footer.meta")}</p>
           <nav
             aria-label={t("nav.group.about")}
-            className="mt-6 grid gap-6 text-sm sm:grid-cols-3"
+            className="mt-6 grid gap-6 text-sm sm:grid-cols-2 lg:grid-cols-4"
           >
             {NAV_GROUPS.map((group) => (
               <div key={group.key}>
