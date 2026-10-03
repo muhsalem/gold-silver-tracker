@@ -89,6 +89,48 @@ export type Database = {
         }
         Relationships: []
       }
+      nisab_history: {
+        Row: {
+          country: string
+          created_at: string
+          currency: string
+          day: string
+          gold_gram: number | null
+          gold_nisab: number | null
+          id: string
+          silver_gram: number | null
+          silver_nisab: number | null
+          source: string
+          source_url: string
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          currency: string
+          day?: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string
+          source_url?: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          currency?: string
+          day?: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string
+          source_url?: string
+        }
+        Relationships: []
+      }
       notification_prefs: {
         Row: {
           countries: string[]
