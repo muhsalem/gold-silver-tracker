@@ -61,7 +61,11 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         const { watchOfficialSources } = await import("@/lib/official-watch.server");
         const official = await watchOfficialSources(supabaseAdmin);
 
-        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official });
+        // Daily nisab history snapshot: local jeweller prices where available,
+        // global spot (converted per currency) everywhere else.
+        const history = await recordNisabHistory(supabaseAdmin, rows, today);
+
+        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official, history });
       },
     },
   },
