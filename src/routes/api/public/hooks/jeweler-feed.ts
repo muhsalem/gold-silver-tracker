@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 
 import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
 import { COUNTRIES } from "@/lib/countries";
@@ -8,7 +10,7 @@ const OZ = 31.1034768;
 
 /** Snapshot today's nisab (gold 85g, silver 595g) per country into nisab_history. */
 async function recordNisabHistory(
-  supabaseAdmin: import("@/integrations/supabase/types").Database extends never ? never : import("@supabase/supabase-js").SupabaseClient,
+  supabaseAdmin: SupabaseClient,
   feedRows: FeedRow[],
   today: string,
 ): Promise<{ recorded: number; source: string }> {
