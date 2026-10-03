@@ -8,7 +8,7 @@ const OZ = 31.1034768;
 
 /** Snapshot today's nisab (gold 85g, silver 595g) per country into nisab_history. */
 async function recordNisabHistory(
-  supabaseAdmin: Awaited<ReturnType<typeof import("@/integrations/supabase/client.server")>>["supabaseAdmin"],
+  supabaseAdmin: import("@/integrations/supabase/types").Database extends never ? never : import("@supabase/supabase-js").SupabaseClient,
   feedRows: FeedRow[],
   today: string,
 ): Promise<{ recorded: number; source: string }> {
