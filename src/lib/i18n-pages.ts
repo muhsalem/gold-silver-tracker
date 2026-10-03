@@ -7,7 +7,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "Metal prices",
     "update.rates": "Exchange rates",
     "update.source": "Source",
-    "update.manual": "Manual prices entered by the site keeper",
+    "update.manual": "Manual prices saved on this device",
     "update.fetched": "Last checked",
     "alert.up": "The nisab has risen by {pct}% since your last visit.",
     "alert.down": "The nisab has fallen by {pct}% since your last visit.",
@@ -27,14 +27,23 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "Value of the metals",
     "calc.nisabValue": "Nisab threshold",
     "calc.summary": "Result",
+    "calc.jewelryWeight": "Worn jewelry (grams, same karat)",
+    "calc.jewelryRule": "Ruling on worn jewelry",
+    "calc.jewelry.include": "Zakatable (Hanafi view, more cautious)",
+    "calc.jewelry.exclude": "Exempt (view of the majority)",
+    "calc.standardNote":
+      "Scholars differ on measuring the cash nisab by silver or by gold; follow the fatwa authority in your country.",
     "history.pick": "Metal",
-    "history.note": "Closing prices from the international futures market, converted to your currency.",
+    "history.note":
+      "Closing prices from the international futures market, converted to your currency.",
     "history.period": "Historical period",
     "history.countrySeries": "Historical nisab calculated with each date's exchange rate",
     "history.from1448": "From 1 Muharram 1448 AH to today, continuing automatically",
-    "history.fxUnavailable": "A reliable historical exchange-rate series is unavailable for this currency.",
+    "history.fxUnavailable":
+      "A reliable historical exchange-rate series is unavailable for this currency.",
     "history.empty": "No historical points are available for this period.",
-    "history.manualPoint": "Manual administrative entries appear as dated points alongside market history.",
+    "history.manualPoint":
+      "Manual administrative entries appear as dated points alongside market history.",
     "types.cash.t": "Zakat on money and savings",
     "types.cash.d":
       "2.5% of cash, bank balances, savings and receivables once they reach the nisab and a lunar year passes.",
@@ -46,12 +55,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Value your inventory at market price on your zakat date, add cash and receivables, subtract due debts, then pay 2.5%.",
     "types.crops.t": "Zakat on crops and fruit",
     "types.crops.d":
-      "Due at harvest on 653 kg or more: 10% if watered by rain, 5% if irrigated at a cost. No lunar year required.",
+      "Due once grain hardens and fruit ripens, paid at harvest, on 5 awsuq (about 653 kg; contemporary estimates vary) per the majority — the Hanafis set no minimum: 10% if watered naturally, 5% if irrigated at a cost. No lunar year required.",
     "types.livestock.t": "Zakat on livestock",
     "types.livestock.d":
       "Grazing camels, cattle, sheep and goats have their own tiered thresholds, starting at 5 camels, 30 cattle or 40 sheep.",
     "types.rikaz.t": "Zakat on minerals and treasure",
-    "types.rikaz.d": "One fifth (20%) is due on buried treasure found, payable immediately.",
+    "types.rikaz.d":
+      "Buried treasure (rikaz) carries one fifth (20%), paid when found with no waiting year; the Shafi‘is also require the nisab. Mined minerals carry 2.5% above the nisab per the majority, and one fifth per the Hanafis.",
     "types.fitr.t": "Zakat al-Fitr",
     "types.fitr.d":
       "One ṣāʿ (about 2.5 kg) of staple food per person, paid before the Eid prayer at the end of Ramadan.",
@@ -65,7 +75,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "The nisab is the minimum wealth a Muslim must hold for a full lunar year before zakat becomes due: 85 g of gold or 595 g of silver, or their value.",
     "faq.q2": "Should I use the gold or the silver nisab?",
     "faq.a2":
-      "Most contemporary scholars prefer the silver nisab because it is lower, so more people give and the poor benefit more.",
+      "It is a contemporary matter of ijtihad: some scholars and bodies prefer the silver nisab as it is lower and better for the poor, while many others prefer gold as closer to the original value of the nisab. The calculator lets you choose; follow the fatwa authority in your country.",
     "faq.q3": "How much zakat do I pay?",
     "faq.a3": "2.5% (a quarter of a tenth) of your net zakatable wealth on your zakat date.",
     "faq.q4": "Which debts can I subtract?",
@@ -73,7 +83,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Debts that are due now, such as an overdue bill or the instalments payable within your zakat year, not the full length of a long-term loan.",
     "faq.q5": "Where do your prices come from?",
     "faq.a5":
-      "Spot gold and silver prices and daily exchange rates come from open market data, refreshed automatically every day. The site keeper can also enter local market prices by hand.",
+      "Spot gold and silver prices and daily exchange rates come from open market data, refreshed automatically every day. You can enter your local market prices on the manual prices page; they are saved on your device only and are not shown to others.",
     "faq.q6": "Is this site a fatwa?",
     "faq.a6":
       "No. It is a calculation aid. For rulings on your particular case, ask a trusted scholar.",
@@ -97,7 +107,28 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.historyHint": "Saving adds a dated point to this currency's historical chart.",
     "admin.deviceOnly": "This device only",
     "admin.preview": "Current result after adjustment",
-    "admin.localNote": "These values are saved on this device only. A manual price appears as today's point in the historical chart.",
+    "admin.localNote":
+      "These values are saved on this device only. A manual price appears as today's point in the historical chart.",
+    "calc.investments": "Shares for trading, funds and crypto (market value)",
+    "calc.longTerm": "Long-term shares (market value)",
+    "calc.longTermPct": "Company's zakatable assets (%)",
+    "calc.longTermHint":
+      "From the company's financial statements. Keep 100% if unknown — the more cautious choice.",
+    "calc.rateSolar": "Rate 2.577% (Gregorian year)",
+    "hawl.title": "Your zakat year (ḥawl)",
+    "hawl.start": "Date your wealth reached the nisab",
+    "hawl.basis": "Year basis",
+    "hawl.lunar": "Hijri year — 2.5%",
+    "hawl.solar": "Gregorian year — 2.577%",
+    "hawl.next": "Next zakat date",
+    "hawl.days": "{n} days left",
+    "hawl.today": "Your zakat is due today",
+    "hawl.note":
+      "The Hijri year follows the Umm al-Qura calendar. The Gregorian year is longer, so its rate is 2.577%. Saved on this device only.",
+    "update.stale":
+      "Your manual prices were saved {n} days ago and may be out of date. Update them or restore the live prices from the manual prices page.",
+    "types.madhhab.title": "Rulings by school of law",
+    "types.madhhab.note": "A brief summary of the four schools' positions, in Arabic.",
   },
   ar: {
     "nav.admin": "الأسعار اليدوية",
@@ -105,7 +136,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "أسعار المعادن",
     "update.rates": "أسعار الصرف",
     "update.source": "المصدر",
-    "update.manual": "أسعار مُدخلة يدوياً من القائم على الموقع",
+    "update.manual": "أسعار مُدخلة يدوياً على هذا الجهاز",
     "update.fetched": "آخر مراجعة",
     "alert.up": "ارتفع النصاب بنسبة {pct}٪ منذ زيارتك السابقة.",
     "alert.down": "انخفض النصاب بنسبة {pct}٪ منذ زيارتك السابقة.",
@@ -125,6 +156,12 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "قيمة المعادن",
     "calc.nisabValue": "حدّ النصاب",
     "calc.summary": "النتيجة",
+    "calc.jewelryWeight": "حُليّ ذهب للاستعمال الشخصي (جرام، بالعيار نفسه)",
+    "calc.jewelryRule": "حكم الحُليّ المستعمل",
+    "calc.jewelry.include": "تجب فيه الزكاة (الحنفية، وهو الأحوط)",
+    "calc.jewelry.exclude": "لا زكاة فيه (الجمهور)",
+    "calc.standardNote":
+      "اختلف أهل العلم في تقدير نصاب النقود بالفضّة أو بالذهب؛ والأَولى اتّباع جهة الفتوى في بلدك.",
     "history.pick": "المعدن",
     "history.note": "أسعار الإغلاق من سوق العقود العالمية، محوَّلة إلى عملتك.",
     "history.period": "الفترة التاريخية",
@@ -143,12 +180,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "تُقوَّم البضاعة بسعر السوق يوم الحول، ويُضاف النقد والديون المرجوّة، وتُخصم الديون الحالّة، ثم يُخرج ٢٫٥٪.",
     "types.crops.t": "زكاة الزروع والثمار",
     "types.crops.d":
-      "تجب يوم الحصاد عند بلوغ ٦٥٣ كجم: العُشر (١٠٪) فيما سُقي بالمطر، ونصفه (٥٪) فيما سُقي بمؤونة، ولا يُشترط الحول.",
+      "تجب ببدوّ صلاح الثمر واشتداد الحبّ وتُخرَج عند الحصاد، إذا بلغت خمسة أوسق (نحو ٦٥٣ كجم، والتقديرات المعاصرة متفاوتة) عند الجمهور، ولا يشترط الحنفية النصاب: العُشر (١٠٪) فيما سُقي بلا كلفة، ونصفه (٥٪) فيما سُقي بمؤونة، ولا يُشترط الحول.",
     "types.livestock.t": "زكاة بهيمة الأنعام",
     "types.livestock.d":
       "للإبل والبقر والغنم السائمة أنصبة مُدرَّجة، تبدأ من خمسٍ من الإبل، أو ثلاثين من البقر، أو أربعين من الغنم.",
     "types.rikaz.t": "زكاة المعادن والرِّكاز",
-    "types.rikaz.d": "في الرِّكاز الخُمس (٢٠٪)، ويُخرَج حين وجوده من غير اشتراط حولٍ ولا نصاب.",
+    "types.rikaz.d":
+      "في الرِّكاز (دفين الجاهلية) الخُمس (٢٠٪) حين وجوده بلا حول، ويشترط الشافعية فيه النصاب. أمّا المعدن المستخرج من الأرض ففيه ربع العُشر (٢٫٥٪) إذا بلغ النصاب عند الجمهور، والخُمس عند الحنفية.",
     "types.fitr.t": "زكاة الفطر",
     "types.fitr.d":
       "صاعٌ من غالب قوت البلد (نحو ٢٫٥ كجم) عن كلّ نفس، تُخرَج قبل صلاة العيد في ختام رمضان.",
@@ -162,7 +200,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "النصاب أقلّ مقدارٍ من المال تجب فيه الزكاة إذا حال عليه الحول: ٨٥ جراماً من الذهب أو ٥٩٥ جراماً من الفضّة أو ما يعادلهما.",
     "faq.q2": "أآخُذ بنصاب الذهب أم الفضّة؟",
     "faq.a2":
-      "أكثر أهل العلم المعاصرين يرجّحون نصاب الفضّة لأنه الأدنى، فيكثر المزكّون وينتفع الفقراء.",
+      "المسألة اجتهادية معاصرة: رجّح بعض العلماء والهيئات نصاب الفضّة لأنه الأدنى والأحظّ للفقراء، ورجّح كثيرون غيرهم نصاب الذهب لأنه أقرب إلى القيمة الأصلية للنصاب. تتيح لك الحاسبة الاختيار بينهما، والأَولى اتّباع جهة الفتوى في بلدك.",
     "faq.q3": "كم مقدار الزكاة؟",
     "faq.a3": "٢٫٥٪ — ربع العُشر — من صافي المال الزكوي يوم حولك.",
     "faq.q4": "أيّ الديون تُخصم؟",
@@ -170,7 +208,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "الديون الحالّة المستحقّة الآن، وما يقع من أقساط داخل حولك، لا كامل القرض طويل الأجل.",
     "faq.q5": "من أين تأتي الأسعار؟",
     "faq.a5":
-      "من بيانات السوق المفتوحة لأسعار الذهب والفضّة الفوريّة وأسعار الصرف اليومية، وتُحدَّث تلقائياً كلّ يوم، ويمكن للقائم على الموقع إدخال أسعار السوق المحليّة يدوياً.",
+      "من بيانات السوق المفتوحة لأسعار الذهب والفضّة الفوريّة وأسعار الصرف اليومية، وتُحدَّث تلقائياً كلّ يوم. ويمكنك إدخال أسعار سوقك المحليّة من صفحة الأسعار اليدوية، وتُحفظ على جهازك وحده ولا تظهر لغيرك.",
     "faq.q6": "هل هذا الموقع فتوى؟",
     "faq.a6": "لا، إنما هو أداة حساب استرشادية، والفتوى في نازلتك تُلتمس من أهل العلم الثقات.",
     "about.body1":
@@ -193,7 +231,27 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.historyHint": "يضيف الحفظ نقطة مؤرخة إلى الرسم التاريخي لهذه العملة.",
     "admin.deviceOnly": "على هذا الجهاز فقط",
     "admin.preview": "النتيجة الحالية بعد التعديل",
-    "admin.localNote": "تُحفظ هذه القيم على هذا الجهاز فقط. ويظهر السعر اليدوي كنقطة اليوم في الرسم التاريخي.",
+    "admin.localNote":
+      "تُحفظ هذه القيم على هذا الجهاز فقط. ويظهر السعر اليدوي كنقطة اليوم في الرسم التاريخي.",
+    "calc.investments": "أسهم المتاجرة والصناديق والعملات الرقمية (بالقيمة السوقية)",
+    "calc.longTerm": "أسهم مقتناة للاستثمار طويل الأجل (بالقيمة السوقية)",
+    "calc.longTermPct": "نسبة الموجودات الزكوية في الشركة (٪)",
+    "calc.longTermHint": "تُؤخذ من القوائم المالية للشركة، ويُترك ١٠٠٪ إن لم تُعرف احتياطاً.",
+    "calc.rateSolar": "المقدار ٢٫٥٧٧٪ (سنة ميلادية)",
+    "hawl.title": "حَوْلُك",
+    "hawl.start": "تاريخ بلوغ مالك النصاب",
+    "hawl.basis": "نوع السنة",
+    "hawl.lunar": "سنة هجرية — ٢٫٥٪",
+    "hawl.solar": "سنة ميلادية — ٢٫٥٧٧٪",
+    "hawl.next": "موعد زكاتك القادم",
+    "hawl.days": "يبقى {n}",
+    "hawl.today": "حلّ حولك اليوم، فأخرج زكاتك",
+    "hawl.note":
+      "السنة الهجرية وفق تقويم أم القرى، والسنة الميلادية أطول فيكون مقدارها ٢٫٥٧٧٪. يُحفظ التاريخ على جهازك وحده.",
+    "update.stale":
+      "أُدخلت أسعارك اليدوية قبل {n} وقد لا تكون محدّثة؛ حدّثها أو أعد الأسعار الحيّة من صفحة الأسعار اليدوية.",
+    "types.madhhab.title": "أحكام الزكاة في المذاهب الأربعة",
+    "types.madhhab.note": "خلاصة موجزة لأقوال المذاهب، وتُراجع كتب كلّ مذهب للتفصيل.",
   },
   fr: {
     "nav.admin": "Prix manuels",
@@ -201,7 +259,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "Prix des métaux",
     "update.rates": "Taux de change",
     "update.source": "Source",
-    "update.manual": "Prix saisis manuellement par le gestionnaire du site",
+    "update.manual": "Prix saisis manuellement sur cet appareil",
     "update.fetched": "Dernière vérification",
     "alert.up": "Le nisab a augmenté de {pct}% depuis votre dernière visite.",
     "alert.down": "Le nisab a baissé de {pct}% depuis votre dernière visite.",
@@ -219,6 +277,12 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "Valeur des métaux",
     "calc.nisabValue": "Seuil du nisab",
     "calc.summary": "Résultat",
+    "calc.jewelryWeight": "Bijoux portés (grammes, même carat)",
+    "calc.jewelryRule": "Statut des bijoux portés",
+    "calc.jewelry.include": "Soumis à la zakat (avis hanafite, plus prudent)",
+    "calc.jewelry.exclude": "Exemptés (avis de la majorité)",
+    "calc.standardNote":
+      "Les savants divergent sur l'évaluation du nisab monétaire en argent ou en or ; suivez l'autorité de fatwa de votre pays.",
     "history.pick": "Métal",
     "history.note": "Cours de clôture du marché international, convertis dans votre devise.",
     "types.cash.t": "Zakat sur l'argent et l'épargne",
@@ -232,12 +296,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Évaluez le stock au prix du marché, ajoutez liquidités et créances, déduisez les dettes exigibles, puis versez 2,5 %.",
     "types.crops.t": "Zakat sur les récoltes",
     "types.crops.d":
-      "Due à la récolte dès 653 kg : 10 % si l'irrigation est naturelle, 5 % si elle est coûteuse. Pas d'année lunaire requise.",
+      "Due à la maturité des grains et des fruits, versée à la récolte, dès 5 awsuq (environ 653 kg ; les estimations varient) selon la majorité — les hanafites ne fixent pas de minimum : 10 % si l'irrigation est naturelle, 5 % si elle est coûteuse. Pas d'année lunaire requise.",
     "types.livestock.t": "Zakat sur le bétail",
     "types.livestock.d":
       "Chameaux, bovins et ovins en pâturage ont des seuils progressifs : 5 chameaux, 30 bovins ou 40 ovins.",
     "types.rikaz.t": "Zakat sur les minerais et trésors",
-    "types.rikaz.d": "Un cinquième (20 %) est dû sur un trésor enfoui, payable immédiatement.",
+    "types.rikaz.d":
+      "Le trésor enfoui (rikaz) est soumis au cinquième (20 %) dès sa découverte, sans année d'attente ; les chaféites exigent aussi le nisab. Les minerais extraits sont soumis à 2,5 % au-delà du nisab selon la majorité, et au cinquième selon les hanafites.",
     "types.fitr.t": "Zakat al-Fitr",
     "types.fitr.d":
       "Un ṣāʿ (environ 2,5 kg) d'aliment de base par personne, avant la prière de l'Aïd.",
@@ -251,7 +316,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Le minimum de richesse détenu pendant une année lunaire avant que la zakat ne soit due : 85 g d'or ou 595 g d'argent, ou leur valeur.",
     "faq.q2": "Or ou argent comme référence ?",
     "faq.a2":
-      "La plupart des savants contemporains préfèrent le nisab de l'argent, plus bas, au bénéfice des pauvres.",
+      "C'est une question d'ijtihad contemporain : certains savants préfèrent le nisab de l'argent, plus bas et plus favorable aux pauvres, beaucoup d'autres celui de l'or, plus proche de la valeur d'origine. Le calculateur vous laisse choisir ; suivez l'autorité de fatwa de votre pays.",
     "faq.q3": "Quel est le montant ?",
     "faq.a3": "2,5 % de votre patrimoine net imposable à la date de votre zakat.",
     "faq.q4": "Quelles dettes déduire ?",
@@ -259,7 +324,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Les dettes exigibles maintenant et les échéances de l'année en cours, pas la totalité d'un prêt long.",
     "faq.q5": "D'où viennent les prix ?",
     "faq.a5":
-      "De données de marché ouvertes pour l'or, l'argent et les taux de change, actualisées chaque jour ; des prix locaux peuvent aussi être saisis à la main.",
+      "De données de marché ouvertes pour l'or, l'argent et les taux de change, actualisées chaque jour. Vous pouvez saisir vos prix locaux sur la page des prix ; ils restent sur votre appareil uniquement.",
     "faq.q6": "Ce site est-il une fatwa ?",
     "faq.a6": "Non, c'est une aide au calcul. Consultez un savant de confiance pour votre cas.",
     "about.body1":
@@ -279,6 +344,26 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.saved": "Prix manuels enregistrés.",
     "admin.live": "Valeur en direct",
     "admin.gramNote": "Prix équivalent par gramme",
+    "calc.investments": "Actions de trading, fonds et crypto (valeur de marché)",
+    "calc.longTerm": "Actions détenues à long terme (valeur de marché)",
+    "calc.longTermPct": "Part des actifs zakatables de la société (%)",
+    "calc.longTermHint":
+      "Tirée des états financiers de la société ; gardez 100 % si inconnue, par prudence.",
+    "calc.rateSolar": "Taux 2,577 % (année grégorienne)",
+    "hawl.title": "Votre année de zakat (hawl)",
+    "hawl.start": "Date où vos biens ont atteint le nisab",
+    "hawl.basis": "Base de l'année",
+    "hawl.lunar": "Année hégirienne — 2,5 %",
+    "hawl.solar": "Année grégorienne — 2,577 %",
+    "hawl.next": "Prochaine date de zakat",
+    "hawl.days": "Encore {n} jours",
+    "hawl.today": "Votre zakat est due aujourd'hui",
+    "hawl.note":
+      "L'année hégirienne suit le calendrier Umm al-Qura ; l'année grégorienne étant plus longue, le taux est de 2,577 %. Enregistré sur cet appareil uniquement.",
+    "update.stale":
+      "Vos prix manuels datent de {n} jours et peuvent être obsolètes ; mettez-les à jour ou rétablissez les prix en direct depuis la page des prix manuels.",
+    "types.madhhab.title": "Statuts selon les écoles juridiques",
+    "types.madhhab.note": "Bref résumé des positions des quatre écoles, en arabe.",
   },
   tr: {
     "nav.admin": "Elle girilen fiyatlar",
@@ -286,7 +371,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "Maden fiyatları",
     "update.rates": "Döviz kurları",
     "update.source": "Kaynak",
-    "update.manual": "Site sorumlusu tarafından elle girilen fiyatlar",
+    "update.manual": "Bu cihazda elle girilen fiyatlar",
     "update.fetched": "Son kontrol",
     "alert.up": "Nisap, son ziyaretinizden bu yana %{pct} yükseldi.",
     "alert.down": "Nisap, son ziyaretinizden bu yana %{pct} düştü.",
@@ -304,6 +389,12 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "Madenlerin değeri",
     "calc.nisabValue": "Nisap eşiği",
     "calc.summary": "Sonuç",
+    "calc.jewelryWeight": "Kullanılan ziynet (gram, aynı ayar)",
+    "calc.jewelryRule": "Kullanılan ziynetin hükmü",
+    "calc.jewelry.include": "Zekâta tabi (Hanefî görüşü, ihtiyatlı olan)",
+    "calc.jewelry.exclude": "Muaf (çoğunluğun görüşü)",
+    "calc.standardNote":
+      "Âlimler nakit nisabının gümüşle mi altınla mı ölçüleceğinde ihtilaf etmiştir; ülkenizin fetva makamına uyun.",
     "history.pick": "Maden",
     "history.note": "Uluslararası piyasa kapanış fiyatları, para biriminize çevrilmiştir.",
     "types.cash.t": "Para ve birikimin zekâtı",
@@ -316,12 +407,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Stok piyasa değeriyle hesaplanır, nakit ve alacaklar eklenir, vadesi gelen borçlar düşülür, %2,5 verilir.",
     "types.crops.t": "Ekin ve meyvenin zekâtı",
     "types.crops.d":
-      "653 kg'dan itibaren hasatta verilir: yağmurla sulanana %10, masrafla sulanana %5. Yıl şartı yoktur.",
+      "Tane sertleşip meyve olgunlaşınca vacip olur, hasatta verilir; çoğunluğa göre 5 vesk (yaklaşık 653 kg; tahminler farklıdır) şarttır, Hanefîler asgari miktar şart koşmaz: yağmurla sulanana %10, masrafla sulanana %5. Yıl şartı yoktur.",
     "types.livestock.t": "Hayvanların zekâtı",
     "types.livestock.d":
       "Otlayan deve, sığır ve koyunun kademeli nisabı vardır: 5 deve, 30 sığır veya 40 koyundan başlar.",
     "types.rikaz.t": "Maden ve definenin zekâtı",
-    "types.rikaz.d": "Definede beşte bir (%20) vardır, bulunduğu anda verilir.",
+    "types.rikaz.d":
+      "Definede (rikâz) bulunduğu anda beşte bir (%20) vardır, yıl şartı yoktur; Şâfiîler nisabı da şart koşar. Çıkarılan madende çoğunluğa göre nisabı aşınca %2,5, Hanefîlere göre beşte bir vardır.",
     "types.fitr.t": "Fitre (Zekâtü'l-fıtr)",
     "types.fitr.d": "Kişi başı bir sâ' (yaklaşık 2,5 kg) temel gıda, bayram namazından önce.",
     "types.camels": "Deve",
@@ -333,14 +425,16 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "faq.a1":
       "Zekâtın farz olması için bir kamerî yıl elde tutulması gereken asgari mal: 85 g altın veya 595 g gümüş ya da değeri.",
     "faq.q2": "Altın mı gümüş mü esas alınmalı?",
-    "faq.a2": "Çağdaş âlimlerin çoğu, daha düşük olduğu için gümüş nisabını tercih eder.",
+    "faq.a2":
+      "Bu çağdaş bir içtihat meselesidir: bazı âlimler daha düşük ve fakirin lehine olduğu için gümüş nisabını, birçokları ise nisabın asıl değerine daha yakın olduğu için altını tercih eder. Hesaplayıcıda seçebilirsiniz; ülkenizin fetva makamına uyun.",
     "faq.q3": "Zekât oranı nedir?",
     "faq.a3": "Zekât gününüzdeki net zekâta tabi malın %2,5'i (kırkta bir).",
     "faq.q4": "Hangi borçlar düşülür?",
-    "faq.a4": "Şu an vadesi gelmiş borçlar ve yıl içindeki taksitler; uzun vadeli kredinin tamamı değil.",
+    "faq.a4":
+      "Şu an vadesi gelmiş borçlar ve yıl içindeki taksitler; uzun vadeli kredinin tamamı değil.",
     "faq.q5": "Fiyatlar nereden geliyor?",
     "faq.a5":
-      "Açık piyasa verilerinden alınan altın, gümüş ve kur bilgileri her gün otomatik yenilenir; yerel fiyatlar elle de girilebilir.",
+      "Açık piyasa verilerinden alınan altın, gümüş ve kur bilgileri her gün otomatik yenilenir. Yerel fiyatlarınızı fiyatlar sayfasından girebilirsiniz; yalnızca cihazınızda saklanır.",
     "faq.q6": "Bu site fetva mıdır?",
     "faq.a6": "Hayır, bir hesaplama aracıdır. Kendi durumunuz için güvenilir bir âlime danışın.",
     "about.body1":
@@ -360,6 +454,25 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.saved": "Elle girilen fiyatlar kaydedildi.",
     "admin.live": "Canlı değer",
     "admin.gramNote": "Gram karşılığı",
+    "calc.investments": "Alım-satım hisseleri, fonlar ve kripto (piyasa değeri)",
+    "calc.longTerm": "Uzun vadeli yatırım hisseleri (piyasa değeri)",
+    "calc.longTermPct": "Şirketin zekâta tabi varlık oranı (%)",
+    "calc.longTermHint": "Şirketin mali tablolarından alınır; bilinmiyorsa ihtiyaten %100 bırakın.",
+    "calc.rateSolar": "Oran %2,577 (miladi yıl)",
+    "hawl.title": "Zekât yılınız (havl)",
+    "hawl.start": "Malınızın nisaba ulaştığı tarih",
+    "hawl.basis": "Yıl esası",
+    "hawl.lunar": "Hicrî yıl — %2,5",
+    "hawl.solar": "Miladi yıl — %2,577",
+    "hawl.next": "Sonraki zekât tarihi",
+    "hawl.days": "{n} gün kaldı",
+    "hawl.today": "Zekâtınız bugün vacip oldu",
+    "hawl.note":
+      "Hicrî yıl Ümmü'l-Kurâ takvimine göredir; miladi yıl daha uzun olduğundan oran %2,577'dir. Yalnızca bu cihazda saklanır.",
+    "update.stale":
+      "Elle girdiğiniz fiyatlar {n} gün önce kaydedildi ve güncel olmayabilir; elle girilen fiyatlar sayfasından güncelleyin veya canlı fiyatlara dönün.",
+    "types.madhhab.title": "Mezheplere göre hükümler",
+    "types.madhhab.note": "Dört mezhebin görüşlerinin kısa özeti (Arapça).",
   },
   id: {
     "nav.admin": "Harga manual",
@@ -367,7 +480,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "Harga logam",
     "update.rates": "Kurs mata uang",
     "update.source": "Sumber",
-    "update.manual": "Harga dimasukkan manual oleh pengelola situs",
+    "update.manual": "Harga manual yang disimpan di perangkat ini",
     "update.fetched": "Terakhir diperiksa",
     "alert.up": "Nisab naik {pct}% sejak kunjungan terakhir Anda.",
     "alert.down": "Nisab turun {pct}% sejak kunjungan terakhir Anda.",
@@ -385,6 +498,12 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "Nilai logam",
     "calc.nisabValue": "Batas nisab",
     "calc.summary": "Hasil",
+    "calc.jewelryWeight": "Perhiasan yang dipakai (gram, kadar sama)",
+    "calc.jewelryRule": "Hukum perhiasan yang dipakai",
+    "calc.jewelry.include": "Wajib zakat (mazhab Hanafi, lebih hati-hati)",
+    "calc.jewelry.exclude": "Tidak wajib (pendapat jumhur)",
+    "calc.standardNote":
+      "Ulama berbeda pendapat apakah nisab uang diukur dengan perak atau emas; ikuti otoritas fatwa di negara Anda.",
     "history.pick": "Logam",
     "history.note": "Harga penutupan pasar internasional, dikonversi ke mata uang Anda.",
     "types.cash.t": "Zakat uang dan tabungan",
@@ -397,12 +516,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Nilai persediaan dengan harga pasar, tambahkan kas dan piutang, kurangi utang jatuh tempo, lalu keluarkan 2,5%.",
     "types.crops.t": "Zakat pertanian",
     "types.crops.d":
-      "Wajib saat panen mulai 653 kg: 10% jika diairi hujan, 5% jika dengan biaya. Tanpa syarat haul.",
+      "Wajib ketika biji mengeras dan buah matang, dikeluarkan saat panen, bila mencapai 5 wasaq (sekitar 653 kg; perkiraan beragam) menurut jumhur — mazhab Hanafi tidak mensyaratkan nisab: 10% jika diairi alami, 5% jika dengan biaya. Tanpa syarat haul.",
     "types.livestock.t": "Zakat hewan ternak",
     "types.livestock.d":
       "Unta, sapi dan kambing yang digembalakan punya nisab bertingkat: mulai 5 unta, 30 sapi, atau 40 kambing.",
     "types.rikaz.t": "Zakat barang tambang dan rikaz",
-    "types.rikaz.d": "Seperlima (20%) untuk harta terpendam, dikeluarkan saat ditemukan.",
+    "types.rikaz.d":
+      "Rikaz (harta terpendam) dikenai seperlima (20%) saat ditemukan tanpa haul; mazhab Syafi'i juga mensyaratkan nisab. Barang tambang dikenai 2,5% bila mencapai nisab menurut jumhur, dan seperlima menurut mazhab Hanafi.",
     "types.fitr.t": "Zakat fitrah",
     "types.fitr.d":
       "Satu sha' (sekitar 2,5 kg) makanan pokok per jiwa, ditunaikan sebelum shalat Id.",
@@ -415,14 +535,16 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "faq.a1":
       "Batas minimal harta yang dimiliki selama satu tahun hijriah sebelum zakat wajib: 85 g emas atau 595 g perak, atau senilai itu.",
     "faq.q2": "Pakai nisab emas atau perak?",
-    "faq.a2": "Mayoritas ulama kontemporer memilih nisab perak karena lebih rendah dan lebih memihak fakir miskin.",
+    "faq.a2":
+      "Ini masalah ijtihad kontemporer: sebagian ulama memilih nisab perak karena lebih rendah dan lebih memihak fakir miskin, banyak ulama lain memilih emas karena lebih dekat dengan nilai asli nisab. Kalkulator memungkinkan Anda memilih; ikuti otoritas fatwa di negara Anda.",
     "faq.q3": "Berapa kadar zakatnya?",
     "faq.a3": "2,5% dari harta bersih wajib zakat pada tanggal haul Anda.",
     "faq.q4": "Utang apa yang dikurangkan?",
-    "faq.a4": "Utang yang jatuh tempo sekarang dan cicilan dalam tahun berjalan, bukan seluruh pinjaman jangka panjang.",
+    "faq.a4":
+      "Utang yang jatuh tempo sekarang dan cicilan dalam tahun berjalan, bukan seluruh pinjaman jangka panjang.",
     "faq.q5": "Dari mana harga diambil?",
     "faq.a5":
-      "Dari data pasar terbuka untuk emas, perak dan kurs harian, diperbarui otomatis tiap hari; harga lokal juga bisa diisi manual.",
+      "Dari data pasar terbuka untuk emas, perak dan kurs harian, diperbarui otomatis tiap hari. Anda bisa mengisi harga lokal di halaman harga; hanya tersimpan di perangkat Anda.",
     "faq.q6": "Apakah situs ini fatwa?",
     "faq.a6": "Bukan. Ini alat bantu hitung. Tanyakan kasus Anda kepada ulama tepercaya.",
     "about.body1":
@@ -442,6 +564,26 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.saved": "Harga manual tersimpan.",
     "admin.live": "Nilai langsung",
     "admin.gramNote": "Setara harga per gram",
+    "calc.investments": "Saham trading, reksa dana dan kripto (nilai pasar)",
+    "calc.longTerm": "Saham investasi jangka panjang (nilai pasar)",
+    "calc.longTermPct": "Porsi aset zakat perusahaan (%)",
+    "calc.longTermHint":
+      "Diambil dari laporan keuangan perusahaan; biarkan 100% bila tidak diketahui, sebagai kehati-hatian.",
+    "calc.rateSolar": "Tarif 2,577% (tahun Masehi)",
+    "hawl.title": "Haul zakat Anda",
+    "hawl.start": "Tanggal harta Anda mencapai nisab",
+    "hawl.basis": "Dasar tahun",
+    "hawl.lunar": "Tahun Hijriah — 2,5%",
+    "hawl.solar": "Tahun Masehi — 2,577%",
+    "hawl.next": "Tanggal zakat berikutnya",
+    "hawl.days": "{n} hari lagi",
+    "hawl.today": "Zakat Anda jatuh tempo hari ini",
+    "hawl.note":
+      "Tahun Hijriah mengikuti kalender Ummul Qura; tahun Masehi lebih panjang sehingga tarifnya 2,577%. Hanya tersimpan di perangkat ini.",
+    "update.stale":
+      "Harga manual Anda disimpan {n} hari lalu dan mungkin sudah usang; perbarui atau kembalikan harga langsung dari halaman harga manual.",
+    "types.madhhab.title": "Hukum menurut mazhab",
+    "types.madhhab.note": "Ringkasan singkat pendapat empat mazhab, dalam bahasa Arab.",
   },
   ur: {
     "nav.admin": "دستی قیمتیں",
@@ -449,7 +591,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "update.metals": "دھاتوں کی قیمت",
     "update.rates": "شرحِ تبادلہ",
     "update.source": "ماخذ",
-    "update.manual": "منتظمِ سائٹ کی درج کردہ دستی قیمتیں",
+    "update.manual": "اس آلے پر درج دستی قیمتیں",
     "update.fetched": "آخری جانچ",
     "alert.up": "آپ کی پچھلی آمد سے نصاب {pct}٪ بڑھ چکا ہے۔",
     "alert.down": "آپ کی پچھلی آمد سے نصاب {pct}٪ کم ہو چکا ہے۔",
@@ -467,10 +609,17 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.metalValue": "دھاتوں کی مالیت",
     "calc.nisabValue": "نصاب کی حد",
     "calc.summary": "نتیجہ",
+    "calc.jewelryWeight": "استعمال کے زیورات (گرام، اسی قیراط کے)",
+    "calc.jewelryRule": "استعمال کے زیورات کا حکم",
+    "calc.jewelry.include": "زکوٰۃ واجب (احناف، زیادہ احتیاط)",
+    "calc.jewelry.exclude": "زکوٰۃ نہیں (جمہور)",
+    "calc.standardNote":
+      "نقدی کا نصاب چاندی سے لگے یا سونے سے، اس میں علماء کا اختلاف ہے؛ اپنے ملک کے دارالافتاء کی پیروی کریں۔",
     "history.pick": "دھات",
     "history.note": "عالمی منڈی کی اختتامی قیمتیں، آپ کی کرنسی میں۔",
     "types.cash.t": "نقدی اور بچت کی زکوٰۃ",
-    "types.cash.d": "نقدی، بینک بیلنس، بچت اور وصول طلب رقم پر 2.5٪، جب نصاب کو پہنچے اور سال گزرے۔",
+    "types.cash.d":
+      "نقدی، بینک بیلنس، بچت اور وصول طلب رقم پر 2.5٪، جب نصاب کو پہنچے اور سال گزرے۔",
     "types.gold.t": "سونے چاندی کی زکوٰۃ",
     "types.gold.d": "85 گرام / 595 گرام کے معیار پر، مارکیٹ مالیت کا 2.5٪۔",
     "types.trade.t": "مالِ تجارت کی زکوٰۃ",
@@ -478,12 +627,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "اسٹاک کی بازاری قیمت لگائیں، نقدی و واجب الوصول شامل کریں، واجب الادا قرض منہا کریں، پھر 2.5٪ ادا کریں۔",
     "types.crops.t": "کھیتی اور پھلوں کی زکوٰۃ",
     "types.crops.d":
-      "653 کلو سے کٹائی پر واجب: بارانی پر دسواں حصہ (10٪)، خرچ سے سیراب پر 5٪۔ سال گزرنا شرط نہیں۔",
+      "دانہ سخت اور پھل پک جانے پر واجب، کٹائی پر ادا؛ جمہور کے نزدیک پانچ وسق (تقریباً 653 کلو، اندازے مختلف ہیں) شرط ہے، احناف کے نزدیک کوئی نصاب نہیں: بارانی پر دسواں حصہ (10٪)، خرچ سے سیراب پر 5٪۔ سال گزرنا شرط نہیں۔",
     "types.livestock.t": "مویشیوں کی زکوٰۃ",
     "types.livestock.d":
       "چرنے والے اونٹ، گائے اور بکریوں کے الگ نصاب ہیں: 5 اونٹ، 30 گائے یا 40 بکریوں سے شروع۔",
     "types.rikaz.t": "معدنیات اور رکاز کی زکوٰۃ",
-    "types.rikaz.d": "دفینے میں پانچواں حصہ (20٪) ہے، ملتے ہی ادا کیا جائے۔",
+    "types.rikaz.d":
+      "رکاز (دفینہ) میں ملتے ہی پانچواں حصہ (20٪) ہے، سال شرط نہیں؛ شوافع نصاب بھی شرط کرتے ہیں۔ کان سے نکلی معدنیات میں جمہور کے نزدیک نصاب پر 2.5٪ اور احناف کے نزدیک پانچواں حصہ ہے۔",
     "types.fitr.t": "صدقۂ فطر",
     "types.fitr.d": "ہر فرد کی طرف سے ایک صاع (تقریباً 2.5 کلو) غلہ، نمازِ عید سے پہلے۔",
     "types.camels": "اونٹ",
@@ -495,14 +645,15 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "faq.a1":
       "وہ کم سے کم مال جس پر سال گزرنے کے بعد زکوٰۃ واجب ہوتی ہے: 85 گرام سونا یا 595 گرام چاندی یا اس کی مالیت۔",
     "faq.q2": "سونے کا نصاب لیں یا چاندی کا؟",
-    "faq.a2": "اکثر معاصر علماء چاندی کا نصاب پسند کرتے ہیں کیونکہ وہ کم ہے اور فقراء کے حق میں ہے۔",
+    "faq.a2":
+      "یہ معاصر اجتہادی مسئلہ ہے: بعض علماء چاندی کا نصاب ترجیح دیتے ہیں کیونکہ وہ کم اور فقراء کے حق میں ہے، اور بہت سے علماء سونے کو کیونکہ وہ نصاب کی اصل قدر کے قریب ہے۔ کیلکولیٹر میں انتخاب ممکن ہے؛ اپنے ملک کے دارالافتاء کی پیروی کریں۔",
     "faq.q3": "زکوٰۃ کی مقدار کتنی ہے؟",
     "faq.a3": "آپ کے سالِ زکوٰۃ پر خالص قابلِ زکوٰۃ مال کا 2.5٪۔",
     "faq.q4": "کون سے قرض منہا ہوں گے؟",
     "faq.a4": "وہ قرض جو ابھی واجب الادا ہیں اور سال کے اندر کی اقساط، پورا طویل المدت قرض نہیں۔",
     "faq.q5": "قیمتیں کہاں سے آتی ہیں؟",
     "faq.a5":
-      "سونے چاندی کی عالمی قیمتیں اور روزانہ شرحِ تبادلہ کھلے بازار کے اعداد و شمار سے، جو روز خود بخود تازہ ہوتی ہیں؛ مقامی قیمتیں دستی بھی درج کی جا سکتی ہیں۔",
+      "سونے چاندی کی عالمی قیمتیں اور روزانہ شرحِ تبادلہ کھلے بازار کے اعداد و شمار سے، جو روز خود بخود تازہ ہوتی ہیں۔ اپنی مقامی قیمتیں قیمتوں کے صفحے پر درج کر سکتے ہیں؛ یہ صرف آپ کے آلے پر محفوظ رہتی ہیں۔",
     "faq.q6": "کیا یہ سائٹ فتویٰ ہے؟",
     "faq.a6": "نہیں، یہ حساب کا ذریعہ ہے۔ اپنے مسئلے کے لیے معتبر عالم سے رجوع کریں۔",
     "about.body1": "یہ ویب سائٹ اللہ کی رضا کے لیے وقف ہے: سب کے لیے مفت، بغیر اشتہار و تعاقب۔",
@@ -521,5 +672,24 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "admin.saved": "دستی قیمتیں محفوظ ہو گئیں۔",
     "admin.live": "براہِ راست قیمت",
     "admin.gramNote": "فی گرام مساوی قیمت",
+    "calc.investments": "تجارتی حصص، فنڈز اور کرپٹو (بازاری قیمت)",
+    "calc.longTerm": "طویل مدتی سرمایہ کاری کے حصص (بازاری قیمت)",
+    "calc.longTermPct": "کمپنی کے قابلِ زکوٰۃ اثاثوں کا تناسب (٪)",
+    "calc.longTermHint": "کمپنی کے مالی گوشواروں سے لیں؛ معلوم نہ ہو تو احتیاطاً 100٪ رہنے دیں۔",
+    "calc.rateSolar": "شرح 2.577٪ (شمسی سال)",
+    "hawl.title": "آپ کا حولانِ حول",
+    "hawl.start": "مال نصاب تک پہنچنے کی تاریخ",
+    "hawl.basis": "سال کی بنیاد",
+    "hawl.lunar": "ہجری سال — 2.5٪",
+    "hawl.solar": "شمسی سال — 2.577٪",
+    "hawl.next": "اگلی زکوٰۃ کی تاریخ",
+    "hawl.days": "{n} دن باقی",
+    "hawl.today": "آپ کی زکوٰۃ آج واجب ہے",
+    "hawl.note":
+      "ہجری سال ام القریٰ کیلنڈر کے مطابق ہے؛ شمسی سال لمبا ہے اس لیے شرح 2.577٪ ہے۔ صرف اسی آلے پر محفوظ۔",
+    "update.stale":
+      "آپ کی دستی قیمتیں {n} دن پہلے محفوظ ہوئیں اور پرانی ہو سکتی ہیں؛ دستی قیمتوں کے صفحے سے تازہ کریں یا براہِ راست قیمتیں بحال کریں۔",
+    "types.madhhab.title": "مذاہبِ اربعہ کے مطابق احکام",
+    "types.madhhab.note": "چاروں مذاہب کے اقوال کا مختصر خلاصہ، عربی میں۔",
   },
 };

@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calculator, ChartNoAxesCombined } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { CountryPicker } from "@/components/site/Shell";
 import { NisabAlert, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
+import { formatHijri, today } from "@/lib/hijri";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 
@@ -30,15 +32,21 @@ export const Route = createFileRoute("/")({
 const TYPES = ["cash", "gold", "trade", "crops", "livestock", "fitr"] as const;
 
 function Home() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { values, money, isLoading, isError, refetch, currency } = useNisab();
+  // Client-only: the visitor's local day, not the server's.
+  const [hijri, setHijri] = useState("");
+  useEffect(() => setHijri(formatHijri(today(), lang)), [lang]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
       <NisabAlert value={values?.lower} />
 
       <section className="rise">
-        <p className="eyebrow text-muted-foreground">{t("hero.eyebrow")}</p>
+        <p className="eyebrow text-muted-foreground">
+          {t("hero.eyebrow")}
+          {hijri && <span className="num"> · {hijri}</span>}
+        </p>
         <h1 className="mt-2 max-w-3xl text-3xl leading-tight text-foreground sm:text-5xl">
           {t("hero.title")}
         </h1>
@@ -144,14 +152,20 @@ function Home() {
           className="flex min-h-20 items-center gap-4 rounded-lg bg-primary px-5 py-4 text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Calculator aria-hidden="true" />
-          <span><strong className="block font-medium">{t("home.cta.calc")}</strong><small className="mt-1 block opacity-75">{t("home.cta.calcSub")}</small></span>
+          <span>
+            <strong className="block font-medium">{t("home.cta.calc")}</strong>
+            <small className="mt-1 block opacity-75">{t("home.cta.calcSub")}</small>
+          </span>
         </Link>
         <Link
           to="/history"
           className="flex min-h-20 items-center gap-4 rounded-lg border border-border bg-card px-5 py-4 text-foreground transition-colors hover:bg-secondary"
         >
           <ChartNoAxesCombined aria-hidden="true" />
-          <span><strong className="block font-medium">{t("home.cta.history")}</strong><small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small></span>
+          <span>
+            <strong className="block font-medium">{t("home.cta.history")}</strong>
+            <small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small>
+          </span>
         </Link>
       </section>
 

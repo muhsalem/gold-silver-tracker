@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RotateCcw } from "lucide-react";
 
 import { Field, Page } from "@/components/site/Page";
@@ -7,6 +7,15 @@ import { CountryPicker } from "@/components/site/Shell";
 import { StateNote, useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
+import {
+  DAY_MS,
+  ZAKAT_RATE_SOLAR,
+  formatDays,
+  formatHijri,
+  nextHawl,
+  parseDay,
+  today,
+} from "@/lib/hijri";
 import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
 
 export const Route = createFileRoute("/calculator")({
@@ -29,39 +38,97 @@ export const Route = createFileRoute("/calculator")({
   component: Calculator,
 });
 
+const LS_HAWL = "nisab.hawl";
+
+type HawlPrefs = { start: string; solar: boolean };
+
+function readHawl(): HawlPrefs {
+  try {
+    const v = JSON.parse(localStorage.getItem(LS_HAWL) ?? "{}") as Partial<HawlPrefs>;
+    return { start: typeof v.start === "string" ? v.start : "", solar: v.solar === true };
+  } catch {
+    return { start: "", solar: false };
+  }
+}
+
+function writeHawl(v: HawlPrefs) {
+  try {
+    localStorage.setItem(LS_HAWL, JSON.stringify(v));
+  } catch {
+    // Storage unavailable (private mode); the ḥawl just isn't remembered.
+  }
+}
+
 const num = (v: string) => (Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0);
 
 function Calculator() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { values, money, isLoading, isError, refetch } = useNisab();
+
+  const [hawl, setHawlState] = useState<HawlPrefs>({ start: "", solar: false });
+  useEffect(() => setHawlState(readHawl()), []);
+  const setHawl = (next: HawlPrefs) => {
+    setHawlState(next);
+    writeHawl(next);
+  };
 
   const [cash, setCash] = useState("");
   const [business, setBusiness] = useState("");
   const [investments, setInvestments] = useState("");
+  const [longTerm, setLongTerm] = useState("");
+  const [longTermPct, setLongTermPct] = useState("100");
   const [receivables, setReceivables] = useState("");
   const [debts, setDebts] = useState("");
   const [goldG, setGoldG] = useState("");
   const [karat, setKarat] = useState(21);
+  const [jewelryG, setJewelryG] = useState("");
+  const [jewelryRule, setJewelryRule] = useState<"include" | "exclude">("include");
   const [silverG, setSilverG] = useState("");
   const [standard, setStandard] = useState<"silver" | "gold">("silver");
 
   const purity = KARATS.find((k) => k.k === karat)?.purity ?? 1;
-  const goldValue = values ? num(goldG) * values.goldGram * purity : 0;
+  const zakatableGoldG = num(goldG) + (jewelryRule === "include" ? num(jewelryG) : 0);
+  const goldValue = values ? zakatableGoldG * values.goldGram * purity : 0;
   const silverValue = values ? num(silverG) * values.silverGram : 0;
   const metals = goldValue + silverValue;
+  // Long-term holdings: only the company's zakatable assets are counted (AAOIFI).
+  const pct = longTermPct.trim() === "" ? 100 : Math.min(num(longTermPct), 100);
+  const longTermValue = num(longTerm) * (pct / 100);
   const net =
-    num(cash) + num(business) + num(investments) + num(receivables) + metals - num(debts);
+    num(cash) +
+    num(business) +
+    num(investments) +
+    longTermValue +
+    num(receivables) +
+    metals -
+    num(debts);
   const nisab = values ? (standard === "silver" ? values.silver : values.gold) : 0;
-  const due = net >= nisab ? net * ZAKAT_RATE : 0;
-  const above = Boolean(values) && net >= nisab && net > 0;
+  // No verdict until live prices (and hence the nisab) are known.
+  const above = Boolean(values) && net > 0 && net >= nisab;
+  const rate = hawl.solar ? ZAKAT_RATE_SOLAR : ZAKAT_RATE;
+  const due = above ? net * rate : 0;
+
+  const hawlStart = parseDay(hawl.start);
+  const now = today();
+  const hawlDue =
+    hawlStart != null && hawlStart <= now ? nextHawl(hawlStart, now, hawl.solar) : null;
+  const daysLeft = hawlDue != null ? Math.round((hawlDue - now) / DAY_MS) : null;
+  const fmtDay = (d: number) =>
+    new Intl.DateTimeFormat(lang === "ar" ? "ar-EG" : lang, {
+      dateStyle: "long",
+      timeZone: "UTC",
+    }).format(new Date(d));
 
   const reset = () => {
     setCash("");
     setBusiness("");
     setInvestments("");
+    setLongTerm("");
+    setLongTermPct("100");
     setReceivables("");
     setDebts("");
     setGoldG("");
+    setJewelryG("");
     setSilverG("");
   };
 
@@ -86,6 +153,19 @@ function Calculator() {
           <Field label={t("calc.debts")} value={debts} onChange={setDebts} />
 
           <div className="sm:col-span-2 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
+            <Field label={t("calc.longTerm")} value={longTerm} onChange={setLongTerm} />
+            <Field
+              label={t("calc.longTermPct")}
+              value={longTermPct}
+              onChange={setLongTermPct}
+              suffix="%"
+            />
+            <p className="text-xs leading-5 text-muted-foreground sm:col-span-2">
+              {t("calc.longTermHint")}
+            </p>
+          </div>
+
+          <div className="sm:col-span-2 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
             <Field
               label={t("calc.goldWeight")}
               value={goldG}
@@ -107,6 +187,23 @@ function Calculator() {
               </select>
             </label>
             <Field
+              label={t("calc.jewelryWeight")}
+              value={jewelryG}
+              onChange={setJewelryG}
+              suffix={t("grams")}
+            />
+            <label className="block">
+              <span className="text-sm text-muted-foreground">{t("calc.jewelryRule")}</span>
+              <select
+                value={jewelryRule}
+                onChange={(e) => setJewelryRule(e.target.value as "include" | "exclude")}
+                className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="include">{t("calc.jewelry.include")}</option>
+                <option value="exclude">{t("calc.jewelry.exclude")}</option>
+              </select>
+            </label>
+            <Field
               label={t("calc.silverWeight")}
               value={silverG}
               onChange={setSilverG}
@@ -122,11 +219,15 @@ function Calculator() {
                 <option value="silver">{t("nisab.silver")}</option>
                 <option value="gold">{t("nisab.gold")}</option>
               </select>
+              <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                {t("calc.standardNote")}
+              </span>
             </label>
           </div>
 
           <Button onClick={reset} variant="outline" className="justify-self-start">
-            <RotateCcw aria-hidden="true" />{t("calc.reset")}
+            <RotateCcw aria-hidden="true" />
+            {t("calc.reset")}
           </Button>
         </div>
 
@@ -148,15 +249,60 @@ function Calculator() {
           </dl>
           <div className="mt-5 rounded-xl bg-primary p-5 text-primary-foreground">
             <p className="text-xs opacity-80">
-              {t("calc.due")} · {t("calc.rate")}
+              {t("calc.due")} · {hawl.solar ? t("calc.rateSolar") : t("calc.rate")}
             </p>
             <p className="num mt-1 text-3xl">{money(due)}</p>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            {above ? t("calc.above") : t("calc.below")}
+            {!values ? t("common.loading") : above ? t("calc.above") : t("calc.below")}
           </p>
         </aside>
       </div>
+
+      <section className="card-surface mt-6 p-6">
+        <h2 className="text-xl text-foreground">{t("hawl.title")}</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">{t("hawl.start")}</span>
+            <input
+              type="date"
+              value={hawl.start}
+              max={new Date(now).toISOString().slice(0, 10)}
+              onChange={(e) => setHawl({ ...hawl, start: e.target.value })}
+              className="num mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
+            />
+            {hawlStart != null && (
+              <span className="mt-1 block text-xs text-muted-foreground">
+                {formatHijri(hawlStart, lang)}
+              </span>
+            )}
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">{t("hawl.basis")}</span>
+            <select
+              value={hawl.solar ? "solar" : "lunar"}
+              onChange={(e) => setHawl({ ...hawl, solar: e.target.value === "solar" })}
+              className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="lunar">{t("hawl.lunar")}</option>
+              <option value="solar">{t("hawl.solar")}</option>
+            </select>
+          </label>
+          {hawlDue != null && daysLeft != null && (
+            <div role="status" className="rounded-xl bg-secondary p-4">
+              <p className="text-sm text-muted-foreground">{t("hawl.next")}</p>
+              <p className="mt-1 text-foreground">{fmtDay(hawlDue)}</p>
+              <p className="text-xs text-muted-foreground">{formatHijri(hawlDue, lang)}</p>
+              <p className="mt-2 text-sm font-medium text-primary">
+                {daysLeft === 0
+                  ? t("hawl.today")
+                  : t("hawl.days").replace("{n}", formatDays(daysLeft, lang))}
+              </p>
+            </div>
+          )}
+        </div>
+        <p className="mt-4 text-xs leading-5 text-muted-foreground">{t("hawl.note")}</p>
+      </section>
     </Page>
   );
 }

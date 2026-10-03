@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { COUNTRIES } from "./countries";
 import { annualSince } from "./long-history";
 
 export type LivePrices = {
@@ -20,6 +21,7 @@ const TTL_MS = 60 * 60 * 1000;
 async function fetchJson(url: string) {
   const res = await fetch(url, { headers: { accept: "application/json" } });
   if (!res.ok) throw new Error(`Request failed: ${url} (${res.status})`);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped third-party JSON
   return res.json() as Promise<any>;
 }
 
@@ -27,11 +29,18 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<LivePrices> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data;
 
-    const [gold, silver, fx] = await Promise.all([
+    const fetched = await Promise.all([
       fetchJson("https://api.gold-api.com/price/XAU"),
       fetchJson("https://api.gold-api.com/price/XAG"),
       fetchJson("https://open.er-api.com/v6/latest/USD"),
-    ]);
+    ]).catch((error: unknown) => {
+      // Keep serving the last good prices (with their original timestamps) when a
+      // provider is down, rather than taking every page offline.
+      if (cache) return null;
+      throw error;
+    });
+    if (!fetched) return cache!.data;
+    const [gold, silver, fx] = fetched;
 
     const data: LivePrices = {
       goldUsdOz: Number(gold.price),
@@ -45,6 +54,7 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
     };
 
     if (!Number.isFinite(data.goldUsdOz) || !Number.isFinite(data.silverUsdOz)) {
+      if (cache) return cache.data;
       throw new Error("Invalid metal prices received");
     }
 
@@ -54,17 +64,7 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
 );
 
 export type HistoryRange =
-  | "1mo"
-  | "6mo"
-  | "1y"
-  | "5y"
-  | "10y"
-  | "1448"
-  | "20y"
-  | "30y"
-  | "40y"
-  | "50y"
-  | "100y";
+  "1mo" | "6mo" | "1y" | "5y" | "10y" | "1448" | "20y" | "30y" | "40y" | "50y" | "100y";
 export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
 export type HistoryResponse = {
   points: HistoryPoint[];
@@ -84,18 +84,32 @@ export const LONG_RANGES: Record<string, number> = {
   "100y": 100,
 };
 
-const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
+/** 1 Muharram 1448 AH (16 June 2026), start of the "1448" history range. */
+export const HIJRI_1448_START_MS = Date.UTC(2026, 5, 16);
 
+/** Only currencies the site offers — keeps arbitrary codes from fanning out upstream requests. */
+const KNOWN_CURRENCIES = new Set(["USD", ...COUNTRIES.map((c) => c.currency)]);
+
+const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
-  const timeQuery = range === "1448"
-    ? `period1=${Math.floor(new Date("2026-06-16T00:00:00Z").getTime() / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
-    : `range=${range}`;
+  const timeQuery =
+    range === "1448"
+      ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+      : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
-  const json = (await res.json()) as any;
+  type YahooChart = {
+    chart?: {
+      result?: {
+        timestamp?: number[];
+        indicators?: { quote?: { close?: (number | null)[] }[] };
+      }[];
+    };
+  };
+  const json = (await res.json()) as YahooChart | null;
   const result = json?.chart?.result?.[0];
   const stamps: number[] = result?.timestamp ?? [];
   const closes: (number | null)[] = result?.indicators?.quote?.[0]?.close ?? [];
@@ -110,10 +124,20 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
     const allowed: HistoryRange[] = [
-      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "100y",
+      "1mo",
+      "6mo",
+      "1y",
+      "5y",
+      "10y",
+      "1448",
+      "20y",
+      "30y",
+      "40y",
+      "50y",
+      "100y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
-    const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
+    const currency = KNOWN_CURRENCIES.has(data?.currency) ? data.currency : "USD";
     return { range, currency };
   })
   .handler(async ({ data }): Promise<HistoryResponse> => {
@@ -159,12 +183,12 @@ export const getHistory = createServerFn({ method: "GET" })
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < TTL_MS) {
       return {
-
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,
         metalsSource: "Yahoo Finance (GC=F, SI=F)",
-        ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
       };
     }
 

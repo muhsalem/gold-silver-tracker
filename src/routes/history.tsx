@@ -19,7 +19,12 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { readManualHistory, type ManualPricePoint } from "@/lib/overrides";
-import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
+import {
+  HIJRI_1448_START_MS,
+  getHistory,
+  type HistoryRange,
+  type HistoryResponse,
+} from "@/lib/prices.functions";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
@@ -83,13 +88,11 @@ function History() {
           .map((p) => ({
             t: p.t,
             value:
-              ((metal === "gold" ? p.goldUsdOz : p.silverUsdOz) / TROY_OUNCE_G) *
-              p.rate *
-              grams,
+              ((metal === "gold" ? p.goldUsdOz : p.silverUsdOz) / TROY_OUNCE_G) * p.rate * grams,
             manual: true,
           })),
       ]
-        .filter((p) => range !== "1448" || p.t >= new Date("2026-06-16T00:00:00Z").getTime())
+        .filter((p) => range !== "1448" || p.t >= HIJRI_1448_START_MS)
         .sort((a, b) => a.t - b.t),
     [data, manualHistory, currency, metal, grams, range],
   );
@@ -128,7 +131,7 @@ function History() {
             <option value="silver">{t("silver")}</option>
           </select>
         </label>
-        <div className="flex flex-wrap gap-1" aria-label={t("history.period") }>
+        <div className="flex flex-wrap gap-1" aria-label={t("history.period")}>
           {RANGES.map((r) => (
             <Button
               key={r}
@@ -166,11 +169,15 @@ function History() {
       )}
 
       <div className="card-surface p-4 sm:p-6">
-        {isLoading && <p className="py-20 text-center text-muted-foreground">{t("common.loading")}</p>}
+        {isLoading && (
+          <p className="py-20 text-center text-muted-foreground">{t("common.loading")}</p>
+        )}
         {isError && (
           <div className="py-20 text-center">
             <p className="text-muted-foreground">{t("common.error")}</p>
-            <Button onClick={() => refetch()} className="mt-3">{t("common.retry")}</Button>
+            <Button onClick={() => refetch()} className="mt-3">
+              {t("common.retry")}
+            </Button>
           </div>
         )}
         {!isLoading && !isError && data && !data.fxAvailable && (
@@ -206,11 +213,13 @@ function History() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
-                  tickFormatter={(v: number) => Intl.NumberFormat("en", { notation: "compact" }).format(v)}
+                  tickFormatter={(v: number) =>
+                    Intl.NumberFormat("en", { notation: "compact" }).format(v)
+                  }
                 />
                 <Tooltip
                   labelFormatter={(v) => fmtTick(Number(v))}
-                   formatter={(v: number) => [money(v), t("history.sub")]}
+                  formatter={(v: number) => [money(v), t("history.sub")]}
                   contentStyle={{
                     background: "var(--color-card)",
                     border: "1px solid var(--color-border)",
@@ -231,7 +240,11 @@ function History() {
         )}
         <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted-foreground sm:grid-cols-2">
           <p>{t("history.note")}</p>
-          {data && <p>{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+          {data && (
+            <p>
+              {t("update.source")}: {data.metalsSource} · {data.ratesSource}
+            </p>
+          )}
           {manualHistory.some((p) => p.currency === currency) && (
             <p className="sm:col-span-2">{t("history.manualPoint")}</p>
           )}

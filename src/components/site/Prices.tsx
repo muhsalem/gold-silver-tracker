@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { scopeKey } from "@/lib/cities";
+import { formatDays } from "@/lib/hijri";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { BIG_CHANGE_PCT, trackNisabChange } from "@/lib/overrides";
@@ -24,14 +26,14 @@ export function useNisab() {
     if (!base) return undefined;
     const goldUsdOz = scope?.goldUsdOz ?? base.goldUsdOz;
     const silverUsdOz = scope?.silverUsdOz ?? base.silverUsdOz;
-    const rates =
-      scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
+    const rates = scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
     return {
       ...base,
       goldUsdOz,
       silverUsdOz,
       rates,
       manual: base.manual || Boolean(scope),
+      manualUpdatedAt: scope?.updatedAt ?? base.manualUpdatedAt,
     };
   }, [base, scope, currency]);
 
@@ -70,7 +72,6 @@ export function useNisab() {
     scoped: Boolean(scope),
   };
 }
-
 
 export function StateNote({
   isLoading,
@@ -116,34 +117,52 @@ function fmtDate(value: string | undefined, lang: string) {
 }
 
 /** Last-update / source panel shown under the live figures. */
+/** Manual prices older than this many days get a staleness warning. */
+const STALE_MANUAL_DAYS = 7;
+
 export function UpdateMeta() {
   const { t, lang } = useI18n();
   const { data } = useNisab();
   if (!data) return null;
+  const savedAt = data.manualUpdatedAt ? new Date(data.manualUpdatedAt).getTime() : NaN;
+  const manualAgeDays =
+    data.manual && Number.isFinite(savedAt)
+      ? Math.floor((Date.now() - savedAt) / (24 * 60 * 60 * 1000))
+      : 0;
   return (
-    <div className="card-surface mt-6 grid gap-3 p-5 text-sm sm:grid-cols-3">
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.metalsUpdatedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {t("update.source")}: {data.metalsSource}
+    <>
+      {manualAgeDays >= STALE_MANUAL_DAYS && (
+        <p
+          role="alert"
+          className="card-surface mt-6 border-accent/60 bg-accent/15 p-4 text-sm text-foreground"
+        >
+          {t("update.stale").replace("{n}", formatDays(manualAgeDays, lang))}
         </p>
+      )}
+      <div className="card-surface mt-6 grid gap-3 p-5 text-sm sm:grid-cols-3">
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.metalsUpdatedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("update.source")}: {data.metalsSource}
+          </p>
+        </div>
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.rates")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.ratesUpdatedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("update.source")}: {data.ratesSource}
+          </p>
+        </div>
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.fetched")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.fetchedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {data.manual ? t("update.manual") : t("update.auto")}
+          </p>
+        </div>
       </div>
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.rates")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.ratesUpdatedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {t("update.source")}: {data.ratesSource}
-        </p>
-      </div>
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.fetched")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.fetchedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {data.manual ? t("update.manual") : t("update.auto")}
-        </p>
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -165,9 +184,7 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
   const key = pct > 0 ? "alert.up" : "alert.down";
   return (
     <div className="card-surface mb-6 flex flex-wrap items-center gap-3 border-accent/60 bg-accent/15 p-4 text-sm">
-      <span className="text-foreground">
-        {t(key).replace("{pct}", Math.abs(pct).toFixed(1))}
-      </span>
+      <span className="text-foreground">{t(key).replace("{pct}", Math.abs(pct).toFixed(1))}</span>
       <button
         onClick={() => setHidden(true)}
         className="ms-auto rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground hover:text-foreground"

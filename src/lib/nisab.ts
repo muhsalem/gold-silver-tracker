@@ -78,6 +78,67 @@ export const SHEEP_TIERS = [
   { from: 400, to: 499, ar: "أربع شياه", en: "4 sheep/goats" },
 ];
 
+export type LivestockKind = "camels" | "cows" | "sheep";
+export type LivestockDue = { ar: string; en: string };
+
+const TIERS: Record<
+  LivestockKind,
+  readonly { from: number; to: number; ar: string; en: string }[]
+> = { camels: CAMEL_TIERS, cows: COW_TIERS, sheep: SHEEP_TIERS };
+
+/**
+ * Splits `units` (a count of tens) into `small`/`large` multiples, using as many
+ * of the larger animal as possible — e.g. camels over 120: one bint labūn per 40
+ * and one ḥiqqa per 50 (Jumhūr); cows: one tabīʿ per 30 and one musinna per 40.
+ */
+function splitTens(units: number, small: number, large: number) {
+  for (let b = Math.floor(units / large); b >= 0; b--) {
+    const rest = units - b * large;
+    if (rest % small === 0) return { a: rest / small, b };
+  }
+  return null;
+}
+
+function joinParts(parts: [number, string, string][]): LivestockDue {
+  const used = parts.filter(([n]) => n > 0);
+  return {
+    ar: used.map(([n, ar]) => `${n} × ${ar}`).join(" + "),
+    en: used.map(([n, , en]) => `${n} × ${en}`).join(" + "),
+  };
+}
+
+/** Zakat due on a herd of `count` animals, or null below the nisab. */
+export function livestockDue(kind: LivestockKind, count: number): LivestockDue | null {
+  const n = Math.floor(count);
+  const tier = TIERS[kind].find((t) => n >= t.from && n <= t.to);
+  if (tier) return { ar: tier.ar, en: tier.en };
+  const last = TIERS[kind][TIERS[kind].length - 1]!;
+  if (n <= last.to) return null;
+
+  if (kind === "sheep") {
+    return joinParts([[Math.floor(n / 100), "شاة", "sheep/goat"]]);
+  }
+  const tens = Math.floor(n / 10);
+  if (kind === "camels") {
+    const s = splitTens(tens, 4, 5);
+    return (
+      s &&
+      joinParts([
+        [s.a, "بنت لبون", "bint labūn"],
+        [s.b, "حِقّة", "ḥiqqa"],
+      ])
+    );
+  }
+  const s = splitTens(tens, 3, 4);
+  return (
+    s &&
+    joinParts([
+      [s.a, "تبيع", "tabīʿ"],
+      [s.b, "مُسِنّة", "musinna"],
+    ])
+  );
+}
+
 /** Nisab of crops: 5 wasq ≈ 653 kg of staple grain. */
 export const CROP_NISAB_KG = 653;
 /** Zakat al-Fitr: one ṣāʿ ≈ 2.5 kg of staple food per person. */
