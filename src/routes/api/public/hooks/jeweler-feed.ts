@@ -1,6 +1,73 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
+import { COUNTRIES } from "@/lib/countries";
+import type { FeedRow } from "@/lib/jeweler-feed.server";
+
+const OZ = 31.1034768;
+
+/** Snapshot today's nisab (gold 85g, silver 595g) per country into nisab_history. */
+async function recordNisabHistory(
+  supabaseAdmin: Awaited<ReturnType<typeof import("@/integrations/supabase/client.server")>>["supabaseAdmin"],
+  feedRows: FeedRow[],
+  today: string,
+): Promise<{ recorded: number; source: string }> {
+  // 1) Local jeweller feed rows win for their country.
+  const byCountry = new Map<string, FeedRow>();
+  for (const r of feedRows) byCountry.set(r.country, r);
+
+  // 2) Global spot fallback for every other country.
+  let goldOz: number | null = null;
+  let silverOz: number | null = null;
+  let rates: Record<string, number> = {};
+  try {
+    const [g, s, fx] = await Promise.all([
+      fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } }).then((r) => r.json()),
+      fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } }).then((r) => r.json()),
+      fetch("https://open.er-api.com/v6/latest/USD").then((r) => r.json()),
+    ]);
+    goldOz = Number(g?.price) > 0 ? Number(g.price) : null;
+    silverOz = Number(s?.price) > 0 ? Number(s.price) : null;
+    rates = (fx?.rates ?? {}) as Record<string, number>;
+  } catch {
+    /* spot unavailable; only feed rows are recorded */
+  }
+
+  const rows: Record<string, unknown>[] = [];
+  for (const c of COUNTRIES) {
+    const feed = byCountry.get(c.code);
+    if (feed?.gold_gram) {
+      rows.push({
+        country: c.code,
+        currency: c.currency,
+        day: today,
+        gold_gram: feed.gold_gram,
+        silver_gram: feed.silver_gram,
+        source: feed.source,
+        source_url: feed.source_url,
+      });
+      continue;
+    }
+    const rate = c.currency === "USD" ? 1 : rates[c.currency];
+    if (!goldOz || !rate) continue;
+    rows.push({
+      country: c.code,
+      currency: c.currency,
+      day: today,
+      gold_gram: (goldOz / OZ) * rate,
+      silver_gram: silverOz ? (silverOz / OZ) * rate : null,
+      source: "gold-api.com — spot XAU/XAG",
+      source_url: "https://api.gold-api.com/price/XAU",
+    });
+  }
+
+  if (!rows.length) return { recorded: 0, source: "none" };
+  const { error } = await supabaseAdmin
+    .from("nisab_history")
+    .upsert(rows, { onConflict: "country,day" });
+  if (error) throw new Error(`nisab_history: ${error.message}`);
+  return { recorded: rows.length, source: goldOz ? "spot+feed" : "feed" };
+}
 
 export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
   server: {
