@@ -3,7 +3,9 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
-import { StateNote, Disclaimer, LocalMarket, SourceQuality } from "@/components/site/Prices";
+import { StateNote, Disclaimer, LocalMarket, SourceQuality, PriceSourceLine, resolveGram } from "@/components/site/Prices";
+import { useLocalQuote } from "@/lib/local-quotes";
+import { scopeKey } from "@/lib/cities";
 import { OfficialNisab } from "@/components/site/OfficialNisab";
 import { ShareNisab } from "@/components/site/ShareNisab";
 import {
@@ -13,9 +15,7 @@ import {
   TROY_OUNCE_G,
   formatMoney,
   formatNumber,
-  goldNisabValue,
   perGram,
-  silverNisabValue,
 } from "@/lib/nisab";
 
 export const Route = createFileRoute("/country/$code")({
@@ -197,7 +197,7 @@ function CountryPage() {
             </div>
           </section>
 
-          <LocalMarket currency={country.currency} goldGram={goldGram} silverGram={silverGram} />
+          <LocalMarket currency={country.currency} goldGram={spotGold} silverGram={spotSilver} />
           <OfficialNisab country={country.code} locale={lang} />
           <SourceQuality currency={country.currency} />
           <ShareNisab
