@@ -383,6 +383,13 @@ export type Database = {
             referencedRelation: "price_submissions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "price_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "public_price_quotes"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -441,7 +448,72 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_price_quotes: {
+        Row: {
+          buyback_gram: number | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          currency: string | null
+          gold_gram: number | null
+          id: string | null
+          metal: string | null
+          reviewed_at: string | null
+          silver_gram: number | null
+          source: string | null
+        }
+        Insert: {
+          buyback_gram?: number | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency?: string | null
+          gold_gram?: number | null
+          id?: string | null
+          metal?: string | null
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string | null
+        }
+        Update: {
+          buyback_gram?: number | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency?: string | null
+          gold_gram?: number | null
+          id?: string | null
+          metal?: string | null
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string | null
+        }
+        Relationships: []
+      }
+      public_profiles: {
+        Row: {
+          city: string | null
+          country: string | null
+          display_name: string | null
+          id: string | null
+          org: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          display_name?: string | null
+          id?: string | null
+          org?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          display_name?: string | null
+          id?: string | null
+          org?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
