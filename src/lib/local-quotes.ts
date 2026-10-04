@@ -55,9 +55,8 @@ export function useLocalQuote(country: string, currency: string) {
         };
       }
       const { data, error } = await supabase
-        .from("price_submissions")
+        .from("public_price_quotes")
         .select("gold_gram, silver_gram, buyback_gram, city, source, reviewed_at, created_at")
-        .eq("status", "approved")
         .eq("country", country)
         .eq("currency", currency)
         .gte("created_at", since)
@@ -71,9 +70,9 @@ export function useLocalQuote(country: string, currency: string) {
         goldGram: median(nums("gold_gram")),
         silverGram: median(nums("silver_gram")),
         buybackGram: median(nums("buyback_gram")),
-        city: latest.city,
-        source: latest.source,
-        at: latest.reviewed_at ?? latest.created_at,
+        city: latest.city ?? "",
+        source: latest.source ?? "",
+        at: latest.reviewed_at ?? latest.created_at ?? "",
         count: data.length,
       };
     },
