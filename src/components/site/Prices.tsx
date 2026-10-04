@@ -306,15 +306,18 @@ export function Disclaimer({ className = "" }: { className?: string }) {
 }
 
 /** Compact "data as of …" line for placing next to the headline figures. */
-export function AsOf({ className = "" }: { className?: string }) {
+export function AsOf({ className = "", prefer = "local" }: { className?: string; prefer?: PricePreference }) {
   const { t, lang } = useI18n();
-  const { data } = useNisab();
+  const { data, priceSource } = useNisab(prefer);
   if (!data) return null;
   return (
-    <p className={`text-xs text-muted-foreground ${className}`}>
-      {t("trust.asof")}: <span className="num">{fmtDate(data.metalsUpdatedAt, lang)}</span> ·{" "}
-      {data.metalsSource}
-    </p>
+    <div className={className}>
+      <p className="text-xs text-muted-foreground">
+        {t("trust.asof")}: <span className="num">{fmtDate(data.metalsUpdatedAt, lang)}</span> ·{" "}
+        {data.metalsSource}
+      </p>
+      <PriceSourceLine source={priceSource} className="mt-1 font-medium" />
+    </div>
   );
 }
 
