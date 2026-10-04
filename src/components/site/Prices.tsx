@@ -69,10 +69,41 @@ import {
   silverNisabValue,
 } from "@/lib/nisab";
 
+export type PriceOrigin = "manual" | "local" | "global";
+export type PricePreference = "local" | "global";
+
+const PS = {
+  ar: { local: "سعر صاغة محلي", global: "سعر عالمي محوَّل", manual: "سعر أدخلته بنفسك", gold: "الذهب", silver: "الفضة", toggleLocal: "سعر السوق المحلي", toggleGlobal: "السعر العالمي" },
+  en: { local: "Local jeweller price", global: "Converted global price", manual: "Your own price", gold: "Gold", silver: "Silver", toggleLocal: "Local market price", toggleGlobal: "Global price" },
+  fr: { local: "Prix local des bijoutiers", global: "Prix mondial converti", manual: "Votre propre prix", gold: "Or", silver: "Argent", toggleLocal: "Prix du marché local", toggleGlobal: "Prix mondial" },
+  tr: { local: "Yerel kuyumcu fiyatı", global: "Çevrilmiş küresel fiyat", manual: "Kendi girdiğiniz fiyat", gold: "Altın", silver: "Gümüş", toggleLocal: "Yerel piyasa fiyatı", toggleGlobal: "Küresel fiyat" },
+  id: { local: "Harga toko emas lokal", global: "Harga global dikonversi", manual: "Harga Anda sendiri", gold: "Emas", silver: "Perak", toggleLocal: "Harga pasar lokal", toggleGlobal: "Harga global" },
+  ur: { local: "مقامی سنار کی قیمت", global: "تبدیل شدہ عالمی قیمت", manual: "آپ کی درج کردہ قیمت", gold: "سونا", silver: "چاندی", toggleLocal: "مقامی مارکیٹ قیمت", toggleGlobal: "عالمی قیمت" },
+};
+export function priceStrings(lang: string) {
+  return PS[lang as keyof typeof PS] ?? PS.en;
+}
+
+/**
+ * Resolves the gram price per metal. Precedence:
+ * visitor's own device override > approved local quote > global spot.
+ */
+export function resolveGram(
+  spot: number,
+  manual: boolean,
+  local: number | null | undefined,
+  prefer: PricePreference = "local",
+): { gram: number; origin: PriceOrigin } {
+  if (manual) return { gram: spot, origin: "manual" };
+  if (prefer === "local" && local != null && local > 0) return { gram: local, origin: "local" };
+  return { gram: spot, origin: "global" };
+}
+
 /** Live prices resolved into the current country's currency (and city, if set). */
-export function useNisab() {
+export function useNisab(prefer: PricePreference = "local") {
   const { currency, lang, country, city } = useI18n();
   const { data: base, overrides, isLoading, isError, refetch } = usePrices();
+  const { data: quote } = useLocalQuote(country, currency);
 
   const scope =
     overrides?.scopes?.[scopeKey(country, city)] ?? overrides?.scopes?.[scopeKey(country, "")];
@@ -98,26 +129,44 @@ export function useNisab() {
 
   const money = (v: number) => formatMoney(v, currency, lang);
 
-  const values = useMemo(() => {
+  const resolved = useMemo(() => {
     if (!data || !ready) return null;
-    const goldGram = perGram(data.goldUsdOz, r);
-    const silverGram = perGram(data.silverUsdOz, r);
-    const gold = goldNisabValue(data.goldUsdOz, r);
-    const silver = silverNisabValue(data.silverUsdOz, r);
+    const manual = Boolean(data.manual);
+    const g = resolveGram(perGram(data.goldUsdOz, r), manual, quote?.goldGram, prefer);
+    const s = resolveGram(perGram(data.silverUsdOz, r), manual, quote?.silverGram, prefer);
+    return { g, s };
+  }, [data, r, ready, quote, prefer]);
+
+  const values = useMemo(() => {
+    if (!resolved) return null;
+    const goldGram = resolved.g.gram;
+    const silverGram = resolved.s.gram;
+    const gold = goldGram * GOLD_NISAB_G;
+    const silver = silverGram * SILVER_NISAB_G;
     return {
       goldGram,
       silverGram,
       gold,
       silver,
       lower: Math.min(gold, silver),
-      ratio: data.goldUsdOz / data.silverUsdOz,
+      ratio: goldGram / silverGram,
     };
-  }, [data, r, ready]);
+  }, [resolved]);
+
+  const priceSource = resolved
+    ? {
+        gold: resolved.g.origin,
+        silver: resolved.s.origin,
+        name: quote?.source ?? "",
+        at: quote?.at ?? "",
+      }
+    : null;
 
   return {
     data,
     market: base,
     values,
+    priceSource,
     money,
     rate: r,
     isLoading,
@@ -127,6 +176,31 @@ export function useNisab() {
     scoped: Boolean(scope),
   };
 }
+
+/** "Local jeweller price: eDahab · 3 Oct" / "Converted global price", per metal. */
+export function PriceSourceLine({
+  source,
+  className = "",
+}: {
+  source: { gold: PriceOrigin; silver: PriceOrigin; name: string; at: string } | null;
+  className?: string;
+}) {
+  const { lang } = useI18n();
+  if (!source) return null;
+  const s = priceStrings(lang);
+  const day = source.at
+    ? new Intl.DateTimeFormat(lang === "ar" ? "ar-EG" : lang, { day: "numeric", month: "long" }).format(new Date(source.at))
+    : "";
+  const label = (o: PriceOrigin) =>
+    o === "local" ? `${s.local}: ${source.name}${day ? ` · ${day}` : ""}` : o === "manual" ? s.manual : s.global;
+  const same = source.gold === source.silver;
+  return (
+    <p className={`text-xs text-muted-foreground ${className}`} data-testid="price-source">
+      {same ? label(source.gold) : `${s.gold}: ${label(source.gold)} — ${s.silver}: ${label(source.silver)}`}
+    </p>
+  );
+}
+
 
 
 export function StateNote({
