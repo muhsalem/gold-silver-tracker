@@ -48,17 +48,26 @@ export const Route = createFileRoute("/country/$code")({
 function CountryPage() {
   const { country } = Route.useLoaderData();
   const { t, lang, setCountry } = useI18n();
-  const { data, isLoading, isError, refetch } = usePrices();
+  const { data, overrides, isLoading, isError, refetch } = usePrices();
+  const { data: quote } = useLocalQuote(country.code, country.currency);
 
   const rate = data?.rates?.[country.currency];
   const ready = Boolean(data && Number.isFinite(rate));
   const r = rate ?? 1;
   const money = (v: number) => formatMoney(v, country.currency, lang);
 
-  const goldGram = data ? perGram(data.goldUsdOz, r) : 0;
-  const silverGram = data ? perGram(data.silverUsdOz, r) : 0;
-  const gold = data ? goldNisabValue(data.goldUsdOz, r) : 0;
-  const silver = data ? silverNisabValue(data.silverUsdOz, r) : 0;
+  const manual = Boolean(data?.manual || overrides?.scopes?.[scopeKey(country.code, "")]);
+  const spotGold = data ? perGram(data.goldUsdOz, r) : 0;
+  const spotSilver = data ? perGram(data.silverUsdOz, r) : 0;
+  const g = resolveGram(spotGold, manual, quote?.goldGram);
+  const s = resolveGram(spotSilver, manual, quote?.silverGram);
+  const goldGram = g.gram;
+  const silverGram = s.gram;
+  const gold = goldGram * GOLD_NISAB_G;
+  const silver = silverGram * SILVER_NISAB_G;
+  const priceSource = data
+    ? { gold: g.origin, silver: s.origin, name: quote?.source ?? "", at: quote?.at ?? "" }
+    : null;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -79,6 +88,7 @@ function CountryPage() {
           <p className="num mt-1 text-sm text-muted-foreground">
             {country.currency} · {country.code}
           </p>
+          <PriceSourceLine source={priceSource} className="mt-1 font-medium" />
         </div>
       </header>
 
