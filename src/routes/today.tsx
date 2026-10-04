@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, CircleCheck, Database, Scale, ShieldCheck } from "lucide-react";
+import { useState } from "react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
-import { AsOf, Disclaimer, LocalMarket, ManualNotice, SourceQuality, StateNote, UpdateMeta, useNisab } from "@/components/site/Prices";
+import { AsOf, Disclaimer, LocalMarket, ManualNotice, SourceQuality, StateNote, UpdateMeta, priceStrings, useNisab, type PricePreference } from "@/components/site/Prices";
 import { HawlReminder } from "@/components/site/Reminders";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
@@ -23,8 +24,10 @@ export const Route = createFileRoute("/today")({
 });
 
 function TodayPage() {
-  const { t, currency } = useI18n();
-  const { values, data, rate, money, isLoading, isError, refetch } = useNisab();
+  const { t, currency, lang } = useI18n();
+  const [prefer, setPrefer] = useState<PricePreference>("local");
+  const ps = priceStrings(lang);
+  const { values, data, rate, money, isLoading, isError, refetch } = useNisab(prefer);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -34,7 +37,20 @@ function TodayPage() {
           <p className="eyebrow text-accent">{t("today.eyebrow")}</p>
           <h1 className="mt-3 text-4xl leading-tight text-foreground sm:text-5xl">{t("today.title")}</h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t("today.sub")}</p>
-          <AsOf className="mt-4" />
+          <div role="group" className="mt-4 inline-flex rounded-lg border border-border bg-card p-1 text-sm">
+            {(["local", "global"] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                aria-pressed={prefer === p}
+                onClick={() => setPrefer(p)}
+                className={`rounded-md px-3 py-1.5 ${prefer === p ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"}`}
+              >
+                {p === "local" ? ps.toggleLocal : ps.toggleGlobal}
+              </button>
+            ))}
+          </div>
+          <AsOf className="mt-4" prefer={prefer} />
         </div>
         <div className="flex flex-wrap gap-3 rounded-lg border border-border bg-card p-3 shadow-sm">
           <CountryPicker compact />

@@ -85,8 +85,41 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           if (denied) return denied;
         }
 
-        const { collectFeed, BIG_CHANGE_PCT } = await import("@/lib/jeweler-feed.server");
-        const { rows, errors } = await collectFeed();
+        const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } = await import("@/lib/jeweler-feed.server");
+        const collected = await collectFeed();
+        const errors = collected.errors;
+
+        // Sanity check: skip rows that deviate > 15% from the spot conversion.
+        let spotGoldOz = 0;
+        let fx: Record<string, number> = {};
+        try {
+          const [g, r] = await Promise.all([
+            fetch("https://api.gold-api.com/price/XAU").then((x) => x.json()),
+            fetch("https://open.er-api.com/v6/latest/USD").then((x) => x.json()),
+          ]);
+          spotGoldOz = Number(g?.price) || 0;
+          fx = (r?.rates ?? {}) as Record<string, number>;
+        } catch {
+          /* no spot: rows pass unchecked */
+        }
+        const rows: FeedRow[] = [];
+        for (const row of collected.rows) {
+          const rate = row.currency === "USD" ? 1 : fx[row.currency];
+          const spot = spotGoldOz && rate ? (spotGoldOz / OZ) * rate : 0;
+          const dev = spot && row.gold_gram ? ((row.gold_gram - spot) / spot) * 100 : 0;
+          if (Math.abs(dev) > MAX_SPOT_DEVIATION_PCT) {
+            errors.push(`${row.country}: انحراف ${dev.toFixed(1)}% عن السعر العالمي — تم التجاهل`);
+            await supabaseAdmin.from("audit_log").insert({
+              action: "feed_row_skipped",
+              entity: "jeweler_feed",
+              entity_id: null,
+              reason: `deviation ${dev.toFixed(1)}% > ${MAX_SPOT_DEVIATION_PCT}%`,
+              meta: { country: row.country, source: row.source, gold_gram: row.gold_gram, spot_gram: spot },
+            });
+            continue;
+          }
+          rows.push(row);
+        }
         const today = new Date().toISOString().slice(0, 10);
         const alerts: string[] = [];
 
@@ -103,7 +136,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           const change = before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
           await supabaseAdmin
             .from("jeweler_feed")
-            .upsert({ ...row, day: today, change_pct: change, fetched_at: new Date().toISOString() }, { onConflict: "country,day" });
+            .upsert({ country: row.country, currency: row.currency, source: row.source, source_url: row.source_url, gold_gram: row.gold_gram, buyback_gram: row.buyback_gram, silver_gram: row.silver_gram, day: today, change_pct: change, fetched_at: new Date().toISOString() }, { onConflict: "country,day" });
           if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
             alerts.push(`${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`);
           }

@@ -101,13 +101,24 @@ function PartnersPage() {
 
   const loadPrices = useCallback(async () => {
     const { data } = await supabase
-      .from("price_submissions")
-      .select("*")
+      .from("public_price_quotes")
+      .select("id, country, city, currency, metal, gold_gram, silver_gram, buyback_gram, source, created_at, reviewed_at")
       .eq("country", country)
-      .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(25);
-    const list = (data ?? []) as Submission[];
+    const list: Submission[] = (data ?? []).map((r) => ({
+      id: r.id ?? "",
+      user_id: "",
+      country: r.country ?? country,
+      city: r.city ?? "",
+      currency: r.currency ?? "",
+      gold_gram: r.gold_gram,
+      silver_gram: r.silver_gram,
+      buyback_gram: r.buyback_gram,
+      source: r.source ?? "",
+      status: "approved",
+      created_at: r.created_at ?? "",
+    }));
     setRows(list);
 
     if (list.length > 0) {

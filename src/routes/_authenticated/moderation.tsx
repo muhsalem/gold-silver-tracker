@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { bootstrapAdmin } from "@/lib/admin-bootstrap.functions";
 import { useCallback, useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 
@@ -55,6 +57,8 @@ type AuditRow = {
 function ModerationPage() {
   const { t } = useI18n();
   const { user, isAdmin, loading } = useAuth();
+  const runBootstrap = useServerFn(bootstrapAdmin);
+  const [bootMsg, setBootMsg] = useState("");
   const [queue, setQueue] = useState<Submission[]>([]);
   const [audit, setAudit] = useState<AuditRow[]>([]);
   const [reasons, setReasons] = useState<Record<string, string>>({});
@@ -132,6 +136,22 @@ function ModerationPage() {
     return (
       <Page eyebrow={t("nav.moderation")} title={t("m.title")} sub={t("m.denied")}>
         <p className="text-sm text-muted-foreground">{t("m.denied")}</p>
+        {!loading && user && (
+          <div className="mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                const res = await runBootstrap();
+                setBootMsg(res.ok ? "تم تفعيل صلاحية المشرف. أعد تحميل الصفحة." : `تعذّر التفعيل (${res.reason}).`);
+                if (res.ok) window.location.reload();
+              }}
+            >
+              تفعيل المشرف الأول
+            </Button>
+            {bootMsg && <p className="mt-2 text-xs text-muted-foreground">{bootMsg}</p>}
+          </div>
+        )}
       </Page>
     );
   }
