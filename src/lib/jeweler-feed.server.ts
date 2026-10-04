@@ -13,6 +13,8 @@ export type FeedRow = {
   gold_gram: number | null;
   buyback_gram: number | null;
   silver_gram: number | null;
+  /** Karat the source quotes; every current source quotes 24K (verified Oct 2026). */
+  karat?: number;
 };
 
 async function text(url: string) {
@@ -87,7 +89,18 @@ export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[]
     if (s.status === "fulfilled") rows.push(...(Array.isArray(s.value) ? s.value : [s.value]));
     else errors.push(String(s.reason instanceof Error ? s.reason.message : s.reason));
   }
+  // Normalize any non-24K quote to pure 24K (gram / purity) before use.
+  for (const r of rows) {
+    const k = r.karat ?? 24;
+    if (k !== 24 && r.gold_gram) {
+      r.gold_gram = r.gold_gram / (k / 24);
+      if (r.buyback_gram) r.buyback_gram = r.buyback_gram / (k / 24);
+    }
+    r.karat = 24;
+  }
   return { rows: rows.filter((r) => r.gold_gram), errors };
 }
 
 export const BIG_CHANGE_PCT = 3;
+/** Feed rows deviating more than this from the spot conversion are skipped. */
+export const MAX_SPOT_DEVIATION_PCT = 15;
