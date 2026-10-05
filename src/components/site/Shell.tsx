@@ -47,6 +47,7 @@ const NAV_GROUPS = [
       { to: "/fiqh", key: "nav.fiqh" },
       { to: "/methodology", key: "nav.methodology" },
       { to: "/faq", key: "nav.faq" },
+      { to: "/sources", key: "nav.sources" },
     ],
   },
   {
