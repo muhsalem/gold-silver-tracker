@@ -58,12 +58,27 @@ async function egypt(): Promise<FeedRow> {
   return { country: "EG", currency: "EGP", source, source_url: url, gold_gram: num(m[1]), buyback_gram: num(m[2]), silver_gram: silver.sell, silver_buyback_gram: silver.buy };
 }
 
+/** Saudi Gold Price silver board: raw 999 gram and the 999 bullion resale (buy-back) gram. */
+async function saudiSilver(): Promise<{ sell: number | null; buy: number | null }> {
+  const t = await text("https://saudigoldprice.com/silverprice/");
+  const raw = /عيار\s?999\s*([\d.,]+)/.exec(t);
+  const resale = /اعادة بيع\s?999[\s\S]{0,200}?سعر جرام الفضة\s*([\d.,]+)/.exec(t);
+  if (!raw) throw new Error("saudigoldprice silver: pattern not found");
+  return { sell: num(raw[1]), buy: num(resale?.[1]) };
+}
+
 async function saudi(): Promise<FeedRow> {
   const url = "https://saudigoldprice.com/";
   const t = await text(url);
   const m = /سعر جرام الذهب عيار 24\s*([\d.,]+)/.exec(t);
   if (!m) throw new Error("saudigoldprice: pattern not found");
-  return { country: "SA", currency: "SAR", source: "Saudi Gold Price (السعودية)", source_url: url, gold_gram: num(m[1]), buyback_gram: null, silver_gram: null };
+  let silver: { sell: number | null; buy: number | null } = { sell: null, buy: null };
+  try {
+    silver = await saudiSilver();
+  } catch {
+    /* silver falls back to global spot */
+  }
+  return { country: "SA", currency: "SAR", source: "Saudi Gold Price (السعودية)", source_url: url, gold_gram: num(m[1]), buyback_gram: null, silver_gram: silver.sell, silver_buyback_gram: silver.buy };
 }
 
 async function uae(): Promise<FeedRow> {

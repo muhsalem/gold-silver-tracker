@@ -196,6 +196,10 @@ function Compare() {
           <thead className="text-xs text-muted-foreground">
             <tr>
               <th className="p-3 text-start font-normal">{t("compare.country")}</th>
+              <th className="p-3 text-start font-normal">{t("gold")} 24K / g</th>
+              <th className="p-3 text-start font-normal">{t("gold")} 21K / g</th>
+              <th className="p-3 text-start font-normal">{t("silver")} 999 / g</th>
+              <th className="p-3 text-start font-normal">{t("silver")} 925 / g</th>
               <th className="p-3 text-start font-normal">{t("nisab.gold")}</th>
               <th className="p-3 text-start font-normal">{t("nisab.silver")}</th>
               <th className="p-3 text-start font-normal">{t("compare.lower")}</th>
@@ -204,14 +208,18 @@ function Compare() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.code} className="border-t border-border">
-                <td className="p-3 text-foreground">{r.name}</td>
-                <td className="num p-3 text-muted-foreground">
+                <td className="whitespace-nowrap p-3 text-foreground">{r.name}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney(r.gold / GOLD_NISAB_G, r.currency, lang)}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney((r.gold / GOLD_NISAB_G) * 0.875, r.currency, lang)}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney(r.silver / SILVER_NISAB_G, r.currency, lang)}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney((r.silver / SILVER_NISAB_G) * 0.925, r.currency, lang)}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
                   {formatMoney(r.gold, r.currency, lang)}
                 </td>
-                <td className="num p-3 text-muted-foreground">
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
                   {formatMoney(r.silver, r.currency, lang)}
                 </td>
-                <td className="num p-3 text-foreground">{r.local}</td>
+                <td className="num whitespace-nowrap p-3 text-foreground">{r.local}</td>
               </tr>
             ))}
           </tbody>
