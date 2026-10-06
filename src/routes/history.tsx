@@ -60,11 +60,22 @@ const RANGES: HistoryRange[] = [
   "1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "100y",
 ];
 
+const GOLD_VIEWS = [
+  { id: "g24", label: "24K", factor: 1 },
+  { id: "g21", label: "21K", factor: 0.875 },
+  { id: "g18", label: "18K", factor: 0.75 },
+];
+const SILVER_VIEWS = [
+  { id: "s999", label: "999", factor: 1 },
+  { id: "s925", label: "925", factor: 0.925 },
+];
+
 function History() {
   const { t, lang, currency, city } = useI18n();
   const { money } = useNisab();
   const [range, setRange] = useState<HistoryRange>("1y");
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
+  const [view, setView] = useState("nisab");
   const [calendar, setCalendar] = useState<"gregorian" | "hijri">("gregorian");
   const [lookupDate, setLookupDate] = useState("");
   const currentHijri = useMemo(() => gregorianToHijri(new Date()), []);
@@ -91,7 +102,13 @@ function History() {
     staleTime: 60 * 60 * 1000,
   });
 
-  const grams = metal === "gold" ? GOLD_NISAB_G : SILVER_NISAB_G;
+  const purities = metal === "gold" ? GOLD_VIEWS : SILVER_VIEWS;
+  const activeView = purities.some((p) => p.id === view) ? view : "nisab";
+  // "nisab" = full nisab value; otherwise price of one gram at the chosen purity.
+  const grams =
+    activeView === "nisab"
+      ? metal === "gold" ? GOLD_NISAB_G : SILVER_NISAB_G
+      : purities.find((p) => p.id === activeView)!.factor;
 
   const series = useMemo(
     () =>
@@ -189,6 +206,17 @@ function History() {
             <option value="silver">{t("silver")}</option>
           </select>
         </label>
+        <select
+          aria-label={t("karat.purity")}
+          value={view}
+          onChange={(e) => setView(e.target.value)}
+          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+        >
+          <option value="nisab">{t(metal === "gold" ? "nisab.gold" : "nisab.silver")}</option>
+          {(metal === "gold" ? GOLD_VIEWS : SILVER_VIEWS).map((p) => (
+            <option key={p.id} value={p.id}>{`${t(metal)} ${p.label} · ${t("perGram")}`}</option>
+          ))}
+        </select>
         <div className="flex flex-wrap gap-1" aria-label={t("history.period") }>
           {RANGES.map((r) => (
             <Button
