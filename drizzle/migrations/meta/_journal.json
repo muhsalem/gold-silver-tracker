@@ -57,6 +57,13 @@
       "when": 1791013002313,
       "tag": "0007_create_nisab_history",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791286329006,
+      "tag": "0008_jeweler_feed_silver_buyback",
+      "breakpoints": true
     }
   ]
 }
