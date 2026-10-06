@@ -9,6 +9,7 @@ export type LocalQuote = {
   goldGram: number | null;
   silverGram: number | null;
   buybackGram: number | null;
+  silverBuybackGram?: number | null;
   city: string;
   source: string;
   at: string;
@@ -35,7 +36,7 @@ export function useLocalQuote(country: string, currency: string) {
       const since = new Date(Date.now() - LOCAL_QUOTE_MAX_AGE_MS).toISOString();
       const { data: feed } = await supabase
         .from("jeweler_feed")
-        .select("gold_gram, silver_gram, buyback_gram, source, fetched_at")
+        .select("gold_gram, silver_gram, buyback_gram, silver_buyback_gram, source, fetched_at")
         .eq("country", country)
         .eq("currency", currency)
         .gte("fetched_at", since)
@@ -48,6 +49,7 @@ export function useLocalQuote(country: string, currency: string) {
           goldGram: n(feed.gold_gram),
           silverGram: n(feed.silver_gram),
           buybackGram: n(feed.buyback_gram),
+          silverBuybackGram: n(feed.silver_buyback_gram),
           city: "",
           source: feed.source,
           at: feed.fetched_at,

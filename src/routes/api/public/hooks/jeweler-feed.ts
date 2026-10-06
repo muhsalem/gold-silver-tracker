@@ -136,7 +136,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           const change = before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
           await supabaseAdmin
             .from("jeweler_feed")
-            .upsert({ country: row.country, currency: row.currency, source: row.source, source_url: row.source_url, gold_gram: row.gold_gram, buyback_gram: row.buyback_gram, silver_gram: row.silver_gram, day: today, change_pct: change, fetched_at: new Date().toISOString() }, { onConflict: "country,day" });
+            .upsert({ country: row.country, currency: row.currency, source: row.source, source_url: row.source_url, gold_gram: row.gold_gram, buyback_gram: row.buyback_gram, silver_gram: row.silver_gram, silver_buyback_gram: row.silver_buyback_gram ?? null, day: today, change_pct: change, fetched_at: new Date().toISOString() }, { onConflict: "country,day" });
           if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
             alerts.push(`${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`);
           }

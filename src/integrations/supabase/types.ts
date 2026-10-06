@@ -57,6 +57,7 @@ export type Database = {
           fetched_at: string
           gold_gram: number | null
           id: string
+          silver_buyback_gram: number | null
           silver_gram: number | null
           source: string
           source_url: string
@@ -70,6 +71,7 @@ export type Database = {
           fetched_at?: string
           gold_gram?: number | null
           id?: string
+          silver_buyback_gram?: number | null
           silver_gram?: number | null
           source: string
           source_url: string
@@ -83,6 +85,7 @@ export type Database = {
           fetched_at?: string
           gold_gram?: number | null
           id?: string
+          silver_buyback_gram?: number | null
           silver_gram?: number | null
           source?: string
           source_url?: string

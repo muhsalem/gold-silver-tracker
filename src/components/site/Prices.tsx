@@ -664,7 +664,7 @@ export function LocalMarket({
   const goldGram = quote?.goldGram ?? spotGold;
   const silverGram = quote?.silverGram ?? spotSilver;
   const goldBuy = quote?.buybackGram ?? buyBack(goldGram, local.spreadPct);
-  const silverBuy = buyBack(silverGram, local.spreadPct);
+  const silverBuy = quote?.silverBuybackGram ?? buyBack(silverGram, local.spreadPct);
   const jeweler = Boolean(quote) || scoped || local.jeweler;
   void rateProp;
 

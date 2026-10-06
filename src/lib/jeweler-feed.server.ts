@@ -13,6 +13,8 @@ export type FeedRow = {
   gold_gram: number | null;
   buyback_gram: number | null;
   silver_gram: number | null;
+  /** Dealer buy-back price for pure silver, where the source publishes it. */
+  silver_buyback_gram?: number | null;
   /** Karat the source quotes; every current source quotes 24K (verified Oct 2026). */
   karat?: number;
 };
@@ -32,12 +34,28 @@ const num = (s: string | undefined) => {
   return Number.isFinite(v) && v > 0 ? v : null;
 };
 
+/** iSagha silver board: pure 999 silver, sell (dealer to customer) and buy (dealer from customer). */
+async function egyptSilver(): Promise<{ sell: number | null; buy: number | null }> {
+  const t = await text("https://market.isagha.com/prices/silver");
+  const m = /عيار 999\s*[▼▲]?\s*شراء\s*([\d.,]+)\s*ج\.م\s*بيع\s*([\d.,]+)/.exec(t);
+  if (!m) throw new Error("iSagha silver: pattern not found");
+  return { buy: num(m[1]), sell: num(m[2]) };
+}
+
 async function egypt(): Promise<FeedRow> {
   const url = "https://edahabapp.com/";
   const t = await text(url);
   const m = /عيار 24:\s*بيع:\s*([\d.,]+)\s*جنيه\s*شراء:\s*([\d.,]+)/.exec(t);
   if (!m) throw new Error("eDahab: pattern not found");
-  return { country: "EG", currency: "EGP", source: "eDahab (مصر)", source_url: url, gold_gram: num(m[1]), buyback_gram: num(m[2]), silver_gram: null };
+  let silver: { sell: number | null; buy: number | null } = { sell: null, buy: null };
+  let source = "eDahab (مصر)";
+  try {
+    silver = await egyptSilver();
+    if (silver.sell) source = "eDahab (ذهب) · iSagha (فضة)";
+  } catch {
+    /* silver falls back to global spot */
+  }
+  return { country: "EG", currency: "EGP", source, source_url: url, gold_gram: num(m[1]), buyback_gram: num(m[2]), silver_gram: silver.sell, silver_buyback_gram: silver.buy };
 }
 
 async function saudi(): Promise<FeedRow> {
