@@ -38,6 +38,12 @@ async function recordNisabHistory(
   const rows: Record<string, unknown>[] = [];
   for (const c of COUNTRIES) {
     const feed = byCountry.get(c.code);
+    const rate0 = c.currency === "USD" ? 1 : rates[c.currency];
+    if (feed && !feed.gold_gram && feed.silver_gram) {
+      // Silver-only local board: gold from spot, silver from the local dealer.
+      if (goldOz && rate0) rows.push({ country: c.code, currency: c.currency, day: today, gold_gram: (goldOz / OZ) * rate0, silver_gram: feed.silver_gram, source: `spot + ${feed.source}`, source_url: feed.source_url });
+      continue;
+    }
     if (feed?.gold_gram) {
       rows.push({
         country: c.code,

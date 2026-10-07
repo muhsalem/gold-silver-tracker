@@ -121,7 +121,7 @@ async function northAmerica(): Promise<FeedRow[]> {
 }
 
 export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[] }> {
-  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica()];
+  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica(), kuwait()];
   const settled = await Promise.allSettled(jobs);
   const rows: FeedRow[] = [];
   const errors: string[] = [];
@@ -138,7 +138,7 @@ export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[]
     }
     r.karat = 24;
   }
-  return { rows: rows.filter((r) => r.gold_gram), errors };
+  return { rows: rows.filter((r) => r.gold_gram || r.silver_gram), errors };
 }
 
 export const BIG_CHANGE_PCT = 3;
