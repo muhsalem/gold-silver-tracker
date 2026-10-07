@@ -43,7 +43,7 @@ export function useLocalQuote(country: string, currency: string) {
         .order("fetched_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (feed?.gold_gram) {
+      if (feed?.gold_gram || feed?.silver_gram) {
         const n = (v: unknown) => (v == null ? null : Number(v));
         return {
           goldGram: n(feed.gold_gram),

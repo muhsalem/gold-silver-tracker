@@ -35,11 +35,18 @@ const num = (s: string | undefined) => {
 };
 
 /** iSagha silver board: pure 999 silver, sell (dealer to customer) and buy (dealer from customer). */
-async function egyptSilver(): Promise<{ sell: number | null; buy: number | null }> {
-  const t = await text("https://market.isagha.com/prices/silver");
-  const m = /عيار 999\s*[▼▲]?\s*شراء\s*([\d.,]+)\s*ج\.م\s*بيع\s*([\d.,]+)/.exec(t);
-  if (!m) throw new Error("iSagha silver: pattern not found");
+async function iSaghaSilver(path = ""): Promise<{ sell: number | null; buy: number | null }> {
+  const t = await text(`https://market.isagha.com/prices/silver${path}`);
+  const m = /عيار 999\s*[▼▲]?\s*شراء\s*([\d.,]+)\s*\S+\s*بيع\s*([\d.,]+)/.exec(t);
+  if (!m) throw new Error(`iSagha silver${path}: pattern not found`);
   return { buy: num(m[1]), sell: num(m[2]) };
+}
+const egyptSilver = () => iSaghaSilver();
+
+/** Kuwait: iSagha publishes a local silver board only (no gold), so gold stays on spot. */
+async function kuwait(): Promise<FeedRow> {
+  const s = await iSaghaSilver("/kw");
+  return { country: "KW", currency: "KWD", source: "iSagha الكويت (فضة)", source_url: "https://market.isagha.com/prices/silver/kw", gold_gram: null, buyback_gram: null, silver_gram: s.sell, silver_buyback_gram: s.buy };
 }
 
 async function egypt(): Promise<FeedRow> {
@@ -114,7 +121,7 @@ async function northAmerica(): Promise<FeedRow[]> {
 }
 
 export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[] }> {
-  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica()];
+  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica(), kuwait()];
   const settled = await Promise.allSettled(jobs);
   const rows: FeedRow[] = [];
   const errors: string[] = [];
@@ -131,7 +138,7 @@ export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[]
     }
     r.karat = 24;
   }
-  return { rows: rows.filter((r) => r.gold_gram), errors };
+  return { rows: rows.filter((r) => r.gold_gram || r.silver_gram), errors };
 }
 
 export const BIG_CHANGE_PCT = 3;
