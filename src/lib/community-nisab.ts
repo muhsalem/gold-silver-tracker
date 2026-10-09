@@ -382,7 +382,7 @@ export interface NewVerificationInput {
   sourceType: SourceType;
   sourceLabel: string;
   contributorName: string;
-  contributorRole?: string;
+  contributorRole?: string | undefined;
   notes?: string | undefined;
 }
 
