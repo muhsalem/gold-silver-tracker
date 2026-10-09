@@ -23,7 +23,7 @@ export interface PriceVerification {
   status: "verified" | "trending" | "under_review";
   date: string;
   timestamp: string;
-  notes?: string;
+  notes?: string | undefined;
   userConfirmed?: boolean;
 }
 
@@ -383,7 +383,7 @@ export interface NewVerificationInput {
   sourceLabel: string;
   contributorName: string;
   contributorRole?: string;
-  notes?: string;
+  notes?: string | undefined;
 }
 
 /** Submit a new community verification from a visitor */

@@ -17,7 +17,7 @@ export type ZakatYearRecord = {
   zakatDue: number;
   zakatPaid: number;
   status: ZakatStatus;
-  paidDate?: string;
+  paidDate?: string | undefined;
   recipientChannels?: string; // e.g. "منصة إحسان", "فقراء ومساكين الأقارب", "بيت الزكاة"
   notes?: string;
   createdAt: string;
