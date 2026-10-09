@@ -8,9 +8,9 @@ export interface PriceVerification {
   countryCode: string;
   countryName: string;
   currency: string;
-  city?: string;
+  city?: string | undefined;
   goldGram24k: number;
-  goldGram21k?: number;
+  goldGram21k?: number | undefined;
   silverGramPure: number;
   goldNisab: number;
   silverNisab: number;
