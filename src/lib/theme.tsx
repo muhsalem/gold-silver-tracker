@@ -12,7 +12,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>({
   theme: "emerald",
   setTheme: () => {},
-  currentTheme: THEMES[0],
+  currentTheme: THEMES[0]!,
 });
 
 const STORAGE_KEY = "nisab_visual_theme_v1";
@@ -44,7 +44,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const currentTheme = THEMES.find((t) => t.id === theme) || THEMES[0];
+  const currentTheme = THEMES.find((t) => t.id === theme) ?? THEMES[0]!;
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, currentTheme }}>

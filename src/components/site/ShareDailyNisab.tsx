@@ -16,7 +16,14 @@ import { useI18n } from "@/lib/i18n";
 import { CITIES } from "@/lib/cities";
 import { countryName, findCountry } from "@/lib/countries";
 import { GOLD_NISAB_G, SILVER_NISAB_G } from "@/lib/nisab";
-import type { NisabValues } from "@/components/site/Prices";
+export interface NisabValues {
+  gold: number;
+  silver: number;
+  goldGram: number;
+  silverGram: number;
+  ratio: number;
+  lower: number;
+}
 
 type Props = {
   values: NisabValues;

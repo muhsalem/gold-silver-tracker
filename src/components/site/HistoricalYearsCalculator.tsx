@@ -240,7 +240,7 @@ export function HistoricalYearsCalculator() {
             الزكاة)
           </h3>
           <Link
-            to="/chronology"
+            to="/history"
             className="flex items-center gap-1 text-xs text-primary font-semibold hover:underline bg-primary/10 px-2.5 py-1 rounded-lg"
           >
             <Compass className="size-3.5" />
