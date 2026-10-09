@@ -438,7 +438,7 @@ export interface CountryVerificationSummary {
   hasVerifications: boolean;
   totalConfirmations: number;
   verifiedCount: number;
-  latestRecord?: PriceVerification;
+  latestRecord?: PriceVerification | undefined;
   avgGold24k: number;
   avgSilverPure: number;
   communityGoldNisab: number;
