@@ -13,6 +13,8 @@ import { useMemo, useState, type ReactNode } from "react";
 import { LANGS, useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { citiesOf, cityName } from "@/lib/cities";
+import { ThemePicker } from "./ThemePicker";
+import { NisabBrand } from "./NisabLogo";
 import {
   Sheet,
   SheetContent,
@@ -260,19 +262,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
-          <Link to="/" aria-label={`${t("brand.name")} · NISAB`} className="flex min-w-0 items-center gap-2">
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[image:var(--gradient-brand)] font-[family-name:var(--font-display)] text-lg text-primary-foreground shadow-sm">
-              ن
-            </span>
-            <span className="min-w-0 leading-tight">
-              <span className="block truncate font-[family-name:var(--font-display)] text-lg text-foreground">
-                {t("brand.name")}
-              </span>
-              <span className="brand-latin hidden text-[0.62rem] font-semibold text-muted-foreground sm:block">
-                NISAB · {t("brand.tagline")}
-              </span>
-            </span>
-          </Link>
+          <NisabBrand />
 
           <nav
             aria-label={t("nav.group.live")}
@@ -316,6 +306,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <div className="ms-auto flex items-center gap-2">
             <GlobalSearch />
+            <ThemePicker />
             <LangPicker />
             <MobileNav />
           </div>
