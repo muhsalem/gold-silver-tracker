@@ -375,9 +375,9 @@ export function flagVerification(id: string, reason?: string): boolean {
 
 export interface NewVerificationInput {
   countryCode: string;
-  city?: string;
+  city?: string | undefined;
   goldGram24k: number;
-  goldGram21k?: number;
+  goldGram21k?: number | undefined;
   silverGramPure: number;
   sourceType: SourceType;
   sourceLabel: string;
