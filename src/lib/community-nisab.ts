@@ -417,7 +417,7 @@ export function submitCommunityVerification(input: NewVerificationInput): PriceV
     confirmations: 1, // Author confirms it initially
     disputes: 0,
     status: "trending",
-    date: now.toISOString().split("T")[0],
+    date: now.toISOString().slice(0, 10),
     timestamp: now.toISOString(),
     notes: input.notes?.trim() || undefined,
   };
