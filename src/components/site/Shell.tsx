@@ -306,8 +306,8 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <div className="ms-auto flex items-center gap-2">
             <GlobalSearch />
-            <ThemePicker />
-            <LangPicker />
+            <div className="hidden sm:block"><ThemePicker /></div>
+            <div className="hidden sm:block"><LangPicker /></div>
             <MobileNav />
           </div>
         </div>
