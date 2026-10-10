@@ -173,7 +173,11 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         // global spot (converted per currency) everywhere else.
         const history = await recordNisabHistory(supabaseAdmin, rows, today);
 
-        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official, history });
+        const { notifyNisabChanges, postDailyToFacebook } = await import("@/lib/daily-broadcast.server");
+        const followers = await notifyNisabChanges(supabaseAdmin, today);
+        const facebook = await postDailyToFacebook(supabaseAdmin, today).catch((e) => ({ posted: false, reason: String(e) }));
+
+        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official, history, followers, facebook });
       },
     },
   },
