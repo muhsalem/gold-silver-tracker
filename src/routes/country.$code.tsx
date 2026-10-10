@@ -1,3 +1,4 @@
+import { CountryVerificationSection } from "@/components/site/CountryVerificationSection";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
@@ -200,6 +201,7 @@ function CountryPage() {
           <LocalMarket currency={country.currency} goldGram={spotGold} silverGram={spotSilver} />
           <OfficialNisab country={country.code} locale={lang} />
           <SourceQuality currency={country.currency} />
+          <CountryVerificationSection country={country} lang={lang} spotGoldGram={spotGold} spotSilverGram={spotSilver} spotGoldNisab={spotGold * GOLD_NISAB_G} spotSilverNisab={spotSilver * SILVER_NISAB_G} />
           <ShareNisab
             countryName={country.ar}
             goldText={money(gold)}

@@ -1,3 +1,4 @@
+import { HistoricalYearsCalculator } from "@/components/site/HistoricalYearsCalculator";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -378,6 +379,7 @@ function History() {
       )}
 
       <CityPriceCheck />
+      <div className="mt-8"><HistoricalYearsCalculator /></div>
     </Page>
   );
 }
