@@ -220,7 +220,7 @@ function MobileNav() {
         className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground md:hidden"
       >
         <Menu aria-hidden="true" className="size-4" />
-        {t("nav.menu")}
+        <span className="sr-only sm:not-sr-only">{t("nav.menu")}</span>
       </SheetTrigger>
       <SheetContent
         side={rtl ? "right" : "left"}
@@ -230,6 +230,7 @@ function MobileNav() {
         <SheetHeader>
           <SheetTitle>{t("brand.name")}</SheetTitle>
         </SheetHeader>
+        <div className="flex flex-wrap gap-2 px-4"><ThemePicker /><LangPicker /></div>
         <nav aria-label={t("nav.menu")} className="mt-2 flex flex-col gap-5 px-4 pb-8">
           {NAV_GROUPS.map((group) => (
             <div key={group.key}>
@@ -306,8 +307,8 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <div className="ms-auto flex items-center gap-2">
             <GlobalSearch />
-            <ThemePicker />
-            <LangPicker />
+            <div className="hidden sm:block"><ThemePicker /></div>
+            <div className="hidden sm:block"><LangPicker /></div>
             <MobileNav />
           </div>
         </div>

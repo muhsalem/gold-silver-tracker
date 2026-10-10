@@ -1,3 +1,5 @@
+import { ShareDailyNisab } from "@/components/site/ShareDailyNisab";
+import { InvitationCard } from "@/components/site/InvitationCard";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calculator, ChartNoAxesCombined } from "lucide-react";
 
@@ -155,6 +157,7 @@ function Home() {
           <SourceQuality />
           <HawlReminder />
           <UpdateMeta />
+          <div className="mt-4"><ShareDailyNisab values={values} money={money} /></div>
         </>
       )}
 
@@ -174,6 +177,8 @@ function Home() {
           <span><strong className="block font-medium">{t("home.cta.history")}</strong><small className="mt-1 block text-muted-foreground">{t("home.cta.historySub")}</small></span>
         </Link>
       </section>
+
+      <div className="mt-8"><InvitationCard /></div>
 
       <section className="mt-12">
         <h2 className="text-2xl text-foreground">{t("types.title")}</h2>
